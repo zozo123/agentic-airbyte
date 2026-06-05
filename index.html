@@ -1,478 +1,1832 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0f172a">
-  <title>Agent Harness • Crabbox Sandbox Workers + Airbyte</title>
-  <link rel="preconnect" href="https://cdn.tailwindcss.com">
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090909">
+  <meta name="description" content="Agentic Airbyte shows how a harness can move data by leasing governed Crabbox sandboxes as Airbyte, ETL, and rETL workers.">
+  <meta property="og:title" content="Agentic Airbyte">
+  <meta property="og:description" content="Goal-driven data movement through governed Crabbox sandbox workers.">
+  <meta property="og:type" content="website">
+  <title>Agentic Airbyte | Crabbox Sandbox Workers + Airbyte</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-    
     :root {
-      --font-sans: 'Inter', system_ui, sans-serif;
-      --font-display: 'Space Grotesk', 'Inter', system_ui, sans-serif;
-      --airbyte: #14b8a6;
-      --crabbox: #f43f5e;
-      --harness: #6366f1;
+      color-scheme: dark;
+      --bg: #090909;
+      --panel: #111111;
+      --panel-2: #171717;
+      --line: #2b2b2b;
+      --line-strong: #474747;
+      --text: #f5f5f2;
+      --muted: #a5a5a0;
+      --soft: #d8d8d2;
+      --crabbox: #ff5c39;
+      --airbyte: #00c2a8;
+      --harness: #7c5cff;
+      --evidence: #f4c95d;
+      --source: #58a6ff;
+      --shadow: 0 20px 70px rgb(0 0 0 / 0.42);
+      --radius: 8px;
+      --max: 1180px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    
-    html { color-scheme: dark; }
-    body { font-family: var(--font-sans); }
-    .display { font-family: var(--font-display); letter-spacing: -0.03em; }
-    
-    .nav-blur { backdrop-filter: blur(12px); }
-    
-    .card {
-      transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), 
-                  box-shadow 0.2s cubic-bezier(0.4, 0.0, 0.2, 1),
-                  border-color 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+
+    * {
+      box-sizing: border-box;
     }
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-      border-color: #475569;
+
+    html {
+      scroll-behavior: smooth;
     }
-    
-    .mermaid-container {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 16px;
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+        var(--bg);
+      background-size: 42px 42px;
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.5;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
     }
-    
-    .mermaid {
-      padding: 1rem;
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgb(9 9 9 / 0) 0%, rgb(9 9 9 / 0.9) 76%),
+        repeating-linear-gradient(90deg, rgb(255 255 255 / 0.018) 0 1px, transparent 1px 160px);
+      z-index: -1;
     }
-    
-    h1, h2, h3, .display {
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code,
+    pre {
+      font-family: var(--mono);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 16px;
+      top: -80px;
+      z-index: 100;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 14px;
+      font-weight: 700;
+    }
+
+    .skip-link:focus {
+      top: 16px;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid rgb(255 255 255 / 0.1);
+      background: rgb(9 9 9 / 0.86);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 14px 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      font-weight: 750;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3px;
+      flex: 0 0 auto;
+    }
+
+    .brand-mark span {
+      border: 1px solid rgb(255 255 255 / 0.45);
+      border-radius: 3px;
+      background: var(--panel);
+    }
+
+    .brand-mark span:nth-child(1) {
+      background: var(--crabbox);
+      border-color: var(--crabbox);
+    }
+
+    .brand-mark span:nth-child(4) {
+      background: var(--airbyte);
+      border-color: var(--airbyte);
+    }
+
+    .brand-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a {
+      transition: color 160ms ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      padding: 0 14px;
+      background: var(--panel);
+      color: var(--text);
+      font-weight: 700;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: rgb(255 255 255 / 0.65);
+      background: #1f1f1f;
+    }
+
+    .button.primary {
+      border-color: var(--text);
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .button.primary:hover {
+      background: #ffffff;
+    }
+
+    .button svg {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 auto;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgb(255 255 255 / 0.12);
+      padding: 82px 20px 34px;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: var(--soft);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .eyebrow::before {
+      content: "";
+      display: block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--airbyte);
+      box-shadow: 0 0 0 5px rgb(0 194 168 / 0.16);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 940px;
+      margin-bottom: 18px;
+      font-size: 72px;
+      line-height: 0.96;
+      letter-spacing: 0;
       text-wrap: balance;
     }
-    
-    a:focus-visible, button:focus-visible {
-      outline: 2px solid #fff;
-      outline-offset: 2px;
+
+    .hero-copy {
+      max-width: 760px;
+      margin-bottom: 28px;
+      color: var(--soft);
+      font-size: 21px;
+      line-height: 1.5;
     }
-    
-    code {
-      font-feature-settings: "ss02";
+
+    .hero-copy strong {
+      color: var(--text);
+      font-weight: 750;
     }
-    
-    .step-number {
-      font-feature-settings: "tnum";
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 34px;
     }
-    
-    section[id] {
-      scroll-margin-top: 80px;
+
+    .signal-canvas {
+      position: relative;
+      overflow: hidden;
+      min-height: 380px;
+      border: 1px solid rgb(255 255 255 / 0.15);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(90deg, rgb(255 255 255 / 0.055) 1px, transparent 1px),
+        linear-gradient(rgb(255 255 255 / 0.055) 1px, transparent 1px),
+        #0d0d0d;
+      background-size: 64px 64px;
+      box-shadow: var(--shadow);
     }
-    
+
+    .signal-canvas::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 72px;
+      background: linear-gradient(180deg, transparent, rgb(9 9 9 / 0.72));
+      pointer-events: none;
+    }
+
+    .system-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 380px;
+    }
+
+    .svg-label {
+      fill: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      font-weight: 750;
+    }
+
+    .svg-small {
+      fill: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .svg-node {
+      fill: #131313;
+      stroke: rgb(255 255 255 / 0.24);
+      stroke-width: 1.4;
+    }
+
+    .svg-node.hot {
+      fill: #17120f;
+      stroke: var(--crabbox);
+    }
+
+    .svg-node.cool {
+      fill: #0c1714;
+      stroke: var(--airbyte);
+    }
+
+    .svg-node.brain {
+      fill: #120f1f;
+      stroke: var(--harness);
+    }
+
+    .flow-path {
+      fill: none;
+      stroke: rgb(255 255 255 / 0.34);
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    .flow-path.active {
+      stroke: var(--airbyte);
+      stroke-dasharray: 7 12;
+      animation: dash 2.2s linear infinite;
+    }
+
+    .flow-path.return {
+      stroke: var(--evidence);
+      stroke-dasharray: 4 10;
+      animation: dash 2.7s linear infinite reverse;
+    }
+
+    .flow-dot {
+      animation: pulse 2.4s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    .mobile-flow {
+      display: none;
+      padding: 16px;
+    }
+
+    .section {
+      padding: 74px 20px;
+      border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    }
+
+    .section.band {
+      background: rgb(255 255 255 / 0.025);
+    }
+
+    .section-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    .section-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(280px, 0.55fr);
+      gap: 36px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .section-kicker {
+      margin-bottom: 10px;
+      color: var(--airbyte);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      font-size: 44px;
+      line-height: 1.06;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .section-heading p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .metric {
+      min-height: 132px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 20px;
+      background: rgb(17 17 17 / 0.82);
+    }
+
+    .metric-value {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-family: var(--mono);
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .metric:nth-child(1) .metric-value {
+      color: var(--harness);
+    }
+
+    .metric:nth-child(2) .metric-value {
+      color: var(--crabbox);
+    }
+
+    .metric:nth-child(3) .metric-value {
+      color: var(--airbyte);
+    }
+
+    .metric:nth-child(4) .metric-value {
+      color: var(--evidence);
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .metric p {
+      margin: 0;
+      color: var(--soft);
+      font-size: 14px;
+    }
+
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .model-card {
+      position: relative;
+      min-height: 246px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 18px;
+      transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
+    }
+
+    .model-card:hover {
+      border-color: var(--line-strong);
+      background: #151515;
+      transform: translateY(-2px);
+    }
+
+    .model-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 28px;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      color: var(--text);
+    }
+
+    .model-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .model-card h3 {
+      margin-bottom: 10px;
+      font-size: 21px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .model-card p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .model-card code {
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .architecture-board {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .diagram-panel,
+    .ledger-panel,
+    .terminal-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .diagram-panel {
+      overflow: hidden;
+      min-height: 520px;
+      background:
+        linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+        linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),
+        #101010;
+      background-size: 48px 48px;
+    }
+
+    .diagram-header,
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .window-dots {
+      display: inline-flex;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
+    .window-dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--line-strong);
+    }
+
+    .window-dots span:nth-child(1) {
+      background: var(--crabbox);
+    }
+
+    .window-dots span:nth-child(2) {
+      background: var(--evidence);
+    }
+
+    .window-dots span:nth-child(3) {
+      background: var(--airbyte);
+    }
+
+    .architecture-svg {
+      display: block;
+      width: 100%;
+      height: 472px;
+    }
+
+    .ledger-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: 520px;
+      overflow: hidden;
+    }
+
+    .ledger-row {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding: 16px;
+    }
+
+    .ledger-row:last-child {
+      border-bottom: 0;
+    }
+
+    .ledger-key {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .ledger-value {
+      color: var(--soft);
+      font-size: 14px;
+    }
+
+    .ledger-value strong {
+      display: block;
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .loop-layout {
+      display: grid;
+      grid-template-columns: 0.95fr 1fr;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .loop-visual {
+      min-height: 506px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #101010;
+      overflow: hidden;
+    }
+
+    .loop-svg {
+      display: block;
+      width: 100%;
+      height: 506px;
+    }
+
+    .loop-steps {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 14px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 14px;
+    }
+
+    .step-index {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      color: var(--airbyte);
+      font-family: var(--mono);
+      font-weight: 800;
+    }
+
+    .step h3 {
+      margin-bottom: 4px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .step p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .matrix {
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+
+    .matrix-row {
+      display: grid;
+      grid-template-columns: 0.72fr 1fr 1fr 0.9fr;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .matrix-row > div {
+      border-right: 1px solid var(--line);
+      padding: 16px;
+    }
+
+    .matrix-head {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      background: #101010;
+    }
+
+    .matrix-title {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .matrix-row p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 28px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      padding: 0 9px;
+      color: var(--soft);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .status-chip::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--airbyte);
+    }
+
+    .terminal-panel {
+      overflow: hidden;
+    }
+
+    .runbook-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 16px;
+    }
+
+    .mode-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .mode-tab {
+      min-height: 34px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      padding: 0 10px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .mode-tab[aria-selected="true"] {
+      border-color: var(--text);
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 800;
+    }
+
+    .copy-button {
+      position: relative;
+      display: inline-grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--soft);
+      cursor: pointer;
+    }
+
+    .copy-button svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .copy-button::after {
+      content: attr(data-tip);
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      display: none;
+      width: max-content;
+      max-width: 180px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: #1d1d1d;
+      color: var(--text);
+      padding: 6px 8px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 650;
+      box-shadow: var(--shadow);
+    }
+
+    .copy-button:hover::after,
+    .copy-button:focus-visible::after {
+      display: block;
+    }
+
+    .terminal-code {
+      min-height: 392px;
+      margin: 0;
+      overflow: auto;
+      padding: 20px;
+      color: #f3f3ee;
+      font-size: 13px;
+      line-height: 1.65;
+      white-space: pre;
+    }
+
+    .terminal-code .prompt {
+      color: var(--airbyte);
+    }
+
+    .terminal-code .comment {
+      color: var(--muted);
+    }
+
+    .runbook-notes {
+      display: grid;
+      gap: 12px;
+    }
+
+    .note {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 16px;
+    }
+
+    .note h3 {
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    .note p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .evidence-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .evidence-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding: 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .mini-chart {
+      display: grid;
+      height: 84px;
+      grid-template-columns: repeat(12, 1fr);
+      align-items: end;
+      gap: 5px;
+      padding: 16px 14px 8px;
+    }
+
+    .mini-chart span {
+      min-height: 8px;
+      border-radius: 3px 3px 0 0;
+      background: var(--airbyte);
+    }
+
+    .evidence-card:nth-child(2) .mini-chart span {
+      background: var(--evidence);
+    }
+
+    .evidence-card:nth-child(3) .mini-chart span {
+      background: var(--crabbox);
+    }
+
+    .evidence-body {
+      padding: 14px;
+    }
+
+    .evidence-body h3 {
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .evidence-body p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .final-band {
+      padding: 74px 20px;
+      background: #f2f2ed;
+      color: #0d0d0d;
+    }
+
+    .final-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    .final-band h2 {
+      max-width: 820px;
+      margin-bottom: 12px;
+      font-size: 46px;
+    }
+
+    .final-band p {
+      max-width: 720px;
+      margin-bottom: 0;
+      color: #555550;
+      font-size: 18px;
+    }
+
+    .final-band .button {
+      border-color: #0d0d0d;
+      background: #0d0d0d;
+      color: #f7f7f2;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .accent-airbyte {
+      color: var(--airbyte);
+    }
+
+    .accent-crabbox {
+      color: var(--crabbox);
+    }
+
+    .accent-evidence {
+      color: var(--evidence);
+    }
+
+    .accent-harness {
+      color: var(--harness);
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -38;
+      }
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        opacity: 0.55;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.08);
+      }
+    }
+
+    @media (max-width: 1020px) {
+      .nav-links {
+        display: none;
+      }
+
+      h1 {
+        font-size: 56px;
+      }
+
+      .section-heading,
+      .architecture-board,
+      .loop-layout,
+      .runbook-layout,
+      .final-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-strip,
+      .model-grid,
+      .evidence-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ledger-panel {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        background-size: 34px 34px;
+      }
+
+      .nav-inner {
+        padding: 12px 14px;
+      }
+
+      .nav-actions .button:not(.primary) {
+        display: none;
+      }
+
+      .button {
+        min-height: 38px;
+        padding: 0 11px;
+        font-size: 14px;
+      }
+
+      .hero {
+        padding: 56px 14px 28px;
+      }
+
+      h1 {
+        font-size: 42px;
+        line-height: 1.02;
+      }
+
+      .hero-copy {
+        font-size: 18px;
+      }
+
+      .signal-canvas {
+        min-height: 0;
+      }
+
+      .system-svg {
+        display: none;
+      }
+
+      .mobile-flow {
+        display: grid;
+        gap: 10px;
+      }
+
+      .mobile-flow-item {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: rgb(17 17 17 / 0.88);
+        padding: 14px;
+      }
+
+      .mobile-flow-item strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .mobile-flow-item span {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .section {
+        padding: 54px 14px;
+      }
+
+      h2 {
+        font-size: 34px;
+      }
+
+      .metric-strip,
+      .model-grid,
+      .evidence-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .architecture-svg,
+      .loop-svg {
+        height: 420px;
+      }
+
+      .matrix {
+        border: 1px solid var(--line);
+        border-bottom: 0;
+        overflow: hidden;
+      }
+
+      .matrix-row,
+      .matrix-row.matrix-head {
+        grid-template-columns: 1fr;
+      }
+
+      .matrix-head {
+        display: none;
+      }
+
+      .matrix-row > div {
+        border-right: 0;
+      }
+
+      .matrix-row > div + div {
+        border-top: 1px solid var(--line);
+      }
+
+      .terminal-code {
+        min-height: 330px;
+        font-size: 12px;
+      }
+
+      .final-band {
+        padding: 54px 14px;
+      }
+
+      .final-band h2 {
+        font-size: 34px;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      .card, .animate-pulse {
-        transition: none;
-        animation: none;
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+        animation: none !important;
       }
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-200 antialiased">
-  <!-- Skip link -->
-  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-slate-950 focus:rounded-2xl focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-white">
-    Skip to main content
-  </a>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
 
-  <!-- Nav -->
-  <nav class="nav-blur bg-slate-950/95 border-b border-slate-800 sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center gap-x-3">
-        <div class="flex items-center gap-x-2">
-          <div class="w-8 h-8 bg-white rounded-2xl flex items-center justify-center">
-            <i class="fa-solid fa-crab text-slate-900 text-xl" aria-hidden="true"></i>
-          </div>
-          <span class="font-semibold tracking-tighter text-xl">crabbox.sh</span>
-        </div>
-        <div class="text-xs px-2.5 py-1 bg-slate-800 rounded-full text-slate-400 font-medium">+ Airbyte + Harness</div>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="Agentic Airbyte home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span class="brand-text">agentic-airbyte</span>
+      </a>
+      <div class="nav-links" aria-label="Page sections">
+        <a href="#model">Model</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#loop">Loop</a>
+        <a href="#workers">Workers</a>
+        <a href="#runbook">Runbook</a>
       </div>
-      <div class="hidden md:flex items-center gap-x-6 text-sm">
-        <a href="#vision" class="text-slate-400 hover:text-white transition">The Vision</a>
-        <a href="#architecture" class="text-slate-400 hover:text-white transition">Architecture</a>
-        <a href="#workers" class="text-slate-400 hover:text-white transition">Sandbox Workers</a>
-        <a href="#loop" class="text-slate-400 hover:text-white transition">The Loop</a>
-        <a href="#build" class="text-slate-400 hover:text-white transition">Build It</a>
-      </div>
-      <div class="flex items-center gap-x-3">
-        <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" class="text-sm text-slate-400 hover:text-white transition flex items-center gap-x-1.5">
-          <i class="fa-brands fa-github"></i>
-          <span class="hidden sm:inline">Source</span>
+      <div class="nav-actions">
+        <a class="button" href="https://github.com/zozo123/agentic-airbyte" target="_blank" rel="noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.1-1.2-.3-2.4-1-3.4.3-1.1.3-2.3 0-3.6 0 0-1 0-3 1.5-2.6-.7-5.4-.7-8 0C6 2 5 2 5 2c-.3 1.3-.3 2.5 0 3.6a5.4 5.4 0 0 0-1 3.4c0 3.5 3 5.5 6 5.5-.4.5-.8 1.2-.9 2-.6.3-2.1.8-3.1-.8 0 0-.6-1.1-1.8-1.2 0 0-1.1 0-.1.7 0 0 .8.4 1.3 1.9 0 0 .7 2.2 3.7 1.5V22"></path>
+          </svg>
+          Source
         </a>
-        <a href="https://github.com/openclaw/crabbox" target="_blank" class="px-4 py-1.5 bg-white text-slate-950 text-sm font-semibold rounded-2xl hover:bg-rose-100 active:bg-rose-200 transition flex items-center gap-x-1.5">
-          Get Crabbox
-        </a>
+        <a class="button primary" href="#runbook">Run it</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <header class="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center border-b border-slate-800">
-    <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-slate-900 border border-slate-800 text-xs font-medium mb-6">
-      <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" aria-hidden="true"></div>
-      <span>High-level goals. Real, governed execution.</span>
+  <header id="top" class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Goal in. Governed workers out.</div>
+      <h1>Agentic Airbyte for real data movement.</h1>
+      <p class="hero-copy">
+        A harness receives intent, plans the path, leases <strong>Crabbox sandboxes</strong>, runs
+        <strong>Airbyte or custom activation code</strong>, and returns structured evidence for the next decision.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="#architecture">Explore the system</a>
+        <a class="button" href="#runbook">View commands</a>
+      </div>
+
+      <div class="signal-canvas" aria-label="Agentic Airbyte system map">
+        <svg class="system-svg" viewBox="0 0 1180 392" role="img" aria-labelledby="hero-map-title hero-map-desc">
+          <title id="hero-map-title">Agentic Airbyte system map</title>
+          <desc id="hero-map-desc">A high-level goal flows into an agent harness, then through Crabbox fleet control to sandbox workers, data systems, and evidence back to the harness.</desc>
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+            </marker>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
+              <feMerge>
+                <feMergeNode in="blur"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <path class="flow-path active" d="M146 198 C230 72 348 74 456 158" marker-end="url(#arrow)"></path>
+          <path class="flow-path active" d="M522 196 C628 196 658 98 750 104" marker-end="url(#arrow)"></path>
+          <path class="flow-path active" d="M826 140 C902 164 896 226 976 242" marker-end="url(#arrow)"></path>
+          <path class="flow-path return" d="M982 298 C774 360 566 352 380 274" marker-end="url(#arrow)"></path>
+          <path class="flow-path" d="M522 234 C650 274 725 282 868 282"></path>
+
+          <g transform="translate(44 138)">
+            <rect class="svg-node" width="182" height="112" rx="8"></rect>
+            <text class="svg-label" x="18" y="34">Goal</text>
+            <text class="svg-small" x="18" y="62">"enrich accounts"</text>
+            <text class="svg-small" x="18" y="84">policy + schedule</text>
+            <circle class="flow-dot" cx="154" cy="30" r="8" fill="var(--source)" filter="url(#glow)"></circle>
+          </g>
+
+          <g transform="translate(360 122)">
+            <rect class="svg-node brain" width="210" height="144" rx="8"></rect>
+            <text class="svg-label" x="20" y="36">Agent harness</text>
+            <text class="svg-small" x="20" y="64">observe → plan</text>
+            <text class="svg-small" x="20" y="86">dispatch → reflect</text>
+            <rect x="20" y="106" width="150" height="20" rx="4" fill="rgb(124 92 255 / 0.22)" stroke="var(--harness)"></rect>
+          </g>
+
+          <g transform="translate(716 52)">
+            <rect class="svg-node hot" width="214" height="138" rx="8"></rect>
+            <text class="svg-label" x="20" y="36">Crabbox control</text>
+            <text class="svg-small" x="20" y="64">pool ensure</text>
+            <text class="svg-small" x="20" y="86">borrow warm boxes</text>
+            <text class="svg-small" x="20" y="108">forward allowed env</text>
+            <circle class="flow-dot" cx="184" cy="34" r="8" fill="var(--crabbox)" filter="url(#glow)"></circle>
+          </g>
+
+          <g transform="translate(870 214)">
+            <rect class="svg-node cool" width="236" height="136" rx="8"></rect>
+            <text class="svg-label" x="20" y="36">Sandbox workers</text>
+            <text class="svg-small" x="20" y="64">Airbyte ETL</text>
+            <text class="svg-small" x="20" y="86">custom rETL + AI</text>
+            <text class="svg-small" x="20" y="108">artifacts + JUnit</text>
+          </g>
+
+          <g transform="translate(640 242)">
+            <rect class="svg-node" width="166" height="90" rx="8"></rect>
+            <text class="svg-label" x="18" y="34">Data plane</text>
+            <text class="svg-small" x="18" y="62">sources ↔ warehouse</text>
+          </g>
+
+          <g transform="translate(292 292)">
+            <rect class="svg-node" width="210" height="58" rx="8"></rect>
+            <text class="svg-label" x="18" y="36">Evidence back</text>
+            <circle class="flow-dot" cx="176" cy="29" r="7" fill="var(--evidence)" filter="url(#glow)"></circle>
+          </g>
+        </svg>
+
+        <div class="mobile-flow" aria-hidden="true">
+          <div class="mobile-flow-item"><strong>Goal</strong><span>Intent, policy, freshness target.</span></div>
+          <div class="mobile-flow-item"><strong>Agent harness</strong><span>Observes state, plans work, chooses a pool.</span></div>
+          <div class="mobile-flow-item"><strong>Crabbox control</strong><span>Ensures capacity and leases a warm sandbox.</span></div>
+          <div class="mobile-flow-item"><strong>Sandbox workers</strong><span>Run Airbyte, custom code, validation, and activation.</span></div>
+          <div class="mobile-flow-item"><strong>Evidence back</strong><span>Artifacts, phases, metrics, history, and results.</span></div>
+        </div>
+      </div>
     </div>
-    
-    <h1 class="display text-5xl md:text-6xl font-semibold tracking-tighter mb-6 leading-none">
-      Tell the agent harness.<br>
-      It moves the data.
-    </h1>
-    
-    <p class="max-w-2xl mx-auto text-2xl text-slate-400">
-      You describe the outcome.<br>
-      The harness plans and leases <span style="color: var(--crabbox)">Crabbox remote sandboxes</span> that act as specialized, auditable <span style="color: var(--airbyte)">ETL &amp; rETL workers</span> — Airbyte for reliable pipes, custom + AI logic for the rest.
-    </p>
-    
-    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-      <a href="#architecture" class="inline-flex items-center px-8 h-14 rounded-3xl bg-white text-slate-950 font-semibold text-base hover:bg-zinc-100 active:bg-zinc-200 transition shadow-sm">
-        See the architecture
-      </a>
-      <a href="#build" class="inline-flex items-center px-6 h-14 rounded-3xl border border-slate-700 hover:bg-slate-900 text-base font-medium transition">
-        Build the harness
-      </a>
-    </div>
-    <p class="mt-4 text-xs text-slate-500">Every movement runs inside a warm, isolated, repo-hydrated sandbox. The harness only sees structured evidence.</p>
   </header>
 
   <main id="main">
-    <!-- The Vision -->
-    <section id="vision" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
-      <div class="max-w-2xl mb-8">
-        <div class="uppercase text-xs font-semibold tracking-[2px] text-indigo-400 mb-2">The Core Shift</div>
-        <h2 class="display text-4xl tracking-tighter font-semibold">Instruct the harness.<br>It owns the outcome through real workers.</h2>
-      </div>
-
-      <div class="max-w-3xl text-xl text-slate-300 leading-relaxed">
-        <p>Static pipelines are brittle. Raw agents calling tools directly are powerful but leak secrets, state, and audit across every step.</p>
-        <p class="mt-4"><strong>The vision:</strong> A dedicated agent harness receives high-level goals and turns them into reliable data movement by dispatching work exclusively to a fleet of <strong>Crabbox remote sandboxes</strong> that function as specialized ETL and rETL workers.</p>
-      </div>
-
-      <!-- Three roles -->
-      <div class="mt-10 grid md:grid-cols-3 gap-4 text-sm">
-        <div class="card bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="uppercase text-[10px] tracking-[1px] text-indigo-400 mb-2">You</div>
-          <div class="font-medium text-base mb-3">High-level goal</div>
-          <div class="text-slate-300">"Keep Salesforce profiles enriched from the warehouse. Apply policy X. Run on change or schedule."</div>
-        </div>
-        <div class="card bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="uppercase text-[10px] tracking-[1px] text-rose-400 mb-2">Harness (the brain)</div>
-          <div class="font-medium text-base mb-3">Observe → Plan → Dispatch → Reflect</div>
-          <div class="text-slate-300">Uses Crabbox to ensure warm worker pools, chooses the right sandbox type, generates or selects logic, collects full artifacts + history, then decides what to do next.</div>
-        </div>
-        <div class="card bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="uppercase text-[10px] tracking-[1px] text-teal-400 mb-2">Sandbox Workers (the hands)</div>
-          <div class="font-medium text-base mb-3">Isolated. Hydrated. Observable.</div>
-          <div class="text-slate-300">Run Airbyte for standard movement or custom/AI code for complex activation. Return every artifact, metric, and audit record. Nothing leaks into the harness.</div>
+    <section class="section" aria-label="System metrics">
+      <div class="section-inner">
+        <div class="metric-strip">
+          <div class="metric">
+            <div class="metric-value">1<span>intent</span></div>
+            <p>High-level goals become worker tasks with policy attached.</p>
+          </div>
+          <div class="metric">
+            <div class="metric-value">N<span>pools</span></div>
+            <p>Separate ETL, rETL, on-prem, and regulated worker profiles.</p>
+          </div>
+          <div class="metric">
+            <div class="metric-value">0<span>secrets</span></div>
+            <p>The harness never stores long-lived credentials or raw data state.</p>
+          </div>
+          <div class="metric">
+            <div class="metric-value">100%<span>evidence</span></div>
+            <p>Every task returns history, phases, artifacts, metrics, and results.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Architecture -->
-    <section id="architecture" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800 bg-slate-900/30">
-      <div class="max-w-2xl mb-8">
-        <div class="uppercase text-xs font-semibold tracking-[2px] text-rose-400 mb-2">The System</div>
-        <h2 class="display text-4xl tracking-tighter font-semibold">Harness orchestrates a fleet of real remote workers</h2>
-        <p class="text-slate-400 mt-2">The harness never holds long-lived credentials or mutable execution state. All data movement is executed inside governed Crabbox sandboxes.</p>
-      </div>
-
-      <div class="mermaid-container">
-        <div class="mermaid">
-          flowchart TB
-            subgraph You ["You / Goal / External Trigger"]
-              G["High-level goal<br/>\"Enrich + activate profiles\""]
-            end
-
-            subgraph Harness ["Agent Harness"]
-              direction LR
-              O[Observe state + history]
-              P[Plan: ETL or rETL? Which pool?]
-              D[Ensure pools + dispatch tasks]
-              R[Collect evidence + reflect]
-              O --> P --> D --> R --> O
-            end
-
-            subgraph Control ["Crabbox Fleet Control"]
-              Pools["Ready Pools<br/>pool ensure + prewarm<br/>Actions hydration"]
-              Lease["Fast borrow (--pool)"]
-              Pools --> Lease
-            end
-
-            subgraph Workers ["Sandbox Workers (execution)"]
-              direction LR
-              W1["ETL Worker<br/>Airbyte + CDK"]
-              W2["rETL Worker<br/>custom + AI"]
-              W3["Specialized<br/>on-prem / regulated"]
-            end
-
-            subgraph Data ["Data Plane"]
-              S[(Sources)]
-              Dest[(Destinations)]
-              S <--> Dest
-            end
-
-            G --> Harness
-            Harness --"crabbox pool ensure<br/>crabbox run --pool …"--> Control
-            Control --> Workers
-            Workers -->|Airbyte standard| Data
-            Workers -->|custom logic| Data
-            Workers --"artifacts, CRABBOX_PHASE,<br/>history, results, JUnit"--> Harness
-
-            classDef harness fill:#1e1b4b,stroke:#6366f1,color:#c7d2fe
-            classDef crab fill:#431407,stroke:#f43f5e,color:#fecaca
-            classDef worker fill:#0f766e,stroke:#14b8a6,color:#ccfbf1
-            classDef data fill:#1e2937,stroke:#64748b,color:#e2e8f0
-            class Harness harness
-            class Control crab
-            class Workers,W1,W2,W3 worker
-            class Data data
-        </div>
-      </div>
-
-      <div class="mt-6 max-w-2xl mx-auto text-center text-sm text-slate-400 border border-slate-800 bg-slate-900/50 rounded-3xl px-6 py-4">
-        <strong class="text-white">Key principle:</strong> The harness reasons at the level of intent and policy. Every byte that moves does so inside a short-lived or borrowed, fully observable remote sandbox defined in your repo.
-      </div>
-    </section>
-
-    <!-- Sandbox Workers -->
-    <section id="workers" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
-      <div class="max-w-2xl mb-8">
-        <div class="uppercase text-xs font-semibold tracking-[2px] text-teal-400 mb-2">The Execution Layer</div>
-        <h2 class="display text-4xl tracking-tighter font-semibold">Why Crabbox sandboxes make the best ETL/rETL workers</h2>
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="card bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="flex items-center gap-x-3 mb-4">
-            <i class="fa-solid fa-bolt text-rose-400 text-xl" aria-hidden="true"></i>
-            <div>
-              <div class="font-semibold text-xl tracking-tight">Warm &amp; Fast</div>
-              <div class="text-xs text-slate-400">Seconds, not minutes</div>
-            </div>
+    <section id="model" class="section band">
+      <div class="section-inner">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">01 / operating model</div>
+            <h2>Agents reason. Sandboxes execute.</h2>
           </div>
-          <ul class="space-y-2 text-sm text-slate-300">
-            <li class="flex gap-3"><span class="text-rose-400">•</span> <code>pool ensure --min-ready N</code> keeps pre-hydrated boxes ready in the broker.</li>
-            <li class="flex gap-3"><span class="text-rose-400">•</span> <code>crabbox run --pool …</code> borrows instantly (no cold boot, no rsync if --no-sync).</li>
-            <li class="flex gap-3"><span class="text-rose-400">•</span> Prewarm + repo-owned Actions hydration = exact stack (Airbyte, CDK, libs) on every worker.</li>
-          </ul>
+          <p>Raw tool access makes agents powerful but hard to govern. This model keeps intelligence in the harness and moves all mutable, secret-bearing work into short-lived remote workers.</p>
         </div>
 
-        <div class="card bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="flex items-center gap-x-3 mb-4">
-            <i class="fa-solid fa-shield-halved text-rose-400 text-xl" aria-hidden="true"></i>
-            <div>
-              <div class="font-semibold text-xl tracking-tight">Isolated &amp; Secret-Safe</div>
-              <div class="text-xs text-slate-400">Per-task blast radius</div>
+        <div class="model-grid">
+          <article class="model-card">
+            <div class="model-icon" style="color: var(--source)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M4 7h16M4 12h12M4 17h8"></path>
+              </svg>
             </div>
-          </div>
-          <ul class="space-y-2 text-sm text-slate-300">
-            <li class="flex gap-3"><span class="text-rose-400">•</span> Every task runs in its own remote environment (fresh or freshly borrowed).</li>
-            <li class="flex gap-3"><span class="text-rose-400">•</span> Strict <code>--allow-env</code> + <code>--env-from-profile</code> (600 perms, redacted in logs).</li>
-            <li class="flex gap-3"><span class="text-rose-400">•</span> Harness never sees or holds the actual secrets or intermediate state.</li>
-          </ul>
-        </div>
-
-        <div class="card bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="flex items-center gap-x-3 mb-4">
-            <i class="fa-solid fa-sync text-teal-400 text-xl" aria-hidden="true"></i>
-            <div>
-              <div class="font-semibold text-xl tracking-tight">Exactly Hydrated</div>
-              <div class="text-xs text-slate-400">Git-defined, reproducible</div>
+            <h3>Intent arrives</h3>
+            <p>Schedules, events, or humans describe the desired outcome: enrich, sync, activate, validate, or repair.</p>
+          </article>
+          <article class="model-card">
+            <div class="model-icon" style="color: var(--harness)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.6 6.6l2.8 2.8M14.6 14.6l2.8 2.8M17.4 6.6l-2.8 2.8M9.4 14.6l-2.8 2.8"></path>
+              </svg>
             </div>
-          </div>
-          <ul class="space-y-2 text-sm text-slate-300">
-            <li class="flex gap-3"><span class="text-teal-400">•</span> Your <code>.github/workflows/hydrate.yml</code> installs Airbyte, PyAirbyte/CDK, Python, cache volumes, whatever the worker needs.</li>
-            <li class="flex gap-3"><span class="text-teal-400">•</span> Same environment on Hetzner, AWS, your Proxmox on-prem boxes, or delegated providers.</li>
-            <li class="flex gap-3"><span class="text-teal-400">•</span> Cache volumes (lockfile-hashed) make repeated borrows fast.</li>
-          </ul>
-        </div>
-
-        <div class="card bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="flex items-center gap-x-3 mb-4">
-            <i class="fa-solid fa-magnifying-glass text-teal-400 text-xl" aria-hidden="true"></i>
-            <div>
-              <div class="font-semibold text-xl tracking-tight">Observable by Design</div>
-              <div class="text-xs text-slate-400">Perfect memory for the harness</div>
+            <h3>Harness plans</h3>
+            <p>It reads state, chooses ETL or rETL, selects a pool, and emits a concrete <code>crabbox run</code>.</p>
+          </article>
+          <article class="model-card">
+            <div class="model-icon" style="color: var(--crabbox)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M5 8h14v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8z"></path>
+                <path d="M8 8V6a4 4 0 0 1 8 0v2"></path>
+              </svg>
             </div>
-          </div>
-          <ul class="space-y-2 text-sm text-slate-300">
-            <li class="flex gap-3"><span class="text-teal-400">•</span> Every run emits <code>history</code>, <code>events</code> (with <code>CRABBOX_PHASE</code>), <code>results</code> (JUnit), and <code>--artifact-glob</code> tarballs.</li>
-            <li class="flex gap-3"><span class="text-teal-400">•</span> Row counts, timings, custom metrics, failure details — everything the harness needs to reflect and decide.</li>
-            <li class="flex gap-3"><span class="text-teal-400">•</span> Full provenance for compliance, replay, or debugging.</li>
-          </ul>
-        </div>
-      </div>
-
-      <p class="mt-6 text-sm text-slate-400">Different pools for different personalities. The harness picks the right one for bulk ETL, low-latency rETL, on-prem, or AI-heavy work.</p>
-    </section>
-
-    <!-- The Loop -->
-    <section id="loop" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
-      <div class="max-w-2xl mb-8">
-        <div class="uppercase text-xs font-semibold tracking-[2px] text-indigo-400 mb-2">How It Actually Works</div>
-        <h2 class="display text-4xl tracking-tighter font-semibold">The closed agentic dispatch loop</h2>
-        <p class="text-slate-400">One goal becomes many tasks. Each task executes inside a real sandbox worker. The harness gets everything back.</p>
-      </div>
-
-      <div class="mermaid-container mb-8">
-        <div class="mermaid">
-          flowchart LR
-            subgraph H ["Harness Loop (closed, observable)"]
-              direction TB
-              Goal[Goal or schedule]
-              Obs[Observe warehouse +<br/>crabbox history + artifacts]
-              Plan[Plan: ETL/rETL mix?<br/>Standard Airbyte or custom?]
-              Dispatch[Dispatch via --pool<br/>to the right worker]
-              Ingest[Ingest results + phases +<br/>full history + artifacts]
-              Reflect[Reflect, update memory,<br/>retry or complete]
-              Goal --> Obs --> Plan --> Dispatch --> Ingest --> Reflect --> Obs
-            end
-
-            Dispatch --> W["Sandbox Worker"]
-            W -->|Airbyte| Std["Standard ETL<br/>src → dst"]
-            W -->|Custom/AI| Cpx["rETL + enrichment<br/>activation, transforms"]
-            W -->|returns| Ingest
-
-            classDef harness fill:#1e1b4b,stroke:#6366f1,color:#c7d2fe
-            classDef worker fill:#0f766e,stroke:#14b8a6,color:#ccfbf1
-            class H harness
-            class W,Std,Cpx worker
-        </div>
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-6 text-sm">
-        <div class="card bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="uppercase tracking-widest text-xs text-teal-400 mb-3">Inside an ETL worker</div>
-          <ol class="space-y-3 text-slate-300">
-            <li class="flex gap-3"><span class="step-number font-mono text-teal-400 w-5">1.</span> Borrow warm box with Airbyte + connectors already installed via Actions.</li>
-            <li class="flex gap-3"><span class="step-number font-mono text-teal-400 w-5">2.</span> Harness drives Airbyte (or PyAirbyte) from sources into warehouse or direct destination.</li>
-            <li class="flex gap-3"><span class="step-number font-mono text-teal-400 w-5">3.</span> Optional same-env post-processing: dbt, validation, light transforms.</li>
-            <li class="flex gap-3"><span class="step-number font-mono text-teal-400 w-5">4.</span> Emit phases, write artifacts (row counts, samples, proofs), return. Full record for harness.</li>
-          </ol>
-        </div>
-        <div class="card bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="uppercase tracking-widest text-xs text-rose-400 mb-3">Inside an rETL worker</div>
-          <ol class="space-y-3 text-slate-300">
-            <li class="flex gap-3"><span class="step-number font-mono text-rose-400 w-5">1.</span> Borrow from activation-tuned pool (same fast path).</li>
-            <li class="flex gap-3"><span class="step-number font-mono text-rose-400 w-5">2.</span> Read modeled data from warehouse using profile-forwarded credentials.</li>
-            <li class="flex gap-3"><span class="step-number font-mono text-rose-400 w-5">3.</span> Run AI-driven logic (scoring, eligibility, personalization, external enrichment) + custom dest (CDK or direct).</li>
-            <li class="flex gap-3"><span class="step-number font-mono text-rose-400 w-5">4.</span> Push to operational systems. Return complete audit + artifacts for compliance and the next decision.</li>
-          </ol>
+            <h3>Crabbox leases</h3>
+            <p>Warm, repo-hydrated sandboxes are borrowed from capacity pools with strict environment allowlists.</p>
+          </article>
+          <article class="model-card">
+            <div class="model-icon" style="color: var(--evidence)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M7 3h10l4 4v17H7z"></path>
+                <path d="M17 3v5h5M10 13h8M10 17h8M10 21h5"></path>
+              </svg>
+            </div>
+            <h3>Evidence returns</h3>
+            <p>The harness receives metrics, JUnit, artifacts, phases, logs, and history to decide whether to retry or finish.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- Build -->
-    <section id="build" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
-      <div class="max-w-2xl mb-8">
-        <div class="uppercase text-xs font-semibold tracking-[2px] text-teal-400 mb-2">Making It Real</div>
-        <h2 class="display text-4xl tracking-tighter font-semibold">Build the harness</h2>
+    <section id="architecture" class="section">
+      <div class="section-inner">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">02 / architecture</div>
+            <h2>A governed execution fabric for Airbyte and custom data work.</h2>
+          </div>
+          <p>Provider-specific details stay behind Crabbox adapters. The harness only asks for a worker shape, a command, secret policy, and the evidence contract.</p>
+        </div>
+
+        <div class="architecture-board">
+          <div class="diagram-panel">
+            <div class="diagram-header">
+              <span>system.map</span>
+              <span class="window-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+            </div>
+            <svg class="architecture-svg" viewBox="0 0 780 472" role="img" aria-labelledby="arch-title arch-desc">
+              <title id="arch-title">Architecture diagram</title>
+              <desc id="arch-desc">The caller sends a goal to a harness, which dispatches through Crabbox fleet control to ETL, reverse ETL, and specialized workers connected to source, warehouse, and destination systems.</desc>
+              <defs>
+                <marker id="arch-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#a5a5a0"></path>
+                </marker>
+              </defs>
+
+              <rect class="svg-node" x="34" y="56" width="152" height="88" rx="8"></rect>
+              <text class="svg-label" x="54" y="91">Caller</text>
+              <text class="svg-small" x="54" y="116">goal + policy</text>
+
+              <rect class="svg-node brain" x="286" y="38" width="218" height="124" rx="8"></rect>
+              <text class="svg-label" x="310" y="78">Agent harness</text>
+              <text class="svg-small" x="310" y="105">observe / plan / reflect</text>
+              <text class="svg-small" x="310" y="128">no raw data custody</text>
+
+              <rect class="svg-node hot" x="286" y="224" width="218" height="132" rx="8"></rect>
+              <text class="svg-label" x="310" y="262">Crabbox broker</text>
+              <text class="svg-small" x="310" y="289">pool ensure + prewarm</text>
+              <text class="svg-small" x="310" y="313">profiles + artifacts</text>
+
+              <rect class="svg-node cool" x="594" y="54" width="142" height="78" rx="8"></rect>
+              <text class="svg-label" x="613" y="88">ETL</text>
+              <text class="svg-small" x="613" y="112">Airbyte + CDK</text>
+
+              <rect class="svg-node cool" x="594" y="174" width="142" height="78" rx="8"></rect>
+              <text class="svg-label" x="613" y="208">rETL</text>
+              <text class="svg-small" x="613" y="232">activation code</text>
+
+              <rect class="svg-node cool" x="594" y="294" width="142" height="78" rx="8"></rect>
+              <text class="svg-label" x="613" y="328">Specialized</text>
+              <text class="svg-small" x="613" y="352">on-prem / policy</text>
+
+              <rect class="svg-node" x="74" y="292" width="148" height="84" rx="8"></rect>
+              <text class="svg-label" x="94" y="325">Data plane</text>
+              <text class="svg-small" x="94" y="350">src ↔ dst</text>
+
+              <rect class="svg-node" x="286" y="394" width="218" height="48" rx="8"></rect>
+              <text class="svg-label" x="310" y="425">Evidence ledger</text>
+
+              <path class="flow-path active" d="M186 100H276" marker-end="url(#arch-arrow)"></path>
+              <path class="flow-path active" d="M395 162V214" marker-end="url(#arch-arrow)"></path>
+              <path class="flow-path active" d="M504 286C548 286 550 94 584 94" marker-end="url(#arch-arrow)"></path>
+              <path class="flow-path active" d="M504 286C548 286 550 214 584 214" marker-end="url(#arch-arrow)"></path>
+              <path class="flow-path active" d="M504 286C548 286 550 334 584 334" marker-end="url(#arch-arrow)"></path>
+              <path class="flow-path" d="M594 114C444 182 350 260 232 322" marker-end="url(#arch-arrow)"></path>
+              <path class="flow-path" d="M594 232C448 258 352 296 232 334" marker-end="url(#arch-arrow)"></path>
+              <path class="flow-path return" d="M594 354C528 405 498 418 504 418" marker-end="url(#arch-arrow)"></path>
+              <path class="flow-path return" d="M286 418C218 418 176 392 152 376" marker-end="url(#arch-arrow)"></path>
+            </svg>
+          </div>
+
+          <aside class="ledger-panel" aria-label="Architecture evidence ledger">
+            <div class="diagram-header">
+              <span>contract.json</span>
+              <span class="status-chip">observable</span>
+            </div>
+            <div class="ledger-row">
+              <div class="ledger-key">intent</div>
+              <div class="ledger-value"><strong>Outcome, policy, trigger</strong> Human request, schedule, webhook, or data-change event.</div>
+            </div>
+            <div class="ledger-row">
+              <div class="ledger-key">plan</div>
+              <div class="ledger-value"><strong>Pool + worker recipe</strong> ETL, activation, regulated, or specialized runtime.</div>
+            </div>
+            <div class="ledger-row">
+              <div class="ledger-key">access</div>
+              <div class="ledger-value"><strong>Allowlisted secrets</strong> <code>--allow-env</code> and profile-scoped credentials only.</div>
+            </div>
+            <div class="ledger-row">
+              <div class="ledger-key">work</div>
+              <div class="ledger-value"><strong>Repo-defined execution</strong> Airbyte, PyAirbyte, CDK, dbt, validation, or custom code.</div>
+            </div>
+            <div class="ledger-row">
+              <div class="ledger-key">proof</div>
+              <div class="ledger-value"><strong>Artifacts and history</strong> Phases, row counts, JUnit, logs, samples, and replay data.</div>
+            </div>
+          </aside>
+        </div>
       </div>
+    </section>
 
-      <div class="max-w-3xl space-y-8 text-sm text-slate-300">
-        <div>
-          <div class="font-medium text-white mb-2">1. Define worker pools in your data-movement repo</div>
-          <div>Add <code>crabbox.yaml</code>. Create <code>.github/workflows/hydrate.yml</code> that installs Airbyte/PyAirbyte, CDK, Python, cache volumes. Then:</div>
-          <div class="mt-2 font-mono text-xs bg-slate-900 border border-slate-800 rounded-2xl p-3">crabbox pool ensure example-org/data-movement/main/hetzner/linux/cpx51 --min-ready 3 --create -- --provider hetzner --cache-volume airbyte-etl</div>
+    <section id="loop" class="section band">
+      <div class="section-inner">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">03 / closed loop</div>
+            <h2>The harness keeps learning from worker evidence.</h2>
+          </div>
+          <p>Each run returns a durable record. The next plan is based on current warehouse state, Crabbox history, artifacts, and the actual result of the previous attempt.</p>
         </div>
 
-        <div>
-          <div class="font-medium text-white mb-2">2. The harness is ordinary code that calls Crabbox</div>
-          <div>A thin service, LangGraph/Crew agent, scheduler, or even a long-running Crabbox job. It observes, plans, calls the CLI (or future API), and feeds rich results back into its context.</div>
+        <div class="loop-layout">
+          <div class="loop-visual">
+            <svg class="loop-svg" viewBox="0 0 520 506" role="img" aria-labelledby="loop-title loop-desc">
+              <title id="loop-title">Closed dispatch loop</title>
+              <desc id="loop-desc">The harness loop observes, plans, dispatches, executes, ingests evidence, and reflects.</desc>
+              <circle cx="260" cy="253" r="150" fill="none" stroke="rgb(255 255 255 / 0.16)" stroke-width="1"></circle>
+              <circle cx="260" cy="253" r="88" fill="#151515" stroke="rgb(255 255 255 / 0.18)"></circle>
+              <text class="svg-label" x="202" y="246">Harness</text>
+              <text class="svg-small" x="186" y="272">memory + policy</text>
+              <path class="flow-path active" d="M260 76a177 177 0 1 1-1 0" marker-end="url(#arch-arrow)"></path>
 
-          <div class="mt-3 text-xs font-medium text-white">Minimal harness loop (pseudocode)</div>
-          <pre class="mt-1 text-[11px] bg-slate-900 border border-slate-800 rounded-3xl p-4 overflow-auto leading-snug"><code>while True:
-    goal = receive_goal_or_schedule()
-    state = observe_warehouse() + crabbox.history()
-    plan = llm_plan(goal, state)   # which pool? Airbyte or custom? script?
+              <g transform="translate(215 28)">
+                <rect class="svg-node" width="90" height="52" rx="8"></rect>
+                <text class="svg-small" x="16" y="31">Observe</text>
+              </g>
+              <g transform="translate(384 126)">
+                <rect class="svg-node brain" width="90" height="52" rx="8"></rect>
+                <text class="svg-small" x="25" y="31">Plan</text>
+              </g>
+              <g transform="translate(383 328)">
+                <rect class="svg-node hot" width="90" height="52" rx="8"></rect>
+                <text class="svg-small" x="15" y="31">Dispatch</text>
+              </g>
+              <g transform="translate(215 424)">
+                <rect class="svg-node cool" width="90" height="52" rx="8"></rect>
+                <text class="svg-small" x="18" y="31">Execute</text>
+              </g>
+              <g transform="translate(45 328)">
+                <rect class="svg-node" width="90" height="52" rx="8"></rect>
+                <text class="svg-small" x="17" y="31">Ingest</text>
+              </g>
+              <g transform="translate(45 126)">
+                <rect class="svg-node" width="90" height="52" rx="8"></rect>
+                <text class="svg-small" x="15" y="31">Reflect</text>
+              </g>
 
-    crabbox("pool ensure … --min-ready …")
-    id = crabbox("run --pool {plan.pool} --script {plan.script} \
-      --allow-env '…' --env-from-profile {plan.profile} \
-      --artifact-glob 'reports/**' --junit reports/")
+              <circle class="flow-dot" cx="260" cy="76" r="6" fill="var(--airbyte)"></circle>
+              <circle class="flow-dot" cx="435" cy="354" r="6" fill="var(--crabbox)"></circle>
+              <circle class="flow-dot" cx="88" cy="354" r="6" fill="var(--evidence)"></circle>
+            </svg>
+          </div>
 
-    evidence = collect( crabbox.results(id), artifacts(id), history(id) )
-    llm_reflect(goal, evidence)   # update memory, alert, or loop</code></pre>
-        </div>
-
-        <div>
-          <div class="font-medium text-white mb-2">3. Real commands the harness actually emits</div>
-          <pre class="text-xs bg-slate-900 border border-slate-800 rounded-3xl p-4 overflow-auto"><code># ETL worker (Airbyte inside the sandbox)
-crabbox run --pool … \
-  --shell 'python -m workers.airbyte_ingest …' \
-  --allow-env 'AIRBYTE_*,SOURCE_*,WAREHOUSE_*' \
-  --env-from-profile etl-warehouse \
-  --artifact-glob 'reports/**,metrics.json' --junit reports/
-
-# rETL / AI worker
-crabbox run --pool … --script workers/activate_scored.py \
-  --allow-env 'DEST_*,MODEL_API_*' --artifact-glob 'evidence/**'</code></pre>
-        </div>
-
-        <div>
-          <div class="font-medium text-white mb-2">4. Use the primitives the harness loves</div>
-          <ul class="space-y-1">
-            <li>• <code>jobs:</code> in config for named, versioned worker templates the harness can invoke by name.</li>
-            <li>• Profiles for exact per-worker env allowlists + secret bundles.</li>
-            <li>• Ponds when a movement needs coordinated peer sandboxes.</li>
-            <li>• Full history + events + artifacts = the harness's perfect, queryable source of truth.</li>
-          </ul>
+          <div class="loop-steps">
+            <article class="step">
+              <div class="step-index">01</div>
+              <div>
+                <h3>Observe state</h3>
+                <p>Read warehouse freshness, connector history, prior artifacts, and current policy.</p>
+              </div>
+            </article>
+            <article class="step">
+              <div class="step-index">02</div>
+              <div>
+                <h3>Plan the movement</h3>
+                <p>Pick Airbyte for standard movement, custom code for activation, or a specialized pool for constrained networks.</p>
+              </div>
+            </article>
+            <article class="step">
+              <div class="step-index">03</div>
+              <div>
+                <h3>Dispatch through Crabbox</h3>
+                <p>Ensure capacity, borrow a warm worker, forward only allowed environment values, and execute.</p>
+              </div>
+            </article>
+            <article class="step">
+              <div class="step-index">04</div>
+              <div>
+                <h3>Ingest evidence</h3>
+                <p>Collect row counts, task phases, JUnit results, logs, and artifacts into harness memory.</p>
+              </div>
+            </article>
+            <article class="step">
+              <div class="step-index">05</div>
+              <div>
+                <h3>Reflect or finish</h3>
+                <p>Retry with a corrected plan, alert with proof, or mark the objective complete.</p>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="mt-10 p-6 bg-slate-900 border border-slate-800 rounded-3xl text-sm text-slate-400">
-        The harness stays lightweight because the heavy, secret-bearing, stateful work always happens inside short-lived or borrowed Crabbox sandboxes defined in your git repo. You get true agentic flexibility on top of reproducible, observable, governed execution.
+    <section id="workers" class="section">
+      <div class="section-inner">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">04 / worker matrix</div>
+            <h2>Different pools for different data jobs.</h2>
+          </div>
+          <p>The harness can route by runtime, latency, network reachability, policy, or cost without changing the core architecture.</p>
+        </div>
+
+        <div class="matrix" role="table" aria-label="Sandbox worker matrix">
+          <div class="matrix-row matrix-head" role="row">
+            <div role="columnheader">Mode</div>
+            <div role="columnheader">Pool profile</div>
+            <div role="columnheader">Worker action</div>
+            <div role="columnheader">Evidence returned</div>
+          </div>
+          <div class="matrix-row" role="row">
+            <div role="cell">
+              <span class="matrix-title">Standard ETL</span>
+              <p>Bulk source to warehouse</p>
+            </div>
+            <div role="cell">Airbyte connectors, PyAirbyte, CDK, cache volumes.</div>
+            <div role="cell">Sync source data, validate schema drift, emit row counts.</div>
+            <div role="cell"><span class="status-chip">history + JUnit</span></div>
+          </div>
+          <div class="matrix-row" role="row">
+            <div role="cell">
+              <span class="matrix-title">Reverse ETL</span>
+              <p>Warehouse to operational systems</p>
+            </div>
+            <div role="cell">Activation code, destination SDKs, strict destination env.</div>
+            <div role="cell">Score, segment, personalize, and push modeled data.</div>
+            <div role="cell"><span class="status-chip">artifacts + metrics</span></div>
+          </div>
+          <div class="matrix-row" role="row">
+            <div role="cell">
+              <span class="matrix-title">AI enrichment</span>
+              <p>Dynamic transformations</p>
+            </div>
+            <div role="cell">Model clients, eval scripts, generated task plans.</div>
+            <div role="cell">Classify, summarize, dedupe, match, or enrich records.</div>
+            <div role="cell"><span class="status-chip">samples + traces</span></div>
+          </div>
+          <div class="matrix-row" role="row">
+            <div role="cell">
+              <span class="matrix-title">Regulated edge</span>
+              <p>Constrained networks</p>
+            </div>
+            <div role="cell">On-prem reachable hosts, provider-specific controls behind adapters.</div>
+            <div role="cell">Run the movement near the data without exposing the harness.</div>
+            <div role="cell"><span class="status-chip">audit trail</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="runbook" class="section band">
+      <div class="section-inner">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">05 / runbook</div>
+            <h2>The harness emits ordinary Crabbox commands.</h2>
+          </div>
+          <p>No special magic is required. A service, scheduler, agent graph, or long-running job can assemble these commands from the current plan.</p>
+        </div>
+
+        <div class="runbook-layout">
+          <div class="terminal-panel">
+            <div class="terminal-header">
+              <div class="mode-tabs" role="tablist" aria-label="Command examples">
+                <button class="mode-tab" id="tab-etl" role="tab" aria-selected="true" aria-controls="command-panel" data-mode="etl">ETL</button>
+                <button class="mode-tab" id="tab-retl" role="tab" aria-selected="false" aria-controls="command-panel" data-mode="retl">rETL</button>
+                <button class="mode-tab" id="tab-observe" role="tab" aria-selected="false" aria-controls="command-panel" data-mode="observe">Observe</button>
+              </div>
+              <button class="copy-button" type="button" aria-label="Copy command" data-tip="Copy command">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+            <pre id="command-panel" class="terminal-code" role="tabpanel" aria-labelledby="tab-etl"><code></code></pre>
+          </div>
+
+          <aside class="runbook-notes" aria-label="Implementation notes">
+            <div class="note">
+              <h3>1. Define pools in repo config</h3>
+              <p>Use <code>crabbox.yaml</code> and Actions hydration to install Airbyte, Python, CDK packages, validation tools, and cache volumes.</p>
+            </div>
+            <div class="note">
+              <h3>2. Keep access scoped</h3>
+              <p>Forward only the environment values each worker needs through <code>--allow-env</code> and profile-backed secret bundles.</p>
+            </div>
+            <div class="note">
+              <h3>3. Make proof first-class</h3>
+              <p>Every worker writes artifacts, phases, metrics, and JUnit summaries so the harness can reason from real execution.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence" class="section">
+      <div class="section-inner">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">06 / evidence</div>
+            <h2>The memory layer is made of run output.</h2>
+          </div>
+          <p>The harness does not need to guess what happened. It receives durable records that are useful for retry logic, compliance, debugging, and replay.</p>
+        </div>
+
+        <div class="evidence-grid">
+          <article class="evidence-card">
+            <div class="evidence-top">
+              <span>rows.moved</span>
+              <span class="accent-airbyte">live</span>
+            </div>
+            <div class="mini-chart" aria-hidden="true">
+              <span style="height: 22px"></span><span style="height: 35px"></span><span style="height: 28px"></span><span style="height: 48px"></span><span style="height: 52px"></span><span style="height: 44px"></span><span style="height: 58px"></span><span style="height: 66px"></span><span style="height: 60px"></span><span style="height: 74px"></span><span style="height: 68px"></span><span style="height: 80px"></span>
+            </div>
+            <div class="evidence-body">
+              <h3>Operational metrics</h3>
+              <p>Row counts, timings, retries, connector status, drift checks, and downstream write summaries.</p>
+            </div>
+          </article>
+
+          <article class="evidence-card">
+            <div class="evidence-top">
+              <span>phase.events</span>
+              <span class="accent-evidence">audit</span>
+            </div>
+            <div class="mini-chart" aria-hidden="true">
+              <span style="height: 62px"></span><span style="height: 38px"></span><span style="height: 46px"></span><span style="height: 28px"></span><span style="height: 70px"></span><span style="height: 52px"></span><span style="height: 76px"></span><span style="height: 50px"></span><span style="height: 64px"></span><span style="height: 42px"></span><span style="height: 58px"></span><span style="height: 82px"></span>
+            </div>
+            <div class="evidence-body">
+              <h3>Structured phases</h3>
+              <p><code>CRABBOX_PHASE</code> events turn logs into a timeline the harness can search, summarize, and compare.</p>
+            </div>
+          </article>
+
+          <article class="evidence-card">
+            <div class="evidence-top">
+              <span>artifacts.tar</span>
+              <span class="accent-crabbox">replay</span>
+            </div>
+            <div class="mini-chart" aria-hidden="true">
+              <span style="height: 30px"></span><span style="height: 42px"></span><span style="height: 76px"></span><span style="height: 34px"></span><span style="height: 58px"></span><span style="height: 44px"></span><span style="height: 82px"></span><span style="height: 60px"></span><span style="height: 72px"></span><span style="height: 52px"></span><span style="height: 64px"></span><span style="height: 78px"></span>
+            </div>
+            <div class="evidence-body">
+              <h3>Replayable artifacts</h3>
+              <p>Validation reports, generated configs, sample rows, connector output, and proof bundles are attached to the run.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-band" aria-label="Closing statement">
+      <div class="final-inner">
+        <div>
+          <h2>High-level goals in. Safe data movement out.</h2>
+          <p>Airbyte handles reliable pipes. Crabbox supplies governed remote workers. The harness keeps the loop intelligent, auditable, and grounded in execution evidence.</p>
+        </div>
+        <a class="button" href="#runbook">Start from commands</a>
       </div>
     </section>
   </main>
 
-  <footer class="border-t border-slate-800">
-    <div class="max-w-6xl mx-auto px-6 py-16 text-center">
-      <div class="text-2xl tracking-tighter font-semibold mb-3">High-level goals in.<br>Safe, observable data movement out — inside real remote workers.</div>
-      <p class="text-slate-400 mb-8 max-w-md mx-auto">The harness reasons at the level of intent. Every movement executes in a governed Crabbox sandbox worker. Airbyte for the reliable pipes. Custom + AI logic for everything else. Full evidence returned for the next decision.</p>
-      
-      <div class="flex flex-wrap justify-center gap-4">
-        <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" class="inline-flex items-center gap-x-2 px-6 h-12 rounded-3xl border border-slate-700 hover:bg-slate-900 font-medium transition text-sm">
-          <i class="fa-brands fa-github"></i>
-          <span>View on GitHub</span>
-        </a>
-        <a href="https://github.com/openclaw/crabbox" target="_blank" class="inline-flex items-center gap-x-2 px-6 h-12 rounded-3xl bg-white text-slate-950 font-semibold text-sm hover:bg-rose-100 active:bg-rose-200 transition">
-          Get Crabbox
-        </a>
+  <footer>
+    <div class="footer-inner">
+      <span>Neutral examples. Built on Crabbox pools, prewarm, Actions hydration, profiles, artifacts, history, jobs, and Airbyte-in-worker execution.</span>
+      <div class="footer-links">
+        <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" rel="noreferrer">Source</a>
+        <a href="#top">Top</a>
       </div>
-      
-      <div class="mt-12 text-[10px] text-slate-500 tracking-widest">Neutral examples • Built on real Crabbox (pools, prewarm, actions hydration, profiles, artifacts + history, jobs) • Self-host friendly • Airbyte inside the workers</div>
     </div>
   </footer>
 
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            'display': ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif']
-          }
-        }
-      }
+    const commandExamples = {
+      etl: `# Ensure warm ETL capacity for the harness
+crabbox pool ensure example-org/data-movement/main/provider/linux/etl \
+  --min-ready 3 --create -- \\
+  --cache-volume airbyte-etl
+
+# Borrow a worker and run Airbyte inside the sandbox
+crabbox run --pool example-org/data-movement/main/provider/linux/etl \\
+  --shell 'python -m workers.airbyte_ingest --config /tmp/generated.json' \\
+  --allow-env 'AIRBYTE_*,SOURCE_*,WAREHOUSE_*' \\
+  --env-from-profile etl-warehouse \\
+  --artifact-glob 'reports/**,metrics.json' \\
+  --junit reports/`,
+
+      retl: `# Route activation work to a different worker profile
+crabbox pool ensure example-org/data-movement/main/provider/linux/activation \\
+  --min-ready 2 --create -- \\
+  --cache-volume activation-runtime
+
+# Push modeled warehouse data into an operational system
+crabbox run --pool example-org/data-movement/main/provider/linux/activation \\
+  --script workers/activate_scored_accounts.py \\
+  --allow-env 'WAREHOUSE_*,DEST_*,MODEL_API_*' \\
+  --env-from-profile activation-safe \\
+  --artifact-glob 'evidence/**,reports/**'`,
+
+      observe: `# Feed the harness with structured execution evidence
+crabbox history --limit 50 --json
+crabbox results <run-id> --json
+crabbox artifacts download <run-id> --out evidence/<run-id>
+
+# Typical reflection input
+jq '.phases, .tests, .artifacts, .timings' evidence/<run-id>/summary.json`
     };
 
-    mermaid.initialize({ 
-      startOnLoad: true, 
-      theme: 'dark', 
-      flowchart: { 
-        curve: 'basis',
-        htmlLabels: true,
-        padding: 14
-      } 
+    const commandPanel = document.querySelector("#command-panel code");
+    const tabPanel = document.querySelector("#command-panel");
+    const tabs = Array.from(document.querySelectorAll(".mode-tab"));
+    const copyButton = document.querySelector(".copy-button");
+    let currentMode = "etl";
+
+    function renderCommand(mode) {
+      currentMode = mode;
+      commandPanel.textContent = commandExamples[mode];
+      tabPanel.setAttribute("aria-labelledby", `tab-${mode}`);
+      tabs.forEach((tab) => {
+        const selected = tab.dataset.mode === mode;
+        tab.setAttribute("aria-selected", selected ? "true" : "false");
+      });
+      copyButton.dataset.tip = "Copy command";
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => renderCommand(tab.dataset.mode));
     });
+
+    copyButton.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(commandExamples[currentMode]);
+        copyButton.dataset.tip = "Copied";
+      } catch {
+        copyButton.dataset.tip = "Copy failed";
+      }
+    });
+
+    renderCommand(currentMode);
   </script>
 </body>
 </html>
