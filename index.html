@@ -3,13 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
   <title>Agentic ETL/rETL • Airbyte + Crabbox Remote Sandboxes</title>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
     :root { --font-sans: 'Inter', system_ui, sans-serif; --font-display: 'Space Grotesk', 'Inter', system_ui, sans-serif; }
+    html { color-scheme: dark; }
     body { font-family: var(--font-sans); }
     .display { font-family: var(--font-display); font-feature-settings: "ss02"; letter-spacing: -0.02em; }
     .hero-title { font-size: 3.25rem; line-height: 1.05; letter-spacing: -0.05em; }
@@ -18,8 +23,9 @@
     .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); }
     .flow-card { transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); }
     .flow-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
-    .tool-card { transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); }
+    .tool-card { transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); }
     .tool-card:hover { transform: translateY(-2px); border-color: rgb(148 163 184); }
+    a:focus-visible, button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
     .mermaid { background: #0f172a; border-radius: 16px; padding: 1.5rem; }
     h1, h2, h3 { text-wrap: balance; }
     @media (prefers-reduced-motion: reduce) { .flow-card, .tool-card { transition: none; } }
