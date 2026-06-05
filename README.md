@@ -10,16 +10,15 @@ Concise one-pager explaining the pattern for **AI agents that intelligently mani
 
 Open `index.html` in a browser.
 
-## Publish on zozo123.github.io (recommended)
+## Live site
 
-1. In your `zozo123/zozo123.github.io` repo, copy the entire `agentic-airbyte/` folder into it (or the contents of index.html + README into a subdir).
-2. Commit and push to the `main` (or `gh-pages`) branch.
-3. GitHub Pages will automatically serve it at:
-   **https://zozo123.github.io/agentic-airbyte/**
+**https://zozo123.github.io/agentic-airbyte/**
 
-For a completely separate project page, create a new repo named `agentic-airbyte` under your zozo123 account, put these files at the root, and enable GitHub Pages (source: root, branch main). The URL will be the same: https://zozo123.github.io/agentic-airbyte/ 
+This repo is set up for automatic GitHub Pages deploys via `.github/workflows/deploy.yml` (triggered on push to main or `gh workflow run`).
 
-The page is designed to work perfectly as a sub-directory on your personal site.
+## Local preview
+
+Just open `index.html` directly in a browser (all assets via CDN).
 
 ## Core idea
 
