@@ -3,37 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agentic src ↔ dst • Airbyte + Crabbox</title>
+  <title>Agentic ETL/rETL • Airbyte + Crabbox Remote Sandboxes</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-    
     :root { --font-sans: 'Inter', system_ui, sans-serif; --font-display: 'Space Grotesk', 'Inter', system_ui, sans-serif; }
     body { font-family: var(--font-sans); }
     .display { font-family: var(--font-display); font-feature-settings: "ss02"; letter-spacing: -0.02em; }
-    .hero-title { font-size: 3.5rem; line-height: 1.05; letter-spacing: -0.05em; }
+    .hero-title { font-size: 3.25rem; line-height: 1.05; letter-spacing: -0.05em; }
     .section { scroll-margin-top: 80px; }
     .nav-blur { backdrop-filter: blur(12px); }
     .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); }
     .flow-card { transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); }
     .flow-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
-    .tool-card { transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); }
+    .tool-card { transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); }
     .tool-card:hover { transform: translateY(-2px); border-color: rgb(148 163 184); }
-    .step-number { font-variant-numeric: tabular-nums; }
-    .code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.8125rem; line-height: 1.5; }
     .mermaid { background: #0f172a; border-radius: 16px; padding: 1.5rem; }
     h1, h2, h3 { text-wrap: balance; }
-    .prose { max-width: 65ch; }
     @media (prefers-reduced-motion: reduce) { .flow-card, .tool-card { transition: none; } }
-    .mermaid-container { border: 1px solid #334155; border-radius: 16px; overflow: hidden; }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-200 antialiased">
-  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-slate-950 focus:rounded-2xl focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 focus:ring-white">
-    Skip to main content
-  </a>
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-slate-950 focus:rounded-2xl">Skip to main content</a>
 
   <nav class="nav-blur bg-slate-950/95 border-b border-slate-800 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -47,10 +40,10 @@
         <div class="text-xs px-2.5 py-1 bg-slate-800 rounded-full text-slate-400 font-medium">+ Airbyte</div>
       </div>
       <div class="hidden md:flex items-center gap-x-6 text-sm">
-        <a href="#why-new" class="text-slate-400 hover:text-white transition">Why New</a>
-        <a href="#tools" class="text-slate-400 hover:text-white transition">Tools</a>
-        <a href="#e2e" class="text-slate-400 hover:text-white transition">E2E Flow</a>
-        <a href="#how-it-works" class="text-slate-400 hover:text-white transition">How It Works</a>
+        <a href="#notion" class="text-slate-400 hover:text-white transition">The Notion</a>
+        <a href="#tools" class="text-slate-400 hover:text-white transition">The Tools</a>
+        <a href="#e2e" class="text-slate-400 hover:text-white transition">The Flow</a>
+        <a href="#how-to-use" class="text-slate-400 hover:text-white transition">How to Use</a>
       </div>
       <div class="flex items-center gap-x-3">
         <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" class="text-sm text-slate-400 hover:text-white transition flex items-center gap-x-1.5">
@@ -58,376 +51,257 @@
           <span class="hidden sm:inline">Source</span>
         </a>
         <a href="https://github.com/openclaw/crabbox" target="_blank" class="px-4 py-1.5 bg-white text-slate-900 text-sm font-semibold rounded-2xl hover:bg-rose-100 transition flex items-center gap-x-1.5">
-          <span>Get Crabbox</span>
+          <span>Get Started</span>
         </a>
       </div>
     </div>
   </nav>
 
+  <!-- Hero -->
   <header class="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center border-b border-slate-800">
     <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-slate-900 border border-slate-800 text-xs font-medium mb-6">
       <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" aria-hidden="true"></div>
-      <span>AI agents that actually move data — end to end</span>
+      <span>AI agents that actually move data in remote sandboxes</span>
     </div>
     
     <h1 class="display hero-title font-semibold tracking-tighter mb-6">
-      Agentic src ↔ dst<br>
-      with <span class="text-white">Airbyte</span> + <span class="text-rose-400">Crabbox</span>
+      Agentic ETL &amp; rETL<br>
+      with <span class="text-white">Airbyte</span> + <span class="text-rose-400">Crabbox Remote Sandboxes</span>
     </h1>
     
     <p class="mt-4 max-w-3xl mx-auto text-2xl text-slate-400 leading-tight">
-      AI agents intelligently <span class="text-white font-medium">manipulate</span> data flows between any source and destination.<br>
-      <span class="text-emerald-400">Airbyte</span> handles the reliable pipes.<br>
-      <span class="text-rose-400">Crabbox</span> provides the trusted execution layer for agents.
+      A new way to do data movement: AI agents intelligently control ETL and reverse ETL by running Airbyte and custom logic inside secure, warm <strong>remote sandboxes</strong> provided by Crabbox.
     </p>
     
     <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-      <a href="#why-new" class="inline-flex items-center gap-x-3 px-8 h-14 rounded-3xl bg-white text-slate-950 font-semibold text-base hover:bg-rose-100 active:bg-rose-200 transition shadow-lg shadow-black/20">
-        <span>Why this is new for ETL &amp; rETL</span>
+      <a href="#notion" class="inline-flex items-center gap-x-3 px-8 h-14 rounded-3xl bg-white text-slate-950 font-semibold text-base hover:bg-rose-100 active:bg-rose-200 transition shadow-lg shadow-black/20">
+        <span>Understand the Notion</span>
         <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
       </a>
-      <a href="https://airbyte.com" target="_blank" class="inline-flex items-center gap-x-2 px-6 h-14 rounded-3xl border border-slate-700 hover:bg-slate-900 text-base font-medium transition">
-        Airbyte docs
+      <a href="#e2e" class="inline-flex items-center gap-x-2 px-6 h-14 rounded-3xl border border-slate-700 hover:bg-slate-900 text-base font-medium transition">
+        See the Flow
       </a>
-    </div>
-    
-    <div class="mt-8 flex items-center justify-center gap-x-8 text-xs text-slate-500 tracking-[1.5px]">
-      <div>OPEN SOURCE</div>
-      <div>SELF-HOSTABLE</div>
-      <div>AGENT-READY</div>
-      <div>FULLY AUDITABLE</div>
     </div>
   </header>
 
   <main id="main">
-    <!-- Why New Section with better diagrams -->
-    <section id="why-new" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
-      <div class="text-center mb-12">
-        <div class="uppercase text-xs font-semibold tracking-[2px] text-amber-400 mb-2">THE BREAKTHROUGH</div>
-        <h2 class="display text-4xl tracking-tighter font-semibold mb-4">How &amp; Why This Is New for ETL &amp; rETL</h2>
-        <p class="max-w-2xl mx-auto text-slate-400">Traditional data movement was declarative and static. Agentic data movement is <span class="text-white">dynamic, reasoning-driven, and execution-safe</span> — powered by Crabbox as the agent execution substrate.</p>
+    <!-- The Notion / Core Concept -->
+    <section id="notion" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
+      <div class="max-w-3xl mx-auto text-center mb-12">
+        <div class="uppercase text-xs font-semibold tracking-[2px] text-emerald-400 mb-2">THE CORE NOTION</div>
+        <h2 class="display text-4xl tracking-tighter font-semibold mb-6">Using Crabbox Remote Sandboxes + Airbyte for a New Kind of ETL/rETL</h2>
+        <p class="text-xl text-slate-300">Traditional ETL and reverse ETL are static pipelines defined by humans in UIs or YAML and run on fixed schedules. They break easily, can't adapt, and have almost no place for AI agents to participate meaningfully.</p>
       </div>
 
-      <!-- Improved Comparison Diagram -->
-      <div class="mb-12">
-        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-balance-scale text-amber-400" aria-hidden="true"></i>
-          Traditional vs Agentic ETL/rETL
-        </h3>
-        <div class="mermaid-container">
-          <div class="mermaid bg-slate-900 p-6 text-sm">
-            flowchart LR
-              subgraph Trad ["Traditional (Static)"]
-                direction TB
-                T1[Manual Config<br/>Airbyte UI / YAML] --> T2[Fixed Schedules<br/>Cron or Airflow]
-                T2 --> T3[Limited to Built-in<br/>Connectors + Basic Transforms]
-                T3 --> T4[Breaks on Schema Change<br/>or New Requirements]
-                T4 --> T5[Manual Debugging<br/>+ Redeploy]
-                T5 --> T6[Siloed Logs<br/>No AI Traceability]
-              end
-              
-              subgraph Agentic ["Agentic (Airbyte + Crabbox)"]
-                direction TB
-                A1[Agent Observes<br/>Live Data + Airbyte State + History] 
-                A1 --> A2[AI Reasons &amp; Decides<br/>Dynamic Config or Custom Logic]
-                A2 --> A3[Generates Code On-the-Fly<br/>Custom CDK / Transforms / Reverse]
-                A3 --> A4[Executes in Warm Isolated Box<br/>via Crabbox Pools + Hydration]
-                A4 --> A5[Captures Full Evidence<br/>Artifacts + JUnit + Phases]
-                A5 --> A6[Reflects + Iterates<br/>or Triggers Reverse]
-                A6 --> A1
-              end
-              
-              T6 -.->|Brittle<br/>No Loop<br/>Poor Audit| A1
-              
-              style Trad fill:#1e2937,stroke:#475569,color:#94a3b8
-              style Agentic fill:#052e16,stroke:#4ade80,color:#fff
-          </div>
+      <div class="prose max-w-4xl mx-auto text-lg text-slate-300 mb-12">
+        <p><strong>The new notion:</strong> Give AI agents the ability to <em>drive</em> data movement by letting them provision and use <strong>remote execution sandboxes</strong> (via Crabbox) where they can safely run Airbyte connectors, custom transforms, and reverse ETL logic — all while observing results, iterating, and maintaining full audit.</p>
+        
+        <p>Crabbox acts as the "remote sandbox provider" for agents: it gives on-demand or pre-warmed isolated Linux/Windows environments (the "sandboxes" or "boxes") with networking, compute, and the ability to run any tool (including Airbyte CLI or Python with Airbyte CDK). Agents (or agent frameworks) treat Crabbox as a tool to lease a sandbox, hydrate it with the exact data stack, run commands, capture outputs, and release — with secrets forwarded safely and every action recorded.</p>
+        
+        <p>Airbyte provides the battle-tested, observable connectors for the "standard" part of the movement. Crabbox remote sandboxes provide the execution environment where agents can do the non-standard, dynamic, AI-generated, or security-sensitive parts (custom logic, reverse ETL with complex rules, on-prem targets, etc.).</p>
+      </div>
+
+      <!-- Core Concept Diagram -->
+      <div class="mb-8">
+        <h3 class="text-center font-semibold mb-4 text-lg">The Simple Idea</h3>
+        <div class="mermaid bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-3xl mx-auto">
+          flowchart LR
+            Agent[AI Agent<br/>or Agent Framework] -->|uses Crabbox as tool| Crabbox[Crabbox<br/>Remote Sandbox Provider]
+            Crabbox -->|leases / warms| Sandbox[Isolated Remote Sandbox<br/>(Linux box with Airbyte + your tools)]
+            Sandbox -->|runs| Airbyte[Airbyte Connectors<br/>(standard src → dst)]
+            Sandbox -->|runs custom| Custom[AI-generated Python<br/>transforms, CDK, reverse logic]
+            Airbyte --> Data[(Warehouse / Destinations)]
+            Custom --> Data
+            Sandbox -->|returns artifacts, logs, results| Agent
+            Agent -->|observes + decides next| Agent
         </div>
       </div>
 
+      <div class="text-center text-sm text-slate-400 max-w-2xl mx-auto">
+        This is the shift: <strong>ETL/rETL stops being static infrastructure</strong> and becomes something agents can dynamically control inside secure remote execution environments.
+      </div>
+    </section>
+
+    <!-- Why This Is New -->
+    <section class="max-w-6xl mx-auto px-6 pb-16">
       <div class="grid md:grid-cols-2 gap-6">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <h3 class="font-semibold text-xl mb-4 text-red-400 flex items-center gap-2">
-            <i class="fa-solid fa-times-circle" aria-hidden="true"></i> Traditional Limitations
-          </h3>
-          <ul class="space-y-3 text-sm text-slate-300">
-            <li class="flex gap-3"><span class="text-red-400 mt-1">•</span> <span><strong>Static &amp; brittle:</strong> Defined in UIs/YAML. Changes require human intervention. No dynamic discovery or generation.</span></li>
-            <li class="flex gap-3"><span class="text-red-400 mt-1">•</span> <span><strong>No reasoning loop:</strong> Agents can suggest but can't safely execute custom logic, test in real envs, or iterate fast.</span></li>
-            <li class="flex gap-3"><span class="text-red-400 mt-1">•</span> <span><strong>Execution is afterthought:</strong> Custom/reverse lives in ad-hoc scripts with cold starts, secret leaks, no unified audit.</span></li>
-            <li class="flex gap-3"><span class="text-red-400 mt-1">•</span> <span><strong>Limited to platform:</strong> Hard to do complex AI-driven transforms, on-prem, or true bidirectional without separate fragile tools.</span></li>
+          <h3 class="font-semibold text-xl mb-4 text-red-400">Old Way (Not Agentic)</h3>
+          <ul class="text-sm space-y-2 text-slate-300">
+            <li>• Static configs in Airbyte UI or YAML</li>
+            <li>• Scheduled by cron or orchestrator — no intelligence</li>
+            <li>• Custom logic is painful (separate scripts, no isolation, no audit)</li>
+            <li>• Agents can only suggest changes; humans still do the work</li>
+            <li>• No closed loop for the AI to observe results and adapt</li>
           </ul>
         </div>
-
         <div class="bg-slate-900 border border-emerald-800 rounded-3xl p-6">
-          <h3 class="font-semibold text-xl mb-4 text-emerald-400 flex items-center gap-2">
-            <i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Why This Is Fundamentally New
-          </h3>
-          <ul class="space-y-3 text-sm text-slate-300">
-            <li class="flex gap-3"><span class="text-emerald-400 mt-1">•</span> <span><strong>Closes the agentic loop for data:</strong> First pattern with observe-plan-execute-reflect using production tools (Airbyte for pipes, Crabbox for execution per docs on pools/prewarm/actions-hydration).</span></li>
-            <li class="flex gap-3"><span class="text-emerald-400 mt-1">•</span> <span><strong>AI owns the "how":</strong> Agents generate and test custom Airbyte CDK, transforms, reverse logic on-the-fly inside safe warm boxes — not limited to UI.</span></li>
-            <li class="flex gap-3"><span class="text-emerald-400 mt-1">•</span> <span><strong>Crabbox as execution substrate:</strong> Provides warm reusable workers (pool ensure + prewarm from docs), repo-native setup (actions-hydration), secret-safe forwarding (env-forwarding), full evidence (artifacts/results), for agents to act reliably.</span></li>
-            <li class="flex gap-3"><span class="text-emerald-400 mt-1">•</span> <span><strong>Unified bidirectional + audit:</strong> Standard via Airbyte + complex/reverse/on-prem via Crabbox in one auditable agent-driven system. Every AI decision has provenance (Crabbox history + artifacts).</span></li>
-            <li class="flex gap-3"><span class="text-emerald-400 mt-1">•</span> <span><strong>Fast &amp; safe iteration:</strong> Seconds not minutes (warm pools + cache volumes). Isolation and allowlists prevent leaks. Reproducible via git + hydration.</span></li>
+          <h3 class="font-semibold text-xl mb-4 text-emerald-400">New Way (Agentic with Remote Sandboxes)</h3>
+          <ul class="text-sm space-y-2 text-slate-300">
+            <li>• Agent decides what to move and how (including generating custom code)</li>
+            <li>• Uses Crabbox to get a real remote sandbox on demand or from a warm pool</li>
+            <li>• Runs Airbyte + custom logic safely inside that sandbox</li>
+            <li>• Gets structured results back (artifacts, metrics) to reason over</li>
+            <li>• Full audit trail of every AI-driven data movement decision</li>
+            <li>• Fast iteration because sandboxes can be pre-warmed and reused</li>
           </ul>
-          <div class="mt-4 pt-4 border-t border-emerald-800 text-xs text-emerald-400/70">
-            This shifts ETL/rETL from "static infrastructure" to "agentic capability" — agents can now reliably discover, customize, execute, and govern data movement end-to-end.
-          </div>
         </div>
       </div>
     </section>
 
-    <!-- Tools -->
+    <!-- The Tools -->
     <section id="tools" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
-      <div class="flex items-end justify-between mb-8">
-        <div>
-          <div class="uppercase text-xs font-semibold tracking-[2px] text-emerald-400 mb-2">THE FOUNDATION</div>
-          <h2 class="display text-4xl tracking-tighter font-semibold">The Tools</h2>
-        </div>
+      <div class="text-center mb-10">
+        <div class="uppercase text-xs font-semibold tracking-[2px] text-emerald-400 mb-2">THE TWO PIECES</div>
+        <h2 class="display text-4xl tracking-tighter font-semibold">The Tools</h2>
       </div>
 
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="tool-card group bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-3xl p-8">
+        <div class="tool-card bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-3xl p-8">
           <div class="flex items-center gap-x-3 mb-4">
             <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
               <i class="fa-solid fa-plug text-emerald-400 text-2xl" aria-hidden="true"></i>
             </div>
             <div>
               <h3 class="font-semibold text-2xl tracking-tight">Airbyte</h3>
-              <p class="text-xs text-emerald-400 font-medium">THE PIPES</p>
+              <p class="text-xs text-emerald-400 font-medium">THE RELIABLE CONNECTORS</p>
             </div>
           </div>
-          <p class="text-slate-400 mb-6">Open-source leader for data integration. 300+ connectors, CDK for extension, full API/CLI for agents.</p>
-          <ul class="space-y-2 text-sm">
-            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> Declarative src → dst to warehouse or direct</li>
-            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> CDK for custom sources/destinations on demand</li>
-            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> CLI + API + PyAirbyte for agent-driven config &amp; sync</li>
-            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> Incremental, schema handling, observability built-in</li>
+          <p class="text-slate-400 mb-6">The open-source standard for moving data between sources and destinations with hundreds of connectors and excellent observability.</p>
+          <ul class="text-sm space-y-2">
+            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> 300+ connectors, CDK for customs</li>
+            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> CLI, API, and Python libraries agents can drive</li>
+            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> Great for the standard, declarative part of movement</li>
           </ul>
         </div>
 
-        <div class="tool-card group bg-slate-900 border border-slate-800 hover:border-rose-500/50 rounded-3xl p-8">
+        <div class="tool-card bg-slate-900 border border-slate-800 hover:border-rose-500/50 rounded-3xl p-8">
           <div class="flex items-center gap-x-3 mb-4">
             <div class="w-10 h-10 rounded-2xl bg-rose-500/10 flex items-center justify-center">
               <i class="fa-solid fa-crab text-rose-400 text-2xl" aria-hidden="true"></i>
             </div>
             <div>
               <h3 class="font-semibold text-2xl tracking-tight">Crabbox</h3>
-              <p class="text-xs text-rose-400 font-medium">THE EXECUTION LAYER</p>
+              <p class="text-xs text-rose-400 font-medium">THE REMOTE SANDBOX LAYER</p>
             </div>
           </div>
-          <p class="text-slate-400 mb-6">Generic remote execution for agents. Warm boxes, safe secrets, complete audit — from real features in the docs.</p>
-          <div class="space-y-3 text-sm">
-            <div><span class="font-medium text-rose-400">Pools + Prewarm</span> <span class="text-xs text-slate-400">(docs/commands/pool.md, prewarm.md)</span><br><span class="text-xs">Reusable hydrated leases. Borrow instantly. Register after prewarm/actions hydrate.</span></div>
-            <div><span class="font-medium text-rose-400">Actions Hydration</span> <span class="text-xs text-slate-400">(docs/features/actions-hydration.md)</span><br><span class="text-xs">Run your .github/workflows to install Airbyte + deps inside the box — CI parity, no baked images.</span></div>
-            <div><span class="font-medium text-rose-400">Env Forwarding</span> <span class="text-xs text-slate-400">(docs/features/env-forwarding.md)</span><br><span class="text-xs">Strict allowlist + profiles for AIRBYTE_*/WAREHOUSE_*/DEST_* . Redaction + isolation.</span></div>
-            <div><span class="font-medium text-rose-400">Artifacts + Results + Jobs</span> <span class="text-xs text-slate-400">(docs/features/artifacts.md, features/jobs.md)</span><br><span class="text-xs">--artifact-glob, --junit, phases, history. Named multi-step flows for agents.</span></div>
-            <div><span class="font-medium text-rose-400">Cache Volumes</span> <span class="text-xs text-slate-400">(docs/features/cache-volumes.md)</span><br><span class="text-xs">Persistent rebuildable caches for Airbyte/Python deps.</span></div>
+          <p class="text-slate-400 mb-6">Gives agents (and humans) on-demand or pre-warmed remote execution environments ("sandboxes" or "boxes") with full control, safety, and observability. Perfect place to run Airbyte or custom ETL code.</p>
+          <div class="text-sm space-y-2">
+            <div><span class="font-medium text-rose-400">Remote Sandboxes on Demand</span> — Pools + prewarm give you warm, reusable isolated Linux environments ready for data work.</div>
+            <div><span class="font-medium text-rose-400">Safe Execution</span> — Strict env allowlisting for secrets, per-lease isolation, no secrets in broker.</div>
+            <div><span class="font-medium text-rose-400">Hydration from your repo</span> — Use your existing GitHub Actions workflows to set up Airbyte + Python + whatever inside the sandbox.</div>
+            <div><span class="font-medium text-rose-400">Full Observability for Agents</span> — Artifacts, results, phases, and history so the agent can see what happened and decide what to do next.</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- E2E Flow with Better Diagrams -->
+    <!-- The Flow -->
     <section id="e2e" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800 bg-slate-900/30">
       <div class="mb-10">
-        <div class="uppercase text-xs font-semibold tracking-[2px] text-rose-400 mb-2">THE SYSTEM IN ACTION</div>
-        <h2 class="display text-4xl tracking-tighter font-semibold mb-3">End-to-End Agentic Flow</h2>
-        <p class="text-slate-400">A complete, auditable cycle. The agent reasons and decides. Airbyte handles standard movement. Crabbox executes custom, reverse, and everything that needs isolation or speed — using features directly from the docs.</p>
+        <div class="uppercase text-xs font-semibold tracking-[2px] text-rose-400 mb-2">HOW IT ACTUALLY WORKS</div>
+        <h2 class="display text-4xl tracking-tighter font-semibold mb-3">The End-to-End Flow</h2>
+        <p class="text-slate-400">An agentic loop where the AI uses Crabbox to get remote sandboxes, runs Airbyte or custom logic inside them, observes the results, and iterates — all with production safety and audit.</p>
       </div>
 
-      <!-- Sequence Diagram for Flow -->
+      <!-- High-level Flow Diagram -->
       <div class="mb-12">
-        <h3 class="text-lg font-semibold mb-4">Sequence: How the Flow Actually Executes</h3>
-        <div class="mermaid-container">
-          <div class="mermaid bg-slate-900 p-6 text-sm">
-            sequenceDiagram
-              participant Agent as AI Agent
-              participant Crab as Crabbox (Execution)
-              participant Box as Warm Box (Pooled + Hydrated)
-              participant Air as Airbyte
-              participant Data as Sources / Warehouse / Dsts
-
-              Agent->>Crab: 1. pool ensure + prewarm (or borrow)
-              Note over Crab,Box: From docs: pool ensure calls prewarm; actions-hydration runs your workflow to install Airbyte + CDK
-              Crab->>Box: Lease + hydrate (actions-hydration.md)
-              Box-->>Crab: Ready (with Airbyte env + cache volumes)
-
-              Agent->>Crab: 2. Observe (query state via tools)
-              Crab->>Box: Run queries / list Airbyte connections
-              Box-->>Agent: Samples + history + artifacts
-
-              Agent->>Crab: 3. Plan + generate (AI decides)
-              Note over Agent: Generate Airbyte config or custom script (CDK / reverse)
-
-              Agent->>Crab: 4. Execute (via run --pool)
-              Crab->>Box: crabbox run --pool --script / --shell --allow-env 'AIRBYTE_*,...'<br/>--artifact-glob --junit
-              Box->>Air: airbyte connections create / sync (standard)
-              Box->>Data: Custom logic / reverse (AI-enriched writes)
-              Data-->>Box: Results / outputs
-              Box-->>Crab: Artifacts + results + phases + exit code
-              Crab-->>Agent: Full evidence + history entry
-
-              Agent->>Crab: 5. Reflect + iterate
-              Note over Agent: Read artifacts, update model, trigger reverse or next
-              alt More needed
-                Agent->>Crab: Repeat execute (fast because warm pool)
-              else Done
-                Agent->>Agent: Goal achieved (full audit trail)
-              end
-          </div>
+        <div class="mermaid bg-slate-900 border border-slate-800 rounded-3xl p-6">
+          flowchart TD
+            A[Agent has a data goal] --> B[Asks Crabbox for a remote sandbox<br/>(pool ensure / prewarm or borrow)]
+            B --> C[Sandbox is ready + hydrated<br/>(Airbyte + Python + your tools via repo Actions)]
+            C --> D[Agent sends work into the sandbox<br/>(Airbyte config/sync or custom script)]
+            D --> E[Inside the sandbox:<br/>- Run standard Airbyte movement<br/>- Or run AI-generated custom/reverse logic]
+            E --> F[Sandbox returns results<br/>(artifacts, logs, metrics, exit code)]
+            F --> G[Agent observes + reflects]
+            G -->|needs more| B
+            G -->|done| H[Goal complete + full audit trail]
         </div>
       </div>
 
-      <!-- Detailed Step-by-Step with Explanations -->
-      <div class="space-y-6 text-sm">
+      <!-- Detailed Steps -->
+      <div class="space-y-6">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="flex gap-4 items-start">
-            <div class="step-number text-4xl font-bold text-rose-400/60 w-10">1</div>
-            <div class="flex-1">
-              <div class="font-semibold text-lg">Prepare Warm Execution Capacity</div>
-              <div class="mt-2 text-slate-400">
-                <code class="font-mono text-xs bg-black/40 px-2 py-1 rounded">crabbox pool ensure example-org/data-pipelines/main/hetzner/linux/cpx51 --min-ready 2 --create -- --provider hetzner --type cpx51 --cache-volume airbyte-etl</code>
-              </div>
-              <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <div class="font-medium text-rose-400">How it works</div>
-                  <div class="text-xs">pool ensure (docs/commands/pool.md) checks/creates ready leases. --create forwards to prewarm (docs/commands/prewarm.md) which runs actions hydrate using your .github/workflows to install Airbyte + tools exactly like CI.</div>
-                </div>
-                <div>
-                  <div class="font-medium text-rose-400">Why for agents</div>
-                  <div class="text-xs">Warm pooled boxes mean seconds not minutes per iteration. Cache volumes (docs/features/cache-volumes.md) keep Airbyte/Python deps persistent. Hydration (actions-hydration.md) ensures reproducible Airbyte setup without baking into images.</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div class="font-semibold mb-2">Step 1: Get a Remote Sandbox</div>
+          <div class="text-sm text-slate-400">Use <code>crabbox pool ensure &lt;key&gt; --min-ready 1 --create</code> (or prewarm). Crabbox provisions or reuses an isolated remote environment. Use actions hydration so the sandbox already has Airbyte installed exactly as in your CI.</div>
+          <div class="text-xs mt-2 text-emerald-400">This is the "remote sandbox" part — the agent doesn't run things locally or on some untrusted code interpreter. It gets a real, controlled remote box.</div>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="flex gap-4 items-start">
-            <div class="step-number text-4xl font-bold text-rose-400/60 w-10">2</div>
-            <div class="flex-1">
-              <div class="font-semibold text-lg">Agent Observes + Plans (the intelligence)</div>
-              <div class="mt-2 text-slate-400">Agent queries warehouse/Airbyte, reviews prior Crabbox runs/artifacts. AI decides: standard Airbyte sync, custom CDK source, heavy transform, or reverse activation with personalization.</div>
-              <div class="mt-3 text-xs">Generates config or Python script. Plans exact Crabbox invocation with --pool, --allow-env, --artifact-glob etc. for safety and capture.</div>
-            </div>
-          </div>
+          <div class="font-semibold mb-2">Step 2: Agent Decides What to Do</div>
+          <div class="text-sm text-slate-400">The agent looks at current state (warehouse, Airbyte connections, previous runs). It can decide to trigger a standard Airbyte sync, generate a custom CDK connector, run a complex transform, or do reverse ETL with business logic.</div>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="flex gap-4 items-start">
-            <div class="step-number text-4xl font-bold text-rose-400/60 w-10">3</div>
-            <div class="flex-1">
-              <div class="font-semibold text-lg">Execute via Crabbox (the safe hands)</div>
-              <div class="mt-2 font-mono text-xs bg-black/40 p-3 rounded-xl overflow-auto">
-crabbox run --pool ... --script agent_airbyte.py \
-  --allow-env 'AIRBYTE_*,WAREHOUSE_*,DEST_*' \
-  --env-from-profile ~/.agent/creds.env \
-  --artifact-glob 'reports/**' \
-  --junit metrics.xml \
-  --label "agent:src-dst:$(date -I)"
-              </div>
-              <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <span class="font-medium text-rose-400">How (from docs)</span><br>
-                  Runs on pre-hydrated box (prewarm + actions). --shell for airbyte CLI commands or --script for custom (CDK/PyAirbyte). Env forwarded per env-forwarding.md. Outputs captured per artifacts.md.
-                </div>
-                <div>
-                  <span class="font-medium text-rose-400">Why new for ETL/rETL</span><br>
-                  Agents can run standard Airbyte + custom/reverse in the same auditable, isolated, warm environment. No ad-hoc scripts. Full evidence for the agent to reflect.
-                </div>
-              </div>
-            </div>
-          </div>
+          <div class="font-semibold mb-2">Step 3: Execute Inside the Sandbox</div>
+          <div class="text-sm text-slate-400">Agent (via its tools) calls something like:<br>
+          <code>crabbox run --pool &lt;key&gt; --shell 'airbyte ...' --allow-env 'AIRBYTE_*' ...</code><br>
+          or <code>--script my_agent_generated_etl.py</code> with proper artifact capture.</div>
+          <div class="text-xs mt-2 text-emerald-400">Everything sensitive or custom happens inside the Crabbox-provided remote sandbox with safe secret forwarding and full output capture.</div>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div class="flex gap-4 items-start">
-            <div class="step-number text-4xl font-bold text-rose-400/60 w-10">4</div>
-            <div class="flex-1">
-              <div class="font-semibold text-lg">Reflect, Capture, Iterate (close the loop)</div>
-              <div class="mt-2 text-slate-400">Agent reads artifacts (CSVs, proofs), JUnit, phases, Airbyte status, Crabbox history. Updates state. Triggers next (e.g. reverse) or declares done. Every loop is versioned in git + fully audited.</div>
-              <div class="mt-3 text-xs">Uses jobs (docs/features/jobs.md) for complex multi-step agentic flows. Cache volumes keep things fast across iterations.</div>
-            </div>
-          </div>
+          <div class="font-semibold mb-2">Step 4: Observe and Close the Loop</div>
+          <div class="text-sm text-slate-400">Agent gets back artifacts (data files, reports), JUnit metrics, logs, and phases. It can now reason about success/failure/drift and decide the next action (including reverse ETL steps). Every step leaves a complete, auditable record.</div>
         </div>
       </div>
     </section>
 
-    <!-- How It Works + Detailed Flow Explanations -->
-    <section id="how-it-works" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
-      <h2 class="display text-3xl tracking-tighter font-semibold mb-8">How the Flow Works (Step by Step with Crabbox Docs)</h2>
+    <!-- How to Use -->
+    <section id="how-to-use" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
+      <h2 class="display text-3xl tracking-tighter font-semibold mb-8">How to Actually Use This</h2>
 
-      <div class="space-y-8">
+      <div class="space-y-8 text-sm">
         <div>
-          <h3 class="font-semibold text-xl mb-3">1. Warm Reusable Workers (Pools + Prewarm)</h3>
-          <div class="text-sm text-slate-400">Agent calls (or has tool for) <code>crabbox pool ensure &lt;key&gt; --min-ready N --create -- --provider …</code>. This creates or reuses hydrated leases (docs/commands/pool.md). Prewarm (docs/commands/prewarm.md) leases and runs actions hydrate from your repo workflow to install Airbyte + data tools. Result: boxes ready in seconds for any agent iteration.</div>
-          <div class="mt-2 text-xs bg-slate-900 p-3 rounded">Why: Traditional cold VMs or containers take minutes. Agents need fast loops. Pools give "always-on" workers with fingerprint matching to avoid poison (see ready pools in spec/broker.md).</div>
+          <div class="font-semibold mb-2">1. Set up a data-ops repo with Crabbox + Airbyte</div>
+          <div class="text-slate-400">Add crabbox.yaml or .crabbox.yaml. Point actions.workflow at a GitHub Actions file that installs Airbyte CLI, Python, Airbyte CDK, etc. Use cache volumes for deps.</div>
         </div>
 
         <div>
-          <h3 class="font-semibold text-xl mb-3">2. Repo-Native Setup (Actions Hydration)</h3>
-          <div class="text-sm text-slate-400">In crabbox.yaml or config: actions.workflow points to .github/workflows/airbyte-stack.yml. During first run or prewarm, Crabbox translates and runs it over SSH (local hydration) or as self-hosted runner. Installs airbyte, pip install airbyte, etc. Writes readiness marker. See docs/features/actions-hydration.md for local vs github-runner paths.</div>
-          <div class="mt-2 text-xs bg-slate-900 p-3 rounded">Why for agentic: Your data/Airbyte setup lives in git with the rest of the project. Agents get identical env to CI without the agent framework knowing about Airbyte install details.</div>
+          <div class="font-semibold mb-2">2. Pre-warm / ensure remote sandbox capacity</div>
+          <div class="text-slate-400"><code>crabbox pool ensure my-data-pipelines/main/hetzner/linux/cpx51 --min-ready 2 --create -- --provider hetzner --type cpx51 --cache-volume airbyte-etl</code></div>
+          <div class="text-xs mt-1 text-emerald-400">This creates warm remote sandboxes ready for agent work.</div>
         </div>
 
         <div>
-          <h3 class="font-semibold text-xl mb-3">3. Safe Execution of Agent Logic (Run + Env + Artifacts)</h3>
-          <div class="text-sm text-slate-400">Agent generates script/config. Executes via <code>crabbox run --pool &lt;key&gt; --script ... --allow-env 'AIRBYTE_*,... ' --env-from-profile ... --artifact-glob ... --junit ...</code>. Box sources hydrated env. Secrets forwarded only for allowed names (env-forwarding.md). Outputs (reports, CSVs from reverse) captured as artifacts. Full run record in history.</div>
-          <div class="mt-2 text-xs bg-slate-900 p-3 rounded">Why new: Agents can safely run both Airbyte commands and arbitrary custom/reverse logic (on-prem via SSH providers, complex transforms) with built-in isolation, secret hygiene, and evidence collection — no other tool gives agents this production execution surface for data movement.</div>
+          <div class="font-semibold mb-2">3. Give your agent Crabbox as a tool</div>
+          <div class="text-slate-400">In your agent system prompt or tool registry, include the ability to run crabbox commands (pool, run --pool, etc.). The agent will discover it can lease remote sandboxes and run Airbyte or custom code inside them.</div>
         </div>
 
         <div>
-          <h3 class="font-semibold text-xl mb-3">4. Observation + Iteration (Artifacts + Jobs + History)</h3>
-          <div class="text-sm text-slate-400">Agent downloads artifacts, parses JUnit for metrics, reads phases and history. Uses jobs (docs/features/jobs.md) for named multi-step flows. Cache volumes keep deps hot. Loop closes with full provenance.</div>
-          <div class="mt-2 text-xs bg-slate-900 p-3 rounded">Why for agents: The agent gets structured, machine-readable feedback (artifacts + results) to reason over, exactly like a human operator would — but automated and audited.</div>
+          <div class="font-semibold mb-2">4. Let the agent drive the flow</div>
+          <div class="text-slate-400">Example pattern the agent will produce:<br>
+          <code>crabbox run --pool ... --shell 'airbyte connections create ...' --allow-env 'AIRBYTE_*'</code><br>
+          or generate + run a Python script for custom logic with <code>--script</code>, <code>--artifact-glob</code>, and proper env forwarding.</div>
         </div>
       </div>
-    </section>
 
-    <!-- Example -->
-    <section class="max-w-6xl mx-auto px-6 pb-16 border-t border-slate-800">
-      <div class="uppercase text-xs font-semibold tracking-[1.5px] text-rose-400 mb-3">IN PRACTICE</div>
-      <h3 class="font-semibold text-2xl tracking-tight mb-6">Agent actually runs this (E2E example)</h3>
-      
-      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-7 font-mono text-sm text-emerald-300 overflow-auto">
-<pre><code># 1. Capacity (pool + prewarm + hydration from docs)
-crabbox pool ensure ... --min-ready 2 --create -- --provider hetzner --cache-volume airbyte-etl
-
-# 2. Agent configures standard forward (audited shell)
-crabbox run --pool ... --shell 'airbyte connections create --source new-events --destination warehouse' \
-  --allow-env 'AIRBYTE_*' --label "agent:forward-config"
-
-# 3. Agent runs custom/reverse (generated script)
-cat &gt; /tmp/agent_reverse.py &lt;&lt; 'PY'
-# AI-written: read warehouse, AI transform, write via custom or Airbyte dest
-print("CRABBOX_PHASE:reverse-complete rows=18472")
-PY
-crabbox run --pool ... --script /tmp/agent_reverse.py \
-  --allow-env 'WAREHOUSE_*,DEST_*' --env-from-profile ~/.agent/creds.env \
-  --artifact-glob 'reports/**' --junit reverse.xml --label "agent:reverse"
-
-# 4. Agent reflects on artifacts + Crabbox history + Airbyte state → loop or done</code></pre>
+      <div class="mt-10 p-6 bg-emerald-950/30 border border-emerald-800 rounded-3xl text-sm">
+        <strong>Key safety &amp; power features from Crabbox (directly from the docs):</strong><br>
+        • Warm pooled remote sandboxes so agents aren't waiting for cold VMs<br>
+        • Actions hydration so the sandbox has exactly the Airbyte + data environment your repo expects<br>
+        • Strict environment allowlisting so agents can only forward the secrets they actually need<br>
+        • Artifacts + results + history so every data movement the agent triggers is observable and auditable
       </div>
-      <p class="mt-4 text-xs text-slate-500">Pre-warm once. Every subsequent agent action is fast, secret-safe, and leaves a complete audit trail using real Crabbox features from the docs.</p>
     </section>
   </main>
 
   <footer class="border-t border-slate-800">
     <div class="max-w-6xl mx-auto px-6 py-16 text-center">
-      <div class="text-2xl tracking-tighter font-semibold mb-4">Airbyte moves the data.<br>Agents decide how.<br>Crabbox makes the agentic flow real — and auditable.</div>
-      <p class="text-slate-400 mb-8 max-w-md mx-auto">The first practical pattern for dynamic, reasoning-driven, fully-governed ETL &amp; rETL.</p>
+      <div class="text-2xl tracking-tighter font-semibold mb-4">Crabbox remote sandboxes + Airbyte = a genuinely new way for agents to own ETL and rETL.</div>
+      <p class="text-slate-400 mb-8">Not another static pipeline tool. A way for AI to safely and dynamically move data using real remote execution environments.</p>
       
       <div class="flex flex-wrap justify-center gap-4">
         <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" class="inline-flex items-center gap-x-2 px-6 h-12 rounded-3xl border border-slate-700 hover:bg-slate-900 font-medium transition text-sm">
           <i class="fa-brands fa-github"></i>
-          <span>View on GitHub</span>
+          <span>View Source</span>
         </a>
         <a href="https://github.com/openclaw/crabbox" target="_blank" class="inline-flex items-center gap-x-2 px-6 h-12 rounded-3xl bg-white text-slate-950 font-semibold text-sm hover:bg-rose-100 transition">
           Get Crabbox
         </a>
       </div>
       
-      <div class="mt-12 text-[10px] text-slate-500 tracking-widest">Accurate to Crabbox docs (pool, prewarm, actions-hydration, env-forwarding, artifacts, jobs, cache-volumes) • Neutral • Self-host friendly</div>
+      <div class="mt-12 text-[10px] text-slate-500 tracking-widest">Built on real Crabbox remote execution + Airbyte connectors • See the docs for pools, prewarm, actions-hydration, env-forwarding, artifacts</div>
     </div>
   </footer>
 
