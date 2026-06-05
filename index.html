@@ -6,225 +6,511 @@
   <title>Agentic src ↔ dst • Airbyte + Crabbox</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
     
-    body { font-family: 'Inter', system_ui, sans-serif; }
-    .display { font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif; font-feature-settings: "ss02"; }
-    
-    .hero-title { font-size: 3.25rem; line-height: 1.05; letter-spacing: -0.04em; }
-    
-    .section { scroll-margin-top: 80px; }
-    
-    .flow-step {
-      transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+    :root {
+      --font-sans: 'Inter', system_ui, sans-serif;
+      --font-display: 'Space Grotesk', 'Inter', system_ui, sans-serif;
     }
     
-    .code-block {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.8125rem;
-      line-height: 1.4;
+    body { 
+      font-family: var(--font-sans); 
+    }
+    
+    .display { 
+      font-family: var(--font-display); 
+      font-feature-settings: "ss02"; 
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title { 
+      font-size: 3.5rem; 
+      line-height: 1.05; 
+      letter-spacing: -0.05em; 
+    }
+    
+    .section { 
+      scroll-margin-top: 80px; 
     }
     
     .nav-blur {
       backdrop-filter: blur(12px);
     }
+
+    .glass {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(16px);
+    }
+
+    .flow-card {
+      transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), 
+                  box-shadow 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+    
+    .flow-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    .tool-card {
+      transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+
+    .tool-card:hover {
+      transform: translateY(-2px);
+      border-color: rgb(148 163 184);
+    }
+
+    .step-number {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+
+    .mermaid {
+      background: #0f172a;
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+
+    .stat {
+      font-variant-numeric: tabular-nums;
+    }
+
+    h1, h2, h3 {
+      text-wrap: balance;
+    }
+
+    .prose {
+      max-width: 65ch;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .flow-card, .tool-card {
+        transition: none;
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-200 antialiased">
+  <!-- Skip link for a11y -->
+  <a href="#main" 
+     class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-slate-950 focus:rounded-2xl">
+    Skip to main content
+  </a>
+
   <!-- Nav -->
   <nav class="nav-blur bg-slate-950/95 border-b border-slate-800 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-x-3">
         <div class="flex items-center gap-x-2">
           <div class="w-8 h-8 bg-white rounded-2xl flex items-center justify-center">
-            <i class="fa-solid fa-crab text-slate-900 text-xl"></i>
+            <i class="fa-solid fa-crab text-slate-900 text-xl" aria-hidden="true"></i>
           </div>
           <span class="font-semibold tracking-tighter text-xl">crabbox.sh</span>
         </div>
         <div class="text-xs px-2.5 py-1 bg-slate-800 rounded-full text-slate-400 font-medium">+ Airbyte</div>
       </div>
-      <div class="flex items-center gap-x-4 text-sm">
-        <a href="#how" class="text-slate-400 hover:text-white transition">How it works</a>
+      <div class="hidden md:flex items-center gap-x-6 text-sm">
+        <a href="#tools" class="text-slate-400 hover:text-white transition">Tools</a>
+        <a href="#flow" class="text-slate-400 hover:text-white transition">The Flow</a>
+        <a href="#e2e" class="text-slate-400 hover:text-white transition">E2E Flow</a>
         <a href="#example" class="text-slate-400 hover:text-white transition">Example</a>
+      </div>
+      <div class="flex items-center gap-x-3">
+        <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" 
+           class="text-sm text-slate-400 hover:text-white transition flex items-center gap-x-1.5">
+          <i class="fa-brands fa-github"></i>
+          <span class="hidden sm:inline">Source</span>
+        </a>
         <a href="https://github.com/openclaw/crabbox" target="_blank" 
            class="px-4 py-1.5 bg-white text-slate-900 text-sm font-semibold rounded-2xl hover:bg-rose-100 transition flex items-center gap-x-1.5">
-          <span>Get started</span>
+          <span>Get Crabbox</span>
         </a>
       </div>
     </div>
   </nav>
 
   <!-- Hero -->
-  <div class="max-w-6xl mx-auto px-6 pt-16 pb-12 text-center">
-    <div class="inline-flex items-center gap-x-2 px-4 py-1 rounded-3xl bg-slate-900 border border-slate-800 text-xs font-medium mb-6">
-      <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-      <span>AI agents that actually move data</span>
+  <header class="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center border-b border-slate-800">
+    <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-slate-900 border border-slate-800 text-xs font-medium mb-6">
+      <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" aria-hidden="true"></div>
+      <span>AI agents that actually move data — end to end</span>
     </div>
     
-    <h1 class="display hero-title font-semibold tracking-tighter">
+    <h1 class="display hero-title font-semibold tracking-tighter mb-6">
       Agentic src ↔ dst<br>
       with <span class="text-white">Airbyte</span> + <span class="text-rose-400">Crabbox</span>
     </h1>
     
-    <p class="mt-5 max-w-2xl mx-auto text-xl text-slate-400">
-      AI agents intelligently manipulate data flows between any source and destination.<br>
-      Airbyte handles the reliable pipes. Crabbox provides the trusted execution layer.
+    <p class="mt-4 max-w-3xl mx-auto text-2xl text-slate-400 leading-tight">
+      AI agents intelligently <span class="text-white font-medium">manipulate</span> data flows between any source and destination.<br>
+      <span class="text-emerald-400">Airbyte</span> handles the reliable pipes.<br>
+      <span class="text-rose-400">Crabbox</span> provides the trusted execution layer for agents.
     </p>
     
-    <div class="mt-8 flex items-center justify-center gap-x-3">
-      <a href="#how" class="inline-flex items-center px-6 h-11 rounded-2xl bg-white text-slate-900 font-semibold text-sm hover:bg-rose-100 transition">
-        See how it works
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+      <a href="#e2e" 
+         class="inline-flex items-center gap-x-3 px-8 h-14 rounded-3xl bg-white text-slate-950 font-semibold text-base hover:bg-rose-100 active:bg-rose-200 transition shadow-lg shadow-black/20">
+        <span>See the full E2E flow</span>
+        <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
       </a>
-      <a href="https://airbyte.com" target="_blank" class="inline-flex items-center px-6 h-11 rounded-2xl border border-slate-700 hover:bg-slate-900 text-sm font-medium transition">
+      <a href="https://airbyte.com" target="_blank" 
+         class="inline-flex items-center gap-x-2 px-6 h-14 rounded-3xl border border-slate-700 hover:bg-slate-900 text-base font-medium transition">
         Airbyte docs
       </a>
     </div>
     
-    <div class="mt-6 text-[10px] text-slate-500 tracking-widest">OPEN SOURCE • SELF-HOSTABLE • AGENT-READY</div>
-  </div>
-
-  <!-- Core idea -->
-  <div class="max-w-6xl mx-auto px-6 pb-12">
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-        <div class="text-emerald-400 text-xs font-semibold tracking-widest mb-2">AIRBYTE</div>
-        <div class="font-semibold text-lg tracking-tight mb-2">The pipes</div>
-        <div class="text-sm text-slate-400 leading-relaxed">300+ connectors. Declarative src → dst. Self-hosted or Cloud. CDK for custom. Stable, observable syncs.</div>
-      </div>
-      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-        <div class="text-violet-400 text-xs font-semibold tracking-widest mb-2">AI AGENTS</div>
-        <div class="font-semibold text-lg tracking-tight mb-2">The intelligence</div>
-        <div class="text-sm text-slate-400 leading-relaxed">Dynamic configuration. Custom CDK generation. Bidirectional decisions. In-flight data manipulation. Goal-oriented behavior.</div>
-      </div>
-      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
-        <div class="text-rose-400 text-xs font-semibold tracking-widest mb-2">CRABBOX</div>
-        <div class="font-semibold text-lg tracking-tight mb-2">The execution</div>
-        <div class="text-sm text-slate-400 leading-relaxed">Warm pooled boxes. Safe secret forwarding. Full audit of every agent action. Any provider (cloud, SSH, on-prem, sandboxes).</div>
-      </div>
+    <div class="mt-8 flex items-center justify-center gap-x-8 text-xs text-slate-500 tracking-[1.5px]">
+      <div>OPEN SOURCE</div>
+      <div>SELF-HOSTABLE</div>
+      <div>AGENT-READY</div>
+      <div>FULLY AUDITABLE</div>
     </div>
-  </div>
+  </header>
 
-  <!-- Problem + Solution -->
-  <div id="how" class="max-w-6xl mx-auto px-6 py-12 border-t border-slate-800">
-    <div class="max-w-2xl">
-      <div class="uppercase text-xs font-semibold tracking-[1.5px] text-rose-400 mb-2">THE PROBLEM</div>
-      <h2 class="text-3xl tracking-tighter font-semibold">Airbyte is great at moving data.<br>Agents are great at deciding how.</h2>
-      <p class="mt-3 text-slate-400">Static connections and scheduled syncs don't cut it anymore. Agents can (and should) dynamically configure pipelines, generate custom logic, and drive true bidirectional src ↔ dst — but they need a safe place to actually run the work.</p>
+  <main id="main">
+    <!-- Core Thesis -->
+    <div class="max-w-4xl mx-auto px-6 py-12 text-center">
+      <p class="text-xl text-slate-400">
+        Static Airbyte connections and cron schedules are the past.<br>
+        <span class="text-white font-medium">Agents decide. Agents act. Agents iterate.</span><br>
+        But they need safe, warm, auditable hands to touch real data and real systems.
+      </p>
     </div>
 
-    <div class="mt-10">
-      <div class="uppercase text-xs font-semibold tracking-[1.5px] text-emerald-400 mb-3">THE AGENTIC PATTERN</div>
-      
+    <!-- The Tools -->
+    <section id="tools" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
+      <div class="flex items-end justify-between mb-8">
+        <div>
+          <div class="uppercase text-xs font-semibold tracking-[2px] text-emerald-400 mb-2">THE FOUNDATION</div>
+          <h2 class="display text-4xl tracking-tighter font-semibold">The Tools</h2>
+        </div>
+        <p class="max-w-xs text-right text-sm text-slate-400 hidden md:block">Two best-in-class open tools. One powerful agentic pattern.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Airbyte -->
+        <div class="tool-card group bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-3xl p-8">
+          <div class="flex items-center gap-x-3 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+              <i class="fa-solid fa-plug text-emerald-400 text-2xl" aria-hidden="true"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-2xl tracking-tight">Airbyte</h3>
+              <p class="text-xs text-emerald-400 font-medium">THE PIPES</p>
+            </div>
+          </div>
+          
+          <p class="text-slate-400 mb-6">The leading open-source data integration platform with 300+ connectors, self-hostable, with full CDK for customs.</p>
+          
+          <ul class="space-y-3 text-sm">
+            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> <span>Declarative src → dst syncs (to warehouse or direct)</span></li>
+            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> <span>Airbyte CDK for custom sources/destinations</span></li>
+            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> <span>CLI + API + PyAirbyte for agent control</span></li>
+            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> <span>Stable schemas, observability, incremental</span></li>
+          </ul>
+          
+          <div class="mt-6 pt-6 border-t border-slate-800 text-xs text-emerald-400/70">
+            Perfect for the 80% of standard movement. Agents configure it dynamically.
+          </div>
+        </div>
+
+        <!-- Crabbox -->
+        <div class="tool-card group bg-slate-900 border border-slate-800 hover:border-rose-500/50 rounded-3xl p-8">
+          <div class="flex items-center gap-x-3 mb-4">
+            <div class="w-10 h-10 rounded-2xl bg-rose-500/10 flex items-center justify-center">
+              <i class="fa-solid fa-crab text-rose-400 text-2xl" aria-hidden="true"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-2xl tracking-tight">Crabbox</h3>
+              <p class="text-xs text-rose-400 font-medium">THE EXECUTION LAYER</p>
+            </div>
+          </div>
+          
+          <p class="text-slate-400 mb-6">Generic remote execution control plane. Agents get warm, isolated, fully-audited "hands" anywhere.</p>
+          
+          <div class="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+            <div>
+              <div class="font-medium text-rose-400 mb-1">Pools + Prewarm</div>
+              <div class="text-slate-400 text-xs">Always-ready agent worker boxes (see <span class="font-mono">pool ensure</span>, <span class="font-mono">prewarm</span>)</div>
+            </div>
+            <div>
+              <div class="font-medium text-rose-400 mb-1">Actions Hydration</div>
+              <div class="text-slate-400 text-xs">Repo-native setup of Airbyte + Python + deps via your existing workflows</div>
+            </div>
+            <div>
+              <div class="font-medium text-rose-400 mb-1">Env Forwarding</div>
+              <div class="text-slate-400 text-xs">Strict allowlist + profiles for AIRBYTE_*, WAREHOUSE_*, DEST_* secrets</div>
+            </div>
+            <div>
+              <div class="font-medium text-rose-400 mb-1">Artifacts + Results</div>
+              <div class="text-slate-400 text-xs">--artifact-glob, --junit, history for agent observation &amp; audit</div>
+            </div>
+            <div>
+              <div class="font-medium text-rose-400 mb-1">Cache Volumes</div>
+              <div class="text-slate-400 text-xs">Persistent rebuildable caches for Airbyte + heavy data tooling</div>
+            </div>
+            <div>
+              <div class="font-medium text-rose-400 mb-1">Jobs</div>
+              <div class="text-slate-400 text-xs">Named, repeatable multi-step agentic flows</div>
+            </div>
+          </div>
+          
+          <div class="mt-6 pt-6 border-t border-slate-800 text-xs text-rose-400/70">
+            Any provider: cloud, static SSH (on-prem), Proxmox, delegated sandboxes.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Agentic Pattern -->
+    <section id="flow" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800 bg-slate-900/30">
+      <div class="max-w-2xl mb-10">
+        <div class="uppercase text-xs font-semibold tracking-[2px] text-violet-400 mb-2">THE AGENTIC LOOP</div>
+        <h2 class="display text-4xl tracking-tighter font-semibold">Observe → Manipulate → Execute → Reflect</h2>
+        <p class="mt-3 text-slate-400">A tight, auditable cycle. The agent owns the intelligence. Crabbox owns safe execution of every step that touches data or systems.</p>
+      </div>
+
       <div class="grid md:grid-cols-4 gap-4">
-        <div class="flow-step bg-slate-900 border border-slate-800 rounded-2xl p-5">
-          <div class="text-xs text-emerald-400 font-medium mb-1">1. OBSERVE</div>
-          <div class="text-sm">Agent reads Airbyte state, samples data, reviews past Crabbox runs.</div>
+        <div class="flow-card bg-slate-900 border border-slate-800 rounded-3xl p-6">
+          <div class="step-number text-6xl font-semibold text-violet-400/30 mb-2">01</div>
+          <div class="font-semibold text-lg mb-2">OBSERVE</div>
+          <div class="text-sm text-slate-400">Agent inspects Airbyte connection states, samples live data from sources/destinations/warehouse, reviews previous Crabbox run artifacts, history, and metrics.</div>
         </div>
-        <div class="flow-step bg-slate-900 border border-slate-800 rounded-2xl p-5">
-          <div class="text-xs text-emerald-400 font-medium mb-1">2. MANIPULATE</div>
-          <div class="text-sm">AI decides config changes, writes custom CDK/transforms, plans reverse activation.</div>
+        
+        <div class="flow-card bg-slate-900 border border-slate-800 rounded-3xl p-6">
+          <div class="step-number text-6xl font-semibold text-violet-400/30 mb-2">02</div>
+          <div class="font-semibold text-lg mb-2">MANIPULATE</div>
+          <div class="text-sm text-slate-400">AI decides: update Airbyte connection? Generate custom CDK source/transform? Trigger reverse activation? Plans exact Crabbox commands + code.</div>
         </div>
-        <div class="flow-step bg-slate-900 border border-slate-800 rounded-2xl p-5">
-          <div class="text-xs text-emerald-400 font-medium mb-1">3. EXECUTE</div>
-          <div class="text-sm">Everything custom or sensitive runs via <span class="font-mono text-xs bg-slate-800 px-1 py-0.5 rounded">crabbox run --pool</span> on warm, isolated boxes.</div>
+        
+        <div class="flow-card bg-slate-900 border border-slate-800 rounded-3xl p-6">
+          <div class="step-number text-6xl font-semibold text-violet-400/30 mb-2">03</div>
+          <div class="font-semibold text-lg mb-2">EXECUTE</div>
+          <div class="text-sm text-slate-400">All sensitive or custom work runs through Crabbox on warm pooled boxes: <code class="font-mono text-xs bg-black/40 px-1 py-0.5 rounded">crabbox run --pool</code> with scripts, shell, artifacts, and strict env allowlisting.</div>
         </div>
-        <div class="flow-step bg-slate-900 border border-slate-800 rounded-2xl p-5">
-          <div class="text-xs text-emerald-400 font-medium mb-1">4. REFLECT</div>
-          <div class="text-sm">Agent ingests artifacts + results, updates its plan, loops.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- src ↔ dst focus -->
-  <div class="max-w-6xl mx-auto px-6 pb-12">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
-      <div class="grid md:grid-cols-2 gap-x-10 gap-y-8">
-        <div>
-          <div class="font-semibold text-lg mb-2">Forward (src → dst)</div>
-          <div class="text-sm text-slate-400">Airbyte owns the standard 300+ connectors and reliable syncs (to warehouse or directly to destinations). Agents dynamically create/update connections via the Airbyte API and use Crabbox to run/test custom sources or transforms.</div>
-        </div>
-        <div>
-          <div class="font-semibold text-lg mb-2">Reverse + Bidirectional (dst → src / activation)</div>
-          <div class="text-sm text-slate-400">The hard part lives in Crabbox: AI-driven reverse ETL, personalized pushes, complex eligibility, on-prem systems, and true src ↔ dst loops. Agents write the logic. Crabbox executes it safely with full audit.</div>
+        
+        <div class="flow-card bg-slate-900 border border-slate-800 rounded-3xl p-6">
+          <div class="step-number text-6xl font-semibold text-violet-400/30 mb-2">04</div>
+          <div class="font-semibold text-lg mb-2">REFLECT</div>
+          <div class="text-sm text-slate-400">Agent ingests timing, artifacts (CSVs, reports), JUnit metrics, phases, and Airbyte state. Updates world model. Loops or declares goal complete.</div>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Example -->
-  <div id="example" class="max-w-6xl mx-auto px-6 pb-16">
-    <div class="uppercase text-xs font-semibold tracking-[1.5px] text-rose-400 mb-3">IN PRACTICE</div>
-    <h3 class="font-semibold text-xl tracking-tight mb-4">What an agent actually runs</h3>
-    
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 font-mono text-sm text-emerald-300 overflow-auto">
-<pre><code># 1. Agent configures Airbyte (audited via Crabbox)
-crabbox run --pool data-pipelines/main/... --shell \
-  'airbyte connections create --source new-events --destination warehouse'
+    <!-- E2E Flow -->
+    <section id="e2e" class="max-w-6xl mx-auto px-6 py-16">
+      <div class="mb-10">
+        <div class="uppercase text-xs font-semibold tracking-[2px] text-rose-400 mb-2">THE COMPLETE PICTURE</div>
+        <h2 class="display text-4xl tracking-tighter font-semibold mb-3">End-to-End Agentic Flow</h2>
+        <p class="text-slate-400 max-w-2xl">This is how a real autonomous agent (or agentic framework) uses Airbyte + Crabbox together for production-grade, bidirectional, AI-driven data movement. Every step is versioned, secret-safe, and fully audited.</p>
+      </div>
 
-# 2. Agent generates + executes custom manipulation / reverse
-cat &gt; /tmp/ai_manip.py &lt;&lt; 'EOF'
-# AI-written: custom Airbyte CDK or heavy transform / reverse logic
-print("CRABBOX_PHASE:ai-manipulation rows=18472")
-EOF
+      <!-- Mermaid Flow -->
+      <div class="mb-8 p-6 bg-slate-900 border border-slate-800 rounded-3xl">
+        <div class="mermaid text-sm" id="e2e-diagram">
+          flowchart TD
+            A[Agent Goal<br/>e.g. "Keep customer 360 fresh in Salesforce + internal CRM"] --> B[OBSERVE]
+            B --> C[Query warehouse + Airbyte state<br/>+ past Crabbox runs]
+            C --> D[PLAN + MANIPULATE]
+            
+            D --> E1[Standard forward?]
+            E1 -->|Yes| F1[Update Airbyte connection via API<br/>executed in Crabbox]
+            E1 -->|Custom / Complex| F2[Generate CDK source or transform script]
+            
+            D --> E2[Reverse / Bidirectional needed?]
+            E2 -->|Yes| F3[Generate reverse script<br/>AI enrichment + eligibility]
+            
+            F1 --> G[EXECUTE via Crabbox]
+            F2 --> G
+            F3 --> G
+            
+            G --> H[crabbox run --pool &lt;key&gt;<br/>--script or --shell<br/>--allow-env 'AIRBYTE_*,WAREHOUSE_*'<br/>--artifact-glob 'reports/**'<br/>--junit metrics.xml]
+            
+            H --> I[Hydrated box with<br/>Airbyte + data stack<br/>via actions-hydration]
+            
+            I --> J[CAPTURE]
+            J --> K[Artifacts + results + phases<br/>+ full history entry]
+            
+            K --> L[REFLECT]
+            L --> M[Agent updates state<br/>Decide next action or done]
+            M -->|Loop| B
+            M -->|Complete| N[Audit trail complete<br/>Goal achieved]
+            
+            style A fill:#1e2937,stroke:#64748b
+            style N fill:#166534,stroke:#4ade80,color:#fff
+        </div>
+      </div>
 
-crabbox run --pool data-pipelines/main/hetzner/linux/cpx51 \
-  --script /tmp/ai_manip.py \
-  --allow-env 'AIRBYTE_*,WAREHOUSE_*,DEST_*' \
+      <div class="space-y-8">
+        <div class="grid md:grid-cols-12 gap-x-8 gap-y-6 text-sm">
+          <div class="md:col-span-3 font-semibold text-rose-400 pt-1">1. Capacity &amp; Preparation<br><span class="font-normal text-slate-400 text-xs">(once per pool / on ref change)</span></div>
+          <div class="md:col-span-9 text-slate-300">
+            <code class="font-mono text-xs bg-slate-900 px-2 py-1 rounded">crabbox pool ensure example-org/data-pipelines/main/hetzner/linux/cpx51 --min-ready 2 --create -- --provider hetzner --type cpx51 --cache-volume airbyte-pip</code>
+            <div class="mt-2 text-xs text-slate-400">Registers warm leases. Uses <strong>prewarm + actions-hydration</strong> (from your <code>.github/workflows/airbyte-stack.yml</code>) to install Airbyte CLI + CDK + Python deps exactly like your CI. See <a href="https://docs.crabbox.sh/commands/pool" class="underline">docs/commands/pool.md</a> and <a href="https://docs.crabbox.sh/features/actions-hydration" class="underline">actions-hydration.md</a>.</div>
+          </div>
+
+          <div class="md:col-span-3 font-semibold text-rose-400 pt-1">2. Agent Observes</div>
+          <div class="md:col-span-9 text-slate-300">Agent (via tools or framework) queries warehouse state, lists Airbyte connections, reviews previous <code>crabbox history --label airbyte-*</code> runs, downloads prior artifacts.</div>
+
+          <div class="md:col-span-3 font-semibold text-rose-400 pt-1">3. Agent Manipulates (AI brain)</div>
+          <div class="md:col-span-9 text-slate-300">Decides: "Standard forward via Airbyte" or "Custom source + heavy transform" or "Reverse activation with personalization". Generates Airbyte config or Python script using Airbyte CDK / PyAirbyte. Plans the exact <code>crabbox run</code> invocation.</div>
+
+          <div class="md:col-span-3 font-semibold text-rose-400 pt-1">4. Execute (via Crabbox — the hands)</div>
+          <div class="md:col-span-9">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 font-mono text-xs text-emerald-300 overflow-auto mb-3">
+crabbox run --pool example-org/data-pipelines/main/hetzner/linux/cpx51 \
+  --script /tmp/agent_airbyte_sync.py \
+  --allow-env 'AIRBYTE_API_KEY,WAREHOUSE_*,DEST_*' \
   --env-from-profile ~/.agent/creds.env \
-  --artifact-glob 'reports/*' \
-  --junit manipulation.xml \
+  --artifact-glob 'reports/**,outputs/*.csv' \
+  --junit airbyte-run.xml \
   --label "agent:airbyte-src-dst:$(date -I)"
+            </div>
+            <div class="text-xs text-slate-400">Runs on pre-hydrated box. Secrets forwarded safely (never in code or prompts). Full <strong>artifacts</strong>, <strong>results</strong>, phases, and history captured. See <a href="https://docs.crabbox.sh/features/env-forwarding" class="underline">env-forwarding.md</a> and <a href="https://docs.crabbox.sh/features/artifacts" class="underline">artifacts.md</a>.</div>
+          </div>
 
-# 3. Agent reflects on results + Airbyte state, loops</code></pre>
-    </div>
-    
-    <div class="mt-3 text-xs text-slate-500">Pre-warm once with Airbyte CDK + your stack. Agents get instant, reproducible execution environments. Every action is versioned, labeled, and recorded.</div>
-  </div>
-
-  <!-- Why it works -->
-  <div class="border-t border-slate-800 bg-slate-900 py-12">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="grid md:grid-cols-3 gap-6 text-sm">
-        <div>
-          <div class="font-semibold mb-2">Full audit of AI decisions</div>
-          <div class="text-slate-400">Every Airbyte config change and every custom manipulation is a first-class <code class="text-xs bg-slate-800 px-1 py-px rounded">crabbox run</code> with artifacts, phases, and history.</div>
-        </div>
-        <div>
-          <div class="font-semibold mb-2">Safe by default</div>
-          <div class="text-slate-400">Strict env allowlisting. Per-lease isolation. Secrets never leave your control. Works on-prem, air-gapped, or in sandboxes.</div>
-        </div>
-        <div>
-          <div class="font-semibold mb-2">Fast agent loops</div>
-          <div class="text-slate-400">Warm pools + cache volumes mean agents iterate in seconds instead of minutes. Pre-hydrate once with your Airbyte + data stack.</div>
+          <div class="md:col-span-3 font-semibold text-rose-400 pt-1">5. Reflect + Iterate</div>
+          <div class="md:col-span-9 text-slate-300">Agent reads artifacts (data samples, error CSVs), JUnit metrics, timing, and Airbyte sync status. Updates internal state. Triggers next manipulation or reverse step. Every iteration is a first-class audited record.</div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Bottom CTA -->
-  <div class="max-w-6xl mx-auto px-6 py-16 text-center">
-    <div class="text-2xl tracking-tighter font-semibold mb-2">Airbyte moves the data.<br>Agents decide how.<br>Crabbox makes it real.</div>
-    <p class="text-slate-400 mb-8">A practical pattern for agentic, bidirectional data movement in 2026.</p>
-    
-    <div class="flex flex-wrap justify-center gap-3">
-      <a href="https://github.com/openclaw/crabbox" target="_blank" 
-         class="inline-flex items-center gap-x-2 px-6 h-11 rounded-2xl bg-white text-slate-950 font-semibold text-sm hover:bg-rose-100 transition">
-        <i class="fa-brands fa-github"></i>
-        <span>Crabbox on GitHub</span>
-      </a>
-      <a href="https://airbyte.com" target="_blank" 
-         class="inline-flex items-center px-6 h-11 rounded-2xl border border-slate-700 hover:bg-slate-900 text-sm font-medium transition">
-        Airbyte
-      </a>
+      <div class="mt-8 p-6 bg-slate-900/60 border border-slate-800 rounded-3xl text-xs text-slate-400">
+        <strong class="text-slate-300">Key Crabbox guarantees used here (from the docs):</strong><br>
+        • Warm reusable workers via pools + prewarm (no repeated cold boots or full dep installs)<br>
+        • Repo-owned setup via actions-hydration (your .github/workflows installs Airbyte + tools — parity with CI)<br>
+        • Strict secret discipline via env allowlist + profiles (critical for agent use of real creds)<br>
+        • Complete observability: every agent action produces artifacts, results, phases, and history<br>
+        • Works for reverse / on-prem / custom via SSH providers, Tailscale ponds, delegated sandboxes
+      </div>
+    </section>
+
+    <!-- Example -->
+    <section id="example" class="max-w-6xl mx-auto px-6 pb-16 border-t border-slate-800">
+      <div class="uppercase text-xs font-semibold tracking-[1.5px] text-rose-400 mb-3">IN PRACTICE</div>
+      <h3 class="font-semibold text-2xl tracking-tight mb-6">Real agent invocation (what actually runs)</h3>
+      
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-7 font-mono text-sm text-emerald-300 overflow-auto">
+<pre><code># Agent decides forward sync + custom reverse activation is needed
+# 1. Ensure / borrow warm box (with Airbyte + CDK pre-installed via hydration)
+crabbox pool ensure example-org/data-pipelines/main/hetzner/linux/cpx51 --min-ready 1
+
+# 2. Agent-generated: configure standard Airbyte forward (audited)
+crabbox run --pool example-org/data-pipelines/main/hetzner/linux/cpx51 \
+  --shell 'airbyte connections create \
+    --source-id new-billing-events \
+    --destination-id warehouse-snowflake \
+    --schedule 15min' \
+  --allow-env 'AIRBYTE_*' \
+  --label "agent:configure-forward:$(date -I)"
+
+# 3. Agent-generated custom reverse script (AI enrichment + eligibility)
+cat &gt; /tmp/agent_reverse.py &lt;&lt; 'PY'
+# ... uses snowflake + salesforce SDK + custom AI logic ...
+print("CRABBOX_PHASE:reverse-activation rows=1247 updated=312")
+PY
+
+crabbox run --pool example-org/data-pipelines/main/hetzner/linux/cpx51 \
+  --script /tmp/agent_reverse.py \
+  --allow-env 'WAREHOUSE_SNOWFLAKE_*,DEST_SALESFORCE_*,AI_*' \
+  --env-from-profile ~/.agent/data-creds.env \
+  --artifact-glob 'reports/reverse-*.csv' \
+  --junit reverse-activation.xml \
+  --label "agent:reverse-activation:$(date -I)"
+
+# 4. Agent reflects on artifacts + results + Airbyte status, loops or done</code></pre>
+      </div>
+      
+      <p class="mt-4 text-xs text-slate-500">Pre-warm the pool once (or use <code>pool ensure</code> in your agent orchestrator). Subsequent runs are seconds. Every line the agent "writes" or executes is versioned in git and fully recorded in Crabbox history.</p>
+    </section>
+
+    <!-- Why This Wins -->
+    <section class="border-t border-slate-800 bg-slate-900 py-16">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="display text-3xl tracking-tighter font-semibold mb-8 text-center">Why this pattern wins for agentic data</h2>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-slate-950 border border-slate-800 rounded-3xl p-6">
+            <div class="font-semibold mb-2">True audit of AI decisions</div>
+            <div class="text-sm text-slate-400">Every Airbyte config change, every custom CDK script, every reverse activation is a first-class <code class="font-mono text-xs">crabbox run</code> with artifacts, phases, JUnit, and immutable history. Perfect for compliance and agent self-reflection.</div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 rounded-3xl p-6">
+            <div class="font-semibold mb-2">Safe by construction</div>
+            <div class="text-sm text-slate-400">Strict env allowlisting + profiles mean agents can only forward exactly the secrets they need. Per-lease isolation. Works on-prem/air-gapped via SSH providers without ever exposing creds to the agent prompt.</div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 rounded-3xl p-6">
+            <div class="font-semibold mb-2">Fast, cheap iteration</div>
+            <div class="text-sm text-slate-400">Warm pools + cache volumes + actions-hydration mean agents get instant execution environments. No 5-minute cold starts. Pre-hydrate the exact Airbyte + data stack your agents need.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer / CTA -->
+  <footer class="border-t border-slate-800">
+    <div class="max-w-6xl mx-auto px-6 py-16 text-center">
+      <div class="text-2xl tracking-tighter font-semibold mb-4">Airbyte moves the data.<br>Agents decide how.<br>Crabbox makes it real.</div>
+      <p class="text-slate-400 mb-8 max-w-md mx-auto">A practical, production-grade pattern for agentic, bidirectional, fully-audited data movement in 2026 and beyond.</p>
+      
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" 
+           class="inline-flex items-center gap-x-2 px-6 h-12 rounded-3xl border border-slate-700 hover:bg-slate-900 font-medium transition text-sm">
+          <i class="fa-brands fa-github"></i>
+          <span>View on GitHub</span>
+        </a>
+        <a href="https://github.com/openclaw/crabbox" target="_blank" 
+           class="inline-flex items-center gap-x-2 px-6 h-12 rounded-3xl bg-white text-slate-950 font-semibold text-sm hover:bg-rose-100 transition">
+          Get Crabbox
+        </a>
+        <a href="https://airbyte.com" target="_blank" 
+           class="inline-flex items-center gap-x-2 px-6 h-12 rounded-3xl border border-slate-700 hover:bg-slate-900 font-medium transition text-sm">
+          Airbyte
+        </a>
+      </div>
+      
+      <div class="mt-12 text-[10px] text-slate-500 tracking-widest">Built with Crabbox pools + actions-hydration + env forwarding • Neutral examples • Self-host friendly</div>
     </div>
-    
-    <div class="mt-10 text-[10px] text-slate-500">Neutral examples • Self-host friendly • Built for agents • <a href="https://zozo123.github.io/agentic-airbyte/" class="underline hover:text-slate-300">zozo123.github.io/agentic-airbyte</a></div>
-  </div>
+  </footer>
 
   <script>
-    tailwind.config = { theme: { extend: {} } };
+    // Tailwind
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'display': ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
+
+    // Mermaid
+    mermaid.initialize({ 
+      startOnLoad: true,
+      theme: 'dark',
+      flowchart: { 
+        curve: 'basis',
+        useMaxWidth: true 
+      }
+    });
+
+    // Simple focus-visible enhancement for the few interactive elements
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          el.classList.add('ring-2', 'ring-white/70');
+          setTimeout(() => el.classList.remove('ring-2', 'ring-white/70'), 200);
+        }
+      });
+    });
   </script>
 </body>
 </html>
