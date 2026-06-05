@@ -118,16 +118,34 @@
       <!-- Core Concept Diagram -->
       <div class="mb-8">
         <h3 class="text-center font-semibold mb-4 text-lg">The Simple Idea</h3>
-        <div class="mermaid bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-3xl mx-auto">
+        <div class="mermaid bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-4xl mx-auto">
           flowchart LR
-            Agent[AI Agent<br/>or Agent Framework] -->|uses Crabbox as tool| Crabbox[Crabbox<br/>Remote Sandbox Provider]
-            Crabbox -->|leases / warms| Sandbox[Isolated Remote Sandbox<br/>(Linux box with Airbyte + your tools)]
-            Sandbox -->|runs| Airbyte[Airbyte Connectors<br/>(standard src → dst)]
-            Sandbox -->|runs custom| Custom[AI-generated Python<br/>transforms, CDK, reverse logic]
-            Airbyte --> Data[(Warehouse / Destinations)]
-            Custom --> Data
-            Sandbox -->|returns artifacts, logs, results| Agent
-            Agent -->|observes + decides next| Agent
+            subgraph Agent ["AI Agent"]
+                A[Agent Reasons<br/>Decides ETL or rETL]
+            end
+
+            subgraph Crabbox ["Crabbox: Remote Sandbox Layer"]
+                C[Crabbox Tool<br/>(pools, prewarm, run)]
+                S[Remote Sandbox<br/>(warm, hydrated, isolated<br/>via docs: pool.md + actions-hydration.md)]
+            end
+
+            subgraph Movement ["Data Movement"]
+                AB[Airbyte<br/>(standard ETL pipes<br/>src → dst)]
+                CU[Custom / AI Logic<br/>(rETL, transforms, CDK<br/>in sandbox)]
+            end
+
+            A -->|leases sandbox| C
+            C --> S
+            S -->|executes standard| AB
+            S -->|executes custom/reverse| CU
+            AB --> D[(Warehouse / Destinations)]
+            CU --> D
+            S -->|artifacts + results<br/>(for agent to observe)| A
+
+            classDef air fill:#14b8a6,stroke:#0f766e,color:#fff
+            classDef crab fill:#f43f5e,stroke:#9f1239,color:#fff
+            class AB air
+            class C,S crab
         </div>
       </div>
 
@@ -138,6 +156,36 @@
 
     <!-- Why This Is New -->
     <section class="max-w-6xl mx-auto px-6 pb-16">
+      <h3 class="text-center text-lg font-semibold mb-4">Why This Creates a New Version of ETL &amp; rETL</h3>
+      
+      <div class="mermaid bg-slate-900 border border-slate-800 rounded-3xl p-6 mb-6">
+        flowchart LR
+          subgraph Old ["Traditional ETL/rETL"]
+            direction TB
+            O1[Static Configs<br/>UI or YAML]
+            O1 --> O2[Fixed Schedules<br/>No AI]
+            O2 --> O3[Limited Custom<br/>Brittle Scripts]
+            O3 --> O4[Manual Fixes<br/>Cold Starts]
+            O4 --> O5[Siloed Audit<br/>No Agent Loop]
+          end
+
+          subgraph New ["Agentic ETL/rETL<br/>(Crabbox Remote Sandboxes + Airbyte)"]
+            direction TB
+            N1[Agent Observes + Decides]
+            N1 --> N2[Crabbox: Lease Warm Sandbox<br/>(pools + prewarm + hydration)]
+            N2 --> N3[Inside Sandbox:<br/>Airbyte (ETL) or Custom (rETL)]
+            N3 --> N4[Observe Results<br/>(artifacts + full history)]
+            N4 --> N5[Iterate or Complete<br/>(agentic loop)]
+          end
+
+          O5 -.->|Brittle, slow, no AI| N1
+
+          classDef air fill:#14b8a6,stroke:#0f766e,color:#fff
+          classDef crab fill:#f43f5e,stroke:#9f1239,color:#fff
+          class N2,N3 crab
+          class O1,O2,O3 air
+      </div>
+
       <div class="grid md:grid-cols-2 gap-6">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
           <h3 class="font-semibold text-xl mb-4 text-red-400">Old Way (Not Agentic)</h3>
@@ -220,16 +268,31 @@
 
       <!-- High-level Flow Diagram -->
       <div class="mb-12">
+        <h3 class="text-center text-sm font-medium text-slate-400 mb-2">Agentic Loop in Remote Sandboxes</h3>
         <div class="mermaid bg-slate-900 border border-slate-800 rounded-3xl p-6">
           flowchart TD
-            A[Agent has a data goal] --> B[Asks Crabbox for a remote sandbox<br/>(pool ensure / prewarm or borrow)]
-            B --> C[Sandbox is ready + hydrated<br/>(Airbyte + Python + your tools via repo Actions)]
-            C --> D[Agent sends work into the sandbox<br/>(Airbyte config/sync or custom script)]
-            D --> E[Inside the sandbox:<br/>- Run standard Airbyte movement<br/>- Or run AI-generated custom/reverse logic]
-            E --> F[Sandbox returns results<br/>(artifacts, logs, metrics, exit code)]
-            F --> G[Agent observes + reflects]
-            G -->|needs more| B
-            G -->|done| H[Goal complete + full audit trail]
+            subgraph AgentLoop ["Agentic Loop (Observe → Decide → Execute → Reflect)"]
+                direction TB
+                A[Agent: Data Goal<br/>(e.g. fresh data in CRM)]
+                A --> B[Crabbox: Get Remote Sandbox<br/>pool ensure + prewarm<br/>(docs: pool.md, prewarm.md)]
+                B --> C[Sandbox Ready + Hydrated<br/>Airbyte + tools installed<br/>(actions-hydration.md)]
+                
+                C --> D1["ETL Path (Forward)"]
+                D1 --> E1[Run Airbyte in Sandbox<br/>standard src → dst]
+                E1 --> F1[Custom Transform in Sandbox<br/>(AI-generated Python/CDK)]
+                
+                C --> D2["rETL Path (Reverse)"]
+                D2 --> E2[Read from Warehouse]
+                E2 --> F2[AI Logic + Push to Ops<br/>(CRMs, on-prem, etc.)]
+                
+                F1 & F2 --> G[Sandbox Returns<br/>artifacts + results + history<br/>(for agent to observe)]
+                G --> A
+            end
+
+            classDef air fill:#14b8a6,stroke:#0f766e,color:#fff
+            classDef crab fill:#f43f5e,stroke:#9f1239,color:#fff
+            class D1,E1 air
+            class B,C crab
         </div>
       </div>
 
@@ -321,7 +384,18 @@
 
   <script>
     tailwind.config = { theme: { extend: {} } };
-    mermaid.initialize({ startOnLoad: true, theme: 'dark', flowchart: { curve: 'basis' } });
+    mermaid.initialize({ 
+      startOnLoad: true, 
+      theme: 'dark', 
+      flowchart: { 
+        curve: 'basis',
+        htmlLabels: true,
+        useMaxWidth: true
+      },
+      themeVariables: {
+        fontSize: '14px'
+      }
+    });
   </script>
 </body>
 </html>
