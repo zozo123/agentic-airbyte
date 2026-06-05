@@ -121,8 +121,8 @@
     </h1>
     
     <p class="max-w-2xl mx-auto text-2xl text-slate-400">
-      You describe the outcome.<br>
-      The harness plans and dispatches work to <span style="color: var(--crabbox)">Crabbox remote sandboxes</span> running as specialized <span style="color: var(--airbyte)">ETL &amp; rETL workers</span> with Airbyte inside.
+      You give it a goal.<br>
+      The harness turns intent into action by leasing and tasking <span style="color: var(--crabbox)">Crabbox remote sandboxes</span> that run as reliable, isolated <span style="color: var(--airbyte)">ETL &amp; rETL workers</span> — Airbyte for the standard pipes, custom logic for everything else.
     </p>
     
     <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -140,14 +140,14 @@
     <!-- The Idea -->
     <section id="idea" class="max-w-5xl mx-auto px-6 py-16 border-t border-slate-800">
       <div class="max-w-2xl">
-        <div class="uppercase text-xs font-semibold tracking-[2px] text-indigo-400 mb-2">The Shift</div>
-        <h2 class="display text-4xl tracking-tighter font-semibold mb-6">From prompting agents to instructing a harness</h2>
+        <div class="uppercase text-xs font-semibold tracking-[2px] text-indigo-400 mb-2">The Vision</div>
+        <h2 class="display text-4xl tracking-tighter font-semibold mb-6">Instruct the harness. It owns the outcome via sandbox workers.</h2>
       </div>
 
       <div class="max-w-3xl text-xl text-slate-300 leading-relaxed space-y-6">
-        <p>Traditional pipelines are static. Raw agents calling tools directly are powerful but leak state, secrets, and audit across every step.</p>
+        <p>Traditional ETL/rETL is static pipelines. Raw agents with direct tool access are powerful but fragile on isolation, secrets, audit, and reproducibility.</p>
         
-        <p><strong>The better pattern:</strong> A dedicated <strong>agent harness</strong> (your orchestrator, multi-agent system, or thin goal-directed service) receives high-level instructions and turns them into concrete data movement by farming the actual work out to a fleet of Crabbox-provisioned remote sandboxes that act as reliable ETL and rETL workers.</p>
+        <p><strong>The vision:</strong> You talk to a dedicated <strong>agent harness</strong> at the level of goals and policies. The harness plans, ensures capacity, and dispatches every actual movement to a fleet of Crabbox remote sandboxes that function as specialized, fully-auditable ETL and rETL workers.</p>
       </div>
 
       <div class="mt-8 grid md:grid-cols-3 gap-4 text-sm">
@@ -177,57 +177,60 @@
       <div class="mermaid-container">
         <div class="mermaid">
           flowchart TB
-            subgraph YouLayer ["You / Higher System"]
-              Goal["High-level goal<br/>'Keep X in sync with enrichment'"]
+            subgraph Caller ["You / Goal / Schedule"]
+              Goal["High-level goal<br/>\"Keep profiles enriched in Salesforce\""]
             end
 
-            subgraph HarnessLayer ["Agent Harness (your orchestrator)"]
+            subgraph Harness ["Agent Harness (orchestrator)"]
               direction LR
-              Plan[Observe state + history<br/>Plan movement + logic]
-              Dispatch[Ensure pools<br/>Dispatch to workers]
-              Reflect[Ingest artifacts + results<br/>Reflect, decide next]
-              Plan --> Dispatch
-              Dispatch --> Reflect
-              Reflect --> Plan
+              H1[Observe (state + history)]
+              H2[Plan + choose worker type]
+              H3[Ensure capacity + dispatch]
+              H4[Collect evidence + reflect]
+              H1 --> H2 --> H3 --> H4 --> H1
             end
 
-            subgraph CrabboxLayer ["Crabbox (control plane)"]
-              Pools["Ready Pools<br/>pool ensure + prewarm<br/>actions hydration"]
-              Lease["Lease / Borrow<br/>--pool fast path"]
-              Pools --> Lease
+            subgraph Crabbox ["Crabbox (fleet control)"]
+              Pools["Ready Pools<br/>(pool ensure + prewarm + Actions)"]
+              Borrow["Fast borrow (--pool)"]
+              Pools --> Borrow
             end
 
-            subgraph Workers ["Sandbox Workers (execution)"]
+            subgraph Sandboxes ["Sandbox Workers"]
               direction LR
-              W1["ETL Worker<br/>warm + hydrated<br/>Airbyte + CDK"]
-              W2["rETL Worker<br/>warm + hydrated<br/>custom logic + AI"]
-              W3["Specialized<br/>on-prem / regulated"]
+              ETL["ETL Worker<br/>Airbyte + CDK"]
+              rETL["rETL Worker<br/>custom + AI logic"]
+              Spec["Specialized<br/>(on-prem, regulated)"]
             end
 
-            subgraph Data ["Data Movement"]
-              Sources[(Sources<br/>Postgres, SaaS, Files)]
-              Dests[(Destinations<br/>Warehouse, Salesforce, Apps)]
-              Sources <--> Dests
+            subgraph Movement ["Data Movement"]
+              Src[(Sources)]
+              Dst[(Destinations)]
+              Src <--> Dst
             end
 
-            Goal --> HarnessLayer
-            HarnessLayer --"crabbox pool ensure<br/>crabbox run --pool …"--> CrabboxLayer
-            CrabboxLayer --> Workers
-            Workers -->|Airbyte standard pipes| Data
-            Workers -->|Custom + AI transforms| Data
-            Workers --"artifacts, history,<br/>events, JUnit, phases"--> HarnessLayer
+            Goal --> Harness
+            Harness --"crabbox pool ensure<br/>crabbox run --pool …"--> Crabbox
+            Crabbox --> Sandboxes
+            Sandboxes -->|standard pipes| Movement
+            Sandboxes -->|complex / activation| Movement
+            Sandboxes --"artifacts + history<br/>+ phases + results"--> Harness
 
             classDef harness fill:#1e1b4b,stroke:#6366f1,color:#c7d2fe
             classDef crab fill:#431407,stroke:#f43f5e,color:#fecaca
             classDef worker fill:#0f766e,stroke:#14b8a6,color:#ccfbf1
-            classDef data fill:#1e2937,stroke:#64748b,color:#e2e8f0
-            class HarnessLayer harness
-            class CrabboxLayer crab
-            class Workers,W1,W2,W3 worker
-            class Data data
+            classDef move fill:#1e2937,stroke:#64748b,color:#e2e8f0
+            class Harness harness
+            class Crabbox crab
+            class Sandboxes,ETL,rETL,Spec worker
+            class Movement move
         </div>
       </div>
       <p class="text-center text-xs text-slate-500 mt-3">Crabbox owns the fleet of warm, repo-defined sandboxes. The harness owns the goals and the reflection loop.</p>
+
+      <div class="mt-6 max-w-2xl mx-auto text-center text-sm text-slate-400 border border-slate-800 bg-slate-900/50 rounded-3xl px-6 py-4">
+        <strong class="text-white">Key principle:</strong> The harness reasons at the level of intent. Every byte that moves does so inside a governed, observable, short-lived or borrowed remote sandbox.
+      </div>
     </section>
 
     <!-- Sandbox Workers -->
@@ -301,26 +304,26 @@
       <div class="mermaid-container mb-8">
         <div class="mermaid">
           flowchart LR
-            subgraph Harness ["Harness Loop"]
+            subgraph Harness ["Harness Loop (closed)"]
               direction TB
-              H1[Receive goal or schedule]
-              H2[Observe: warehouse state<br/>+ crabbox history + prior artifacts]
-              H3[Plan: ETL / rETL mix?<br/>Standard Airbyte or custom?<br/>Generate script if needed]
-              H4[Dispatch: pool ensure if needed<br/>crabbox run --pool worker-type …]
-              H5[Collect: results + artifacts<br/>+ phases + full history]
-              H6[Reflect: success? metrics? errors?<br/>Update memory, alert, or schedule follow-up]
+              H1[Goal or trigger]
+              H2[Observe state + prior runs]
+              H3[Plan work + worker pool]
+              H4[Dispatch via Crabbox]
+              H5[Ingest results + artifacts]
+              H6[Reflect &amp; decide]
               H1 --> H2 --> H3 --> H4 --> H5 --> H6 --> H2
             end
 
-            H4 -->|lease + run| Sandbox["Remote Sandbox Worker"]
-            Sandbox -->|executes| Airbyte["Airbyte<br/>src → dst (standard)"]
-            Sandbox -->|executes| Custom["Custom / AI<br/>enrich, score, activate, transform"]
-            Sandbox -->|returns| H5
+            H4 --> Sandbox["Sandbox Worker"]
+            Sandbox -->|Airbyte| Std["Standard ETL<br/>src → dst"]
+            Sandbox -->|Custom| Cpx["rETL / AI / transforms"]
+            Sandbox -->|artifacts, phases,<br/>history, results| H5
 
             classDef harness fill:#1e1b4b,stroke:#6366f1,color:#c7d2fe
             classDef worker fill:#0f766e,stroke:#14b8a6,color:#ccfbf1
             class Harness harness
-            class Sandbox,Airbyte,Custom worker
+            class Sandbox,Std,Cpx worker
         </div>
       </div>
 
@@ -356,44 +359,46 @@
       <div class="prose text-slate-300 max-w-3xl space-y-8 text-sm">
         <div>
           <div class="font-medium text-base text-white mb-2">1. Define your worker pools in a data-movement repo</div>
-          <div class="text-slate-400">Add <code>crabbox.yaml</code>. Create a <code>.github/workflows/hydrate-airbyte.yml</code> (or equivalent) that installs Airbyte (CLI / PyAirbyte), Python, CDK, any custom libs, and marks actions done. Use cache volumes for speed.</div>
-          <div class="mt-2 text-xs font-mono bg-slate-900 border border-slate-800 rounded-2xl p-3 overflow-auto">crabbox pool ensure example-org/data-movement/main/hetzner/linux/cpx51 --min-ready 2 --create -- --provider hetzner --cache-volume airbyte-etl</div>
+          <div class="text-slate-400">Add <code>crabbox.yaml</code>. Create a <code>.github/workflows/hydrate.yml</code> that installs Airbyte (or PyAirbyte), CDK, Python libs, etc. Use cache volumes. The harness (or you) runs:</div>
+          <div class="mt-2 text-xs font-mono bg-slate-900 border border-slate-800 rounded-2xl p-3 overflow-auto">crabbox pool ensure example-org/data-movement/main/hetzner/linux/cpx51 --min-ready 3 --create -- --provider hetzner --cache-volume airbyte-etl</div>
         </div>
 
         <div>
-          <div class="font-medium text-base text-white mb-2">2. The harness is just code that talks to Crabbox</div>
-          <div class="text-slate-400">It can be a Python/FastAPI service, a LangGraph/CrewAI graph, a simple scheduler script, or even a long-running Crabbox job that runs the agent loop itself. It shells out to <code>crabbox</code> (or uses the Go library / future API) and parses structured output.</div>
+          <div class="font-medium text-base text-white mb-2">2. The harness is ordinary code + Crabbox calls</div>
+          <div class="text-slate-400">A thin Python service, LangGraph agent, scheduler, or even a persistent Crabbox job running the loop. It observes, plans, calls the CLI (or future API), and feeds results back into its context.</div>
+          <pre class="mt-3 text-[11px] bg-slate-900 border border-slate-800 rounded-3xl p-4 overflow-auto leading-snug"><code># Minimal harness sketch (pseudocode)
+while True:
+    goal = receive_goal_or_schedule()
+    state = observe_warehouse() + crabbox_history()
+    plan = llm_plan(goal, state)          # ETL mix? which pool? custom script?
+    crabbox("pool ensure … --min-ready …")
+    run_id = crabbox("run --pool {plan.pool} --script {plan.script} --allow-env '…' --artifact-glob 'reports/**'")
+    evidence = collect(crabbox_results(run_id), artifacts(run_id), history(run_id))
+    llm_reflect(goal, evidence)
+    # update memory, alert, or schedule next</code></pre>
         </div>
 
         <div>
-          <div class="font-medium text-base text-white mb-2">3. Typical harness actions (examples it emits)</div>
-          <pre class="text-xs bg-slate-900 border border-slate-800 rounded-3xl p-4 overflow-auto"><code># capacity
-crabbox pool ensure … --min-ready 3
-
-# standard ETL dispatch (Airbyte driven by harness-generated config or script)
-crabbox run --pool example-org/data-movement/main/… \
-  --shell 'python -m etl.airbyte_sync --config generated.json' \
+          <div class="font-medium text-base text-white mb-2">3. Real dispatch commands the harness emits</div>
+          <pre class="text-xs bg-slate-900 border border-slate-800 rounded-3xl p-4 overflow-auto"><code># ETL worker (Airbyte inside)
+crabbox run --pool … \
+  --shell 'python -m workers.airbyte_ingest …' \
   --allow-env 'AIRBYTE_*,SOURCE_*,WAREHOUSE_*' \
   --env-from-profile etl-warehouse \
-  --artifact-glob 'reports/**,metrics/*.json' --junit reports/
+  --artifact-glob 'reports/**,metrics.json' --junit reports/
 
-# complex rETL with AI
-crabbox run --pool … --script etl/activate_customers.py \
-  --allow-env 'DEST_SF_*,MODEL_API_*' …
-
-# inspect what happened (feed to harness memory / LLM)
-crabbox history --limit 20 --json
-crabbox results &lt;run-id&gt;
-crabbox artifacts download &lt;run-id&gt; --glob 'reports/**'</code></pre>
+# rETL / AI worker
+crabbox run --pool … --script workers/activate_scored.py \
+  --allow-env 'DEST_*,MODEL_API_*' --artifact-glob 'evidence/**'</code></pre>
         </div>
 
         <div>
-          <div class="font-medium text-base text-white mb-2">4. Use Crabbox primitives for harness power</div>
+          <div class="font-medium text-base text-white mb-2">4. Leverage the primitives</div>
           <ul class="text-slate-400 space-y-1">
-            <li>• <code>jobs:</code> in config for repeatable "standard-customer-sync" worker templates the harness can invoke by name.</li>
-            <li>• Profiles for bundling the exact env allowlist + secrets per worker type.</li>
-            <li>• Ponds when a complex movement needs coordinated boxes (e.g. extract + transform peers).</li>
-            <li>• Full history + events as the harness's source of truth for "what data moved when and with what outcome".</li>
+            <li>• <code>jobs:</code> for named, repeatable worker templates ("customer-360-sync").</li>
+            <li>• Profiles for per-worker secret bundles + allowlists.</li>
+            <li>• Ponds for coordinated multi-box movements when needed.</li>
+            <li>• Full history/events/artifacts as the harness's perfect, queryable memory of every movement.</li>
           </ul>
         </div>
       </div>
@@ -406,8 +411,8 @@ crabbox artifacts download &lt;run-id&gt; --glob 'reports/**'</code></pre>
 
   <footer class="border-t border-slate-800">
     <div class="max-w-6xl mx-auto px-6 py-16 text-center">
-      <div class="text-2xl tracking-tighter font-semibold mb-3">High-level intent in. Safe, observable data movement out.</div>
-      <p class="text-slate-400 mb-8 max-w-md mx-auto">The agent harness plans and reflects. Crabbox sandboxes do the real work as reliable ETL &amp; rETL workers. Airbyte provides the fast standard pipes inside them.</p>
+      <div class="text-2xl tracking-tighter font-semibold mb-3">High-level goals in.<br>Safe, observable data movement out — inside real remote workers.</div>
+      <p class="text-slate-400 mb-8 max-w-md mx-auto">The harness reasons at the level of intent. Every movement executes in a governed Crabbox sandbox worker. Airbyte for the pipes, custom logic for the rest. Full evidence back for the next decision.</p>
       
       <div class="flex flex-wrap justify-center gap-4">
         <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" class="inline-flex items-center gap-x-2 px-6 h-12 rounded-3xl border border-slate-700 hover:bg-slate-900 font-medium transition text-sm">
