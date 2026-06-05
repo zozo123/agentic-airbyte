@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f0dc">
-  <meta name="description" content="Agentic Airbyte is a comic-style tutorial for goal-driven data movement with a harness, Crabbox sandbox workers, Airbyte, and execution evidence.">
+  <meta name="description" content="Agentic Airbyte explains the first-principles separation behind goal-driven data movement: the harness reasons, sandbox workers act, evidence improves the next decision.">
   <meta property="og:title" content="Agentic Airbyte">
-  <meta property="og:description" content="Tell the harness the outcome. It leases governed workers, moves the data, and brings back proof.">
+  <meta property="og:description" content="The harness reasons. Sandboxes act. Evidence makes the next decision better.">
   <meta property="og:type" content="website">
   <title>Agentic Airbyte | The Harness, The Workers, The Proof</title>
   <style>
@@ -822,12 +822,13 @@
 
   <header id="top" class="hero">
     <div class="hero-inner">
-      <div class="badge">A one-page tutorial for the vision</div>
-      <h1>Tell the harness the outcome. It borrows workers and brings back proof.</h1>
+      <div class="badge">First principles for data agents</div>
+      <h1>The harness should think. The worker should touch the world.</h1>
       <p class="hero-copy">
-        Agentic Airbyte is not "an agent poking random tools." It is a clean operating model:
-        <strong>the harness thinks</strong>, <strong>Crabbox sandboxes execute</strong>, and
-        <strong>Airbyte plus custom code move the data</strong> with evidence every step of the way.
+        A useful data agent cannot also be the place where every secret, byte, and mutable state lives.
+        So the system separates the problem: <strong>the harness chooses the target and credential profile</strong>,
+        <strong>Crabbox gives it an isolated worker</strong>, and <strong>Airbyte runs inside that worker to move the data</strong>.
+        Then evidence comes back.
       </p>
       <div class="hero-actions">
         <a class="button primary" href="#story">Read the story</a>
@@ -842,24 +843,24 @@
       <div class="promise">
         <section class="promise-card" aria-label="The promise">
           <div>
-            <h2>The promise is simple.</h2>
+            <h2>The core idea is separation.</h2>
             <p>
-              Users should describe what data outcome they want. The system should decide what work is needed,
-              run that work in safe remote boxes, and report exactly what happened.
+              The harness does not need to be the database, the runner, and the auditor. It needs one reliable
+              path from intent to controlled execution to proof.
             </p>
           </div>
           <div class="promise-list">
             <div class="promise-item">
               <div class="promise-num">1</div>
-              <div><strong>Intent, not pipeline babysitting.</strong><span>Ask for freshness, activation, enrichment, repair, or validation.</span></div>
+              <div><strong>Intent is compressed work.</strong><span>The user says the desired outcome and constraints.</span></div>
             </div>
             <div class="promise-item">
               <div class="promise-num">2</div>
-              <div><strong>Execution, not hand-waving.</strong><span>Every movement happens inside a real sandbox worker.</span></div>
+              <div><strong>Execution is isolated.</strong><span>Crabbox leases a worker with the right target, repo, and credential profile.</span></div>
             </div>
             <div class="promise-item">
               <div class="promise-num">3</div>
-              <div><strong>Proof, not trust me.</strong><span>Artifacts, phases, metrics, results, and history return to the harness.</span></div>
+              <div><strong>Learning is evidence.</strong><span>The next plan is grounded in artifacts, metrics, results, and history.</span></div>
             </div>
           </div>
         </section>
@@ -926,8 +927,8 @@
       <div class="section-inner">
         <div class="section-title">
           <span class="kicker">The story</span>
-          <h2>One goal becomes one governed worker episode.</h2>
-          <p>This is the end-to-end narrative the website needs to teach. It is intentionally small: five beats, one loop, no giant architecture wall.</p>
+          <h2>The whole system is one loop.</h2>
+          <p>If you understand this loop, you understand the product. A goal becomes a target and credential profile, that becomes an Airbyte worker run, and the run becomes memory.</p>
         </div>
 
         <div class="chapters">
@@ -940,11 +941,11 @@
               </svg>
             </div>
             <div class="chapter-body">
-              <h3>1. A goal arrives.</h3>
+              <h3>1. A human states the invariant.</h3>
               <p>"Keep customer profiles enriched from the warehouse. Refresh daily. Respect the data policy."</p>
               <ul>
-                <li>The caller says the outcome, not every shell step.</li>
-                <li>The harness records the policy, deadline, and success criteria.</li>
+                <li>The caller says what must remain true.</li>
+                <li>The harness records policy, deadline, and success criteria.</li>
               </ul>
             </div>
           </article>
@@ -958,7 +959,7 @@
               </svg>
             </div>
             <div class="chapter-body">
-              <h3>2. The harness decides what kind of work this is.</h3>
+              <h3>2. The harness predicts the useful next action.</h3>
               <p>It checks state, prior Crabbox history, schemas, destination rules, and the last proof bundle.</p>
               <ul>
                 <li>Standard pipe? Use Airbyte inside an ETL worker.</li>
@@ -978,11 +979,11 @@
               </svg>
             </div>
             <div class="chapter-body">
-              <h3>3. Crabbox leases the right sandbox worker.</h3>
-              <p>The harness asks Crabbox for capacity. Crabbox provides an isolated, repo-hydrated worker from a ready pool.</p>
+              <h3>3. Crabbox turns the decision into a bounded action.</h3>
+              <p>The harness asks for capacity and names the target plus credential profile. Crabbox provides an isolated, repo-hydrated worker from a ready pool.</p>
               <ul>
                 <li>Warm pools make dispatch fast.</li>
-                <li>Profiles and allowlists keep secrets scoped to the task.</li>
+                <li>Profiles and allowlists keep secrets scoped to the task; raw secrets do not belong in the prompt or command line.</li>
               </ul>
             </div>
           </article>
@@ -997,8 +998,8 @@
               </svg>
             </div>
             <div class="chapter-body">
-              <h3>4. The worker moves the data and writes proof.</h3>
-              <p>Airbyte handles the reliable source-to-destination work. Custom code handles scoring, activation, validation, and policy-specific steps.</p>
+              <h3>4. The worker acts, then explains what happened.</h3>
+              <p>Inside the sandbox, Airbyte reads from the approved source and writes to the target. Custom code handles scoring, activation, validation, and policy-specific steps around that movement.</p>
               <ul>
                 <li>The worker emits phases, tests, row counts, and artifacts.</li>
                 <li>The harness never has to hold raw data or long-lived credentials.</li>
@@ -1014,8 +1015,8 @@
         <div>
           <div class="section-title">
             <span class="kicker">Tutorial loop</span>
-            <h2>Every run teaches the next run.</h2>
-            <p>The important idea is not just "run a connector." It is a closed loop: observe, plan, lease, execute, ingest proof, and decide again.</p>
+            <h2>Every run changes the context for the next run.</h2>
+            <p>The important idea is not "run a connector." It is a closed loop: observe, plan, lease, execute, ingest proof, and decide again.</p>
           </div>
 
           <div class="proof-board" aria-label="Closed-loop tutorial">
@@ -1029,11 +1030,11 @@
             </div>
             <div class="proof-row">
               <div class="proof-key">Lease</div>
-              <div class="proof-value">Use Crabbox to borrow a warm sandbox with the right repo, runtime, cache, and secret scope.</div>
+              <div class="proof-value">Use Crabbox to borrow a warm sandbox with the right repo, runtime, target config, cache, and credential profile.</div>
             </div>
             <div class="proof-row">
               <div class="proof-key">Execute</div>
-              <div class="proof-value">Run Airbyte, CDK, Python, dbt, model calls, or custom activation logic in the worker.</div>
+              <div class="proof-value">Run Airbyte inside the worker to move data, with CDK, Python, dbt, model calls, or activation logic when the movement needs more than a standard pipe.</div>
             </div>
             <div class="proof-row">
               <div class="proof-key">Reflect</div>
@@ -1046,11 +1047,11 @@
           <h3>What this is really selling</h3>
           <p>
             Not another static pipeline UI. Not a loose agent with raw credentials.
-            The product promise is <strong>agentic intent with governed execution</strong>.
+            The product promise is <strong>intelligence with a boundary</strong>.
           </p>
           <p>
-            The harness can be LangGraph, a scheduler, or normal service code. The execution contract is still simple:
-            <code>crabbox run --pool ...</code>
+            The harness can be an agent graph, a scheduler, or normal service code. It passes a target config and credential profile into a simple execution contract:
+            <code>crabbox run --pool ... --env-from-profile ...</code>
           </p>
         </aside>
       </div>
@@ -1060,7 +1061,7 @@
       <div class="section-inner">
         <div class="section-title">
           <span class="kicker">Why it feels trustworthy</span>
-          <h2>The magic is not hidden. It is returned as evidence.</h2>
+          <h2>The intelligence improves because the feedback is real.</h2>
           <p>For agents to own data movement, they need memory they can trust. Crabbox gives the harness structured run output instead of vague logs.</p>
         </div>
 
@@ -1097,7 +1098,8 @@ crabbox pool ensure example-org/data-movement/main/provider/linux/etl \
   --min-ready 3 --create -- \
   --cache-volume airbyte-etl
 
-<span class="comment"># 2. Run Airbyte inside a borrowed sandbox.</span>
+<span class="comment"># 2. Run Airbyte inside a borrowed sandbox.
+# The harness supplies target config + credential profile, not raw secrets.</span>
 crabbox run --pool example-org/data-movement/main/provider/linux/etl \
   --shell 'python -m workers.airbyte_ingest --config /tmp/generated.json' \
   --allow-env 'AIRBYTE_*,SOURCE_*,WAREHOUSE_*' \
@@ -1114,8 +1116,7 @@ crabbox artifacts download &lt;run-id&gt;</code></pre>
         <aside class="callout" style="background: var(--crabbox)">
           <h3>The page in one sentence</h3>
           <p>
-            You give the outcome; the harness chooses the work; Crabbox supplies the worker;
-            Airbyte and code move the data; evidence closes the loop.
+            The harness names the target and credential profile; Crabbox leases the sandbox; Airbyte moves the data; evidence teaches the next decision.
           </p>
           <a class="button" href="https://github.com/zozo123/agentic-airbyte" target="_blank" rel="noreferrer">View source</a>
         </aside>
@@ -1125,9 +1126,9 @@ crabbox artifacts download &lt;run-id&gt;</code></pre>
     <section class="section">
       <div class="section-inner">
         <div class="ending">
-          <h2>That is the vision: agentic planning without unsafe execution.</h2>
+          <h2>That is the vision: intelligent planning with bounded execution.</h2>
           <p>
-            The harness can be creative because the workers are controlled. The workers can be powerful because they are isolated.
+            The harness can be creative because the action is bounded. The workers can be powerful because they are isolated.
             The system can improve because every run returns proof.
           </p>
           <a class="button primary" href="#top">Back to the comic</a>
