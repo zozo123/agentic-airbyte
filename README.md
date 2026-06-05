@@ -1,10 +1,12 @@
-# Agentic src ↔ dst with Airbyte + Crabbox
+# Agent Harness for Data Movement • Crabbox Sandbox Workers + Airbyte
 
-Concise one-pager explaining the pattern for **AI agents that intelligently manipulate data flows** between sources and destinations.
+You tell the **agent harness** a high-level goal for data movement.
 
-- **Airbyte**: Reliable, open-source src → dst pipes (300+ connectors, CDK, self-hostable).
-- **AI Agents**: Dynamic configuration, custom logic generation, bidirectional decisions, and in-flight data manipulation.
-- **Crabbox**: The trusted execution layer — warm pooled boxes, safe secrets, full audit of every agent action, any environment (cloud / on-prem / sandboxes).
+The harness plans and dispatches the real work to **Crabbox remote sandboxes** running as specialized ETL &amp; rETL workers (with Airbyte providing the reliable standard pipes inside them).
+
+- **Agent Harness**: Your goal-oriented orchestrator (LangGraph, Crew, custom loop, service). It observes, plans, ensures capacity, dispatches, collects evidence, reflects.
+- **Crabbox Sandbox Workers**: Warm pooled, repo-hydrated, isolated remote environments. The actual "hands" that move data safely. Full artifacts + history returned.
+- **Airbyte**: The fast, observable src ↔ dst pipes that run inside the workers for standard flows (CDK + custom logic for the rest).
 
 ## View
 
