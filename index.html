@@ -19,7 +19,7 @@
     .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); }
     .flow-card { transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); }
     .flow-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
-    .tool-card { transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); }
+    .tool-card { transition: transform 0.2s cubic-bezier(0.4, 0.0, 0.2, 1), border-color 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); }
     .tool-card:hover { transform: translateY(-2px); border-color: rgb(148 163 184); }
     .step-number { font-variant-numeric: tabular-nums; }
     .code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.8125rem; line-height: 1.5; }
@@ -360,7 +360,7 @@ crabbox run --pool ... --script agent_airbyte.py \
       <div class="space-y-8">
         <div>
           <h3 class="font-semibold text-xl mb-3">1. Warm Reusable Workers (Pools + Prewarm)</h3>
-          <div class="text-sm text-slate-400">Agent calls (or has tool for) <code>crabbox pool ensure &lt;key&gt; --min-ready N --create -- --provider ...</code>. This creates or reuses hydrated leases (docs/commands/pool.md). Prewarm (docs/commands/prewarm.md) leases and runs actions hydrate from your repo workflow to install Airbyte + data tools. Result: boxes ready in seconds for any agent iteration.</div>
+          <div class="text-sm text-slate-400">Agent calls (or has tool for) <code>crabbox pool ensure &lt;key&gt; --min-ready N --create -- --provider …</code>. This creates or reuses hydrated leases (docs/commands/pool.md). Prewarm (docs/commands/prewarm.md) leases and runs actions hydrate from your repo workflow to install Airbyte + data tools. Result: boxes ready in seconds for any agent iteration.</div>
           <div class="mt-2 text-xs bg-slate-900 p-3 rounded">Why: Traditional cold VMs or containers take minutes. Agents need fast loops. Pools give "always-on" workers with fingerprint matching to avoid poison (see ready pools in spec/broker.md).</div>
         </div>
 
