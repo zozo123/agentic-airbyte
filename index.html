@@ -28,6 +28,8 @@
     a:focus-visible, button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
     .mermaid { background: #0f172a; border-radius: 16px; padding: 1.5rem; }
     h1, h2, h3 { text-wrap: balance; }
+    .airbyte-accent { color: #14b8a6; } /* Airbyte teal */
+    .crabbox-accent { color: #f43f5e; } /* Crabbox rose */
     @media (prefers-reduced-motion: reduce) { .flow-card, .tool-card { transition: none; } }
   </style>
 </head>
@@ -66,7 +68,7 @@
   <!-- Hero -->
   <header class="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center border-b border-slate-800">
     <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-3xl bg-slate-900 border border-slate-800 text-xs font-medium mb-6">
-      <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" aria-hidden="true"></div>
+      <div class="w-2 h-2 bg-teal-400 rounded-full animate-pulse" aria-hidden="true"></div>
       <span>AI agents that actually move data in remote sandboxes</span>
     </div>
     
@@ -94,17 +96,23 @@
     <!-- The Notion / Core Concept -->
     <section id="notion" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
       <div class="max-w-3xl mx-auto text-center mb-12">
-        <div class="uppercase text-xs font-semibold tracking-[2px] text-emerald-400 mb-2">THE CORE NOTION</div>
+        <div class="uppercase text-xs font-semibold tracking-[2px] text-teal-400 mb-2">THE CORE NOTION</div>
         <h2 class="display text-4xl tracking-tighter font-semibold mb-6">Using Crabbox Remote Sandboxes + Airbyte for a New Kind of ETL/rETL</h2>
         <p class="text-xl text-slate-300">Traditional ETL and reverse ETL are static pipelines defined by humans in UIs or YAML and run on fixed schedules. They break easily, can't adapt, and have almost no place for AI agents to participate meaningfully.</p>
       </div>
 
       <div class="prose max-w-4xl mx-auto text-lg text-slate-300 mb-12">
-        <p><strong>The new notion:</strong> Give AI agents the ability to <em>drive</em> data movement by letting them provision and use <strong>remote execution sandboxes</strong> (via Crabbox) where they can safely run Airbyte connectors, custom transforms, and reverse ETL logic — all while observing results, iterating, and maintaining full audit.</p>
+        <p><strong>The core notion:</strong> A new version of ETL and rETL where <strong>AI agents</strong> don't just plan — they <em>control and execute</em> data movement inside secure <strong>remote sandboxes</strong> powered by Crabbox, using Airbyte for the reliable connectors.</p>
         
-        <p>Crabbox acts as the "remote sandbox provider" for agents: it gives on-demand or pre-warmed isolated Linux/Windows environments (the "sandboxes" or "boxes") with networking, compute, and the ability to run any tool (including Airbyte CLI or Python with Airbyte CDK). Agents (or agent frameworks) treat Crabbox as a tool to lease a sandbox, hydrate it with the exact data stack, run commands, capture outputs, and release — with secrets forwarded safely and every action recorded.</p>
+        <p><strong>How it works intuitively:</strong></p>
+        <ul class="list-disc pl-6 space-y-1 text-base">
+          <li><strong>ETL (forward)</strong>: Agent leases a Crabbox remote sandbox (warm pooled box). Inside it, runs Airbyte to extract from sources (DBs, SaaS, APIs) and load to warehouse/dest. Or generates/runs custom transforms in Python.</li>
+          <li><strong>rETL (reverse)</strong>: Agent uses the sandbox to read from warehouse, applies AI-driven logic (enrichment, personalization, eligibility), and pushes to operational systems (CRMs, apps, on-prem) — all safely isolated.</li>
+        </ul>
         
-        <p>Airbyte provides the battle-tested, observable connectors for the "standard" part of the movement. Crabbox remote sandboxes provide the execution environment where agents can do the non-standard, dynamic, AI-generated, or security-sensitive parts (custom logic, reverse ETL with complex rules, on-prem targets, etc.).</p>
+        <p>Crabbox provides the remote sandboxes: on-demand or pre-warmed isolated environments (via pools/prewarm from docs) with your full stack hydrated via Actions (Airbyte CLI + CDK + Python). Secrets forwarded safely, every run produces artifacts and audit for the agent to observe and iterate.</p>
+        
+        <p>Airbyte handles the standard, reliable "pipes". Crabbox remote sandboxes give agents the power and safety to do the dynamic, custom, reverse, and complex parts that make this a truly new, agentic version of ETL/rETL.</p>
       </div>
 
       <!-- Core Concept Diagram -->
@@ -141,8 +149,8 @@
             <li>• No closed loop for the AI to observe results and adapt</li>
           </ul>
         </div>
-        <div class="bg-slate-900 border border-emerald-800 rounded-3xl p-6">
-          <h3 class="font-semibold text-xl mb-4 text-emerald-400">New Way (Agentic with Remote Sandboxes)</h3>
+        <div class="bg-slate-900 border border-teal-800 rounded-3xl p-6">
+          <h3 class="font-semibold text-xl mb-4 text-teal-400">New Way (Agentic with Remote Sandboxes)</h3>
           <ul class="text-sm space-y-2 text-slate-300">
             <li>• Agent decides what to move and how (including generating custom code)</li>
             <li>• Uses Crabbox to get a real remote sandbox on demand or from a warm pool</li>
@@ -158,26 +166,26 @@
     <!-- The Tools -->
     <section id="tools" class="max-w-6xl mx-auto px-6 py-16 border-t border-slate-800">
       <div class="text-center mb-10">
-        <div class="uppercase text-xs font-semibold tracking-[2px] text-emerald-400 mb-2">THE TWO PIECES</div>
+        <div class="uppercase text-xs font-semibold tracking-[2px] text-teal-400 mb-2">THE TWO PIECES</div>
         <h2 class="display text-4xl tracking-tighter font-semibold">The Tools</h2>
       </div>
 
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="tool-card bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-3xl p-8">
+        <div class="tool-card bg-slate-900 border border-slate-800 hover:border-teal-500/50 rounded-3xl p-8">
           <div class="flex items-center gap-x-3 mb-4">
-            <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-              <i class="fa-solid fa-plug text-emerald-400 text-2xl" aria-hidden="true"></i>
+            <div class="w-10 h-10 rounded-2xl bg-teal-500/10 flex items-center justify-center">
+              <i class="fa-solid fa-plug text-teal-400 text-2xl" aria-hidden="true"></i>
             </div>
             <div>
               <h3 class="font-semibold text-2xl tracking-tight">Airbyte</h3>
-              <p class="text-xs text-emerald-400 font-medium">THE RELIABLE CONNECTORS</p>
+              <p class="text-xs text-teal-400 font-medium">THE RELIABLE CONNECTORS</p>
             </div>
           </div>
           <p class="text-slate-400 mb-6">The open-source standard for moving data between sources and destinations with hundreds of connectors and excellent observability.</p>
           <ul class="text-sm space-y-2">
-            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> 300+ connectors, CDK for customs</li>
-            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> CLI, API, and Python libraries agents can drive</li>
-            <li class="flex gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1 w-4" aria-hidden="true"></i> Great for the standard, declarative part of movement</li>
+            <li class="flex gap-3"><i class="fa-solid fa-check text-teal-400 mt-1 w-4" aria-hidden="true"></i> 300+ connectors, CDK for customs</li>
+            <li class="flex gap-3"><i class="fa-solid fa-check text-teal-400 mt-1 w-4" aria-hidden="true"></i> CLI, API, and Python libraries agents can drive</li>
+            <li class="flex gap-3"><i class="fa-solid fa-check text-teal-400 mt-1 w-4" aria-hidden="true"></i> Great for the standard, declarative part of movement</li>
           </ul>
         </div>
 
@@ -230,7 +238,7 @@
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
           <div class="font-semibold mb-2">Step 1: Get a Remote Sandbox</div>
           <div class="text-sm text-slate-400">Use <code>crabbox pool ensure &lt;key&gt; --min-ready 1 --create</code> (or prewarm). Crabbox provisions or reuses an isolated remote environment. Use actions hydration so the sandbox already has Airbyte installed exactly as in your CI.</div>
-          <div class="text-xs mt-2 text-emerald-400">This is the "remote sandbox" part — the agent doesn't run things locally or on some untrusted code interpreter. It gets a real, controlled remote box.</div>
+          <div class="text-xs mt-2 text-teal-400">This is the "remote sandbox" part — the agent doesn't run things locally or on some untrusted code interpreter. It gets a real, controlled remote box.</div>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
@@ -243,7 +251,7 @@
           <div class="text-sm text-slate-400">Agent (via its tools) calls something like:<br>
           <code>crabbox run --pool &lt;key&gt; --shell 'airbyte ...' --allow-env 'AIRBYTE_*' ...</code><br>
           or <code>--script my_agent_generated_etl.py</code> with proper artifact capture.</div>
-          <div class="text-xs mt-2 text-emerald-400">Everything sensitive or custom happens inside the Crabbox-provided remote sandbox with safe secret forwarding and full output capture.</div>
+          <div class="text-xs mt-2 text-teal-400">Everything sensitive or custom happens inside the Crabbox-provided remote sandbox with safe secret forwarding and full output capture.</div>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
@@ -266,7 +274,7 @@
         <div>
           <div class="font-semibold mb-2">2. Pre-warm / ensure remote sandbox capacity</div>
           <div class="text-slate-400"><code>crabbox pool ensure my-data-pipelines/main/hetzner/linux/cpx51 --min-ready 2 --create -- --provider hetzner --type cpx51 --cache-volume airbyte-etl</code></div>
-          <div class="text-xs mt-1 text-emerald-400">This creates warm remote sandboxes ready for agent work.</div>
+          <div class="text-xs mt-1 text-teal-400">This creates warm remote sandboxes ready for agent work.</div>
         </div>
 
         <div>
@@ -282,7 +290,7 @@
         </div>
       </div>
 
-      <div class="mt-10 p-6 bg-emerald-950/30 border border-emerald-800 rounded-3xl text-sm">
+      <div class="mt-10 p-6 bg-teal-950/30 border border-teal-800 rounded-3xl text-sm">
         <strong>Key safety &amp; power features from Crabbox (directly from the docs):</strong><br>
         • Warm pooled remote sandboxes so agents aren't waiting for cold VMs<br>
         • Actions hydration so the sandbox has exactly the Airbyte + data environment your repo expects<br>
