@@ -901,10 +901,12 @@
       </a>
       <div class="nav-links">
         <a href="#tools">Tools</a>
+        <a href="#formal">Model</a>
         <a href="#trace">Trace</a>
         <a href="#worker">Worker</a>
         <a href="#paths">Paths</a>
         <a href="#commands">Commands</a>
+        <a href="#contracts">Contracts</a>
         <a href="#why">Why</a>
       </div>
       <a class="button" href="#trace">Trace it</a>
@@ -1162,10 +1164,61 @@
       </div>
     </section>
 
+    <section id="formal" class="section">
+      <div class="wrap">
+        <div class="section-heading">
+          <span class="kicker">3 / formal model</span>
+          <h2>The system is a state transition with a bounded executor.</h2>
+          <p>This is the clean mental model. The harness computes the next action from state and evidence. Crabbox runs that action in a sandbox. Airbyte changes external data state. Evidence updates the harness state.</p>
+        </div>
+
+        <div class="paths">
+          <article class="path-card">
+            <div class="path-head control-head">Objects</div>
+            <p><code>G</code> goal, <code>S</code> observed state, <code>P</code> plan, <code>J</code> job spec, <code>R</code> run, <code>E</code> evidence, <code>S'</code> updated state.</p>
+          </article>
+          <article class="path-card">
+            <div class="path-head data-head">Transition</div>
+            <p><code>(G, S) -> P -> J -> R -> E -> S'</code>. Only <code>R</code> touches source and target data. The harness handles decisions and memory.</p>
+          </article>
+          <article class="path-card">
+            <div class="path-head evidence-head">Invariant</div>
+            <p>The harness may choose the job and credential profile. It must not become the data mover, secret store, or artifact sanitizer.</p>
+          </article>
+        </div>
+
+        <div class="code-panel" style="margin-top: 16px">
+          <div class="code-head">
+            <span>harness-loop.pseudo</span>
+            <span>minimal algorithm</span>
+          </div>
+          <pre class="terminal"><code><span class="comment"># The harness is a controller. It repeatedly chooses bounded actions.</span>
+while true:
+    G = receive_goal_or_schedule()
+    S = observe_state() + crabbox.history() + previous_artifacts()
+
+    P = plan(G, S)                         <span class="comment"># choose movement type and target</span>
+    J = compile_job(P)                     <span class="comment"># pool, config, profile, validation</span>
+
+    R = crabbox.run(J.pool, J.command,
+                    env_profile=J.profile,
+                    allow_env=J.allow_env,
+                    artifacts=J.artifacts)
+
+    E = crabbox.results(R) + crabbox.artifacts(R)
+    update_memory(G, S, P, J, R, E)
+
+    if complete(E): break
+    if retryable(E): continue
+    alert(E); break</code></pre>
+        </div>
+      </div>
+    </section>
+
     <section id="worker" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">3 / worker cutaway</span>
+          <span class="kicker">4 / worker cutaway</span>
           <h2>What runs inside the sandbox worker.</h2>
           <p>The worker is not just a terminal. It is the execution envelope around Airbyte, generated config, scoped credentials, validation, and artifacts.</p>
         </div>
@@ -1241,7 +1294,7 @@
     <section id="paths" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">4 / paths</span>
+          <span class="kicker">5 / paths</span>
           <h2>Three paths exist. Do not mix them.</h2>
           <p>This is the most important design rule. Control, data, and evidence are separate flows.</p>
         </div>
@@ -1267,7 +1320,7 @@
       <div class="wrap two">
         <div>
           <div class="section-heading">
-            <span class="kicker">5 / credentials</span>
+            <span class="kicker">6 / credentials</span>
             <h2>How credentials work.</h2>
             <p>"Harness spins up Crabbox with creds and target" means profile references and target config. Raw secrets should not be in prompts, command lines, logs, or artifact files.</p>
           </div>
@@ -1298,7 +1351,7 @@
       <div class="wrap two">
         <div>
           <div class="section-heading">
-            <span class="kicker">6 / runnable shape</span>
+            <span class="kicker">7 / runnable shape</span>
             <h2>The calls look like this.</h2>
             <p>This is the minimal shell shape a harness can emit. A real harness can call a local CLI, wrapper service, or future API, but the boundary is the same.</p>
           </div>
@@ -1350,10 +1403,42 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
       </div>
     </section>
 
+    <section id="contracts" class="section">
+      <div class="wrap">
+        <div class="section-heading">
+          <span class="kicker">8 / contracts</span>
+          <h2>Component contracts and failure semantics.</h2>
+          <p>The architecture works because each boundary is explicit. Every component has inputs, outputs, and failure behavior.</p>
+        </div>
+
+        <div class="trace">
+          <article class="trace-step"><div class="trace-num">A</div><div class="trace-body"><h3>Harness -> Crabbox contract</h3><p>Input: pool id, command, synced job config, env allowlist, credential profile, artifact rules, timeout, retry policy. Output: run id and execution status.</p></div><div class="trace-call">submit bounded work</div></article>
+          <article class="trace-step"><div class="trace-num">B</div><div class="trace-body"><h3>Crabbox -> worker contract</h3><p>Input: hydrated repo, generated config, allowed env, cache volumes, command. Output: exit code, logs, phase events, artifacts, JUnit.</p></div><div class="trace-call">execute in sandbox</div></article>
+          <article class="trace-step"><div class="trace-num">C</div><div class="trace-body"><h3>Worker -> source/target contract</h3><p>Input: connector config and scoped credentials. Output: records read, records written, sync status, validation details.</p></div><div class="trace-call">Airbyte connector I/O</div></article>
+          <article class="trace-step"><div class="trace-num">D</div><div class="trace-body"><h3>Worker -> harness evidence contract</h3><p>Input: execution result. Output: redacted config, row counts, timings, errors, validation reports, and replayable artifacts.</p></div><div class="trace-call">proof, not secrets</div></article>
+        </div>
+
+        <div class="paths" style="margin-top: 16px">
+          <article class="path-card">
+            <div class="path-head control-head">Retry boundary</div>
+            <p>Retry at the job level when evidence says the operation is safe or idempotent. Do not blindly replay partial writes without connector or target semantics.</p>
+          </article>
+          <article class="path-card">
+            <div class="path-head data-head">Correctness boundary</div>
+            <p>Correctness is measured by target state plus validation artifacts, not by whether the harness felt confident about the plan.</p>
+          </article>
+          <article class="path-card">
+            <div class="path-head evidence-head">Debug boundary</div>
+            <p>Debug from run id, phase timeline, logs, JUnit, metrics, and redacted generated config. Never require raw secret exposure to understand a failure.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section id="why" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">7 / rationale</span>
+          <span class="kicker">9 / rationale</span>
           <h2>Why this design is worth doing.</h2>
           <p>The goal is not to add layers. The goal is to keep intelligence dynamic while making execution bounded, auditable, and repeatable.</p>
         </div>
@@ -1382,9 +1467,9 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
     <section id="audit" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">8 / 14-pass audit</span>
+          <span class="kicker">10 / finish-line audit</span>
           <h2>What I checked before shipping this page.</h2>
-          <p>The page should answer the execution questions directly. This audit is here so the tutorial stays honest.</p>
+          <p>The page should answer the execution questions directly and teach the system as a set of contracts, not an informal architecture sketch.</p>
         </div>
         <div class="audit">
           <div><strong>1. Driver named</strong> Harness is explicitly the driver.</div>
@@ -1401,6 +1486,10 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
           <div><strong>12. No row streaming through harness</strong> The page says this directly.</div>
           <div><strong>13. No secret dumping</strong> The page says raw secrets do not belong in prompts, logs, commands, or artifacts.</div>
           <div><strong>14. End-to-end complete</strong> The trace starts at objective and ends at next decision.</div>
+          <div><strong>15. Formal model added</strong> Goal, state, plan, job, run, evidence, and updated state are named.</div>
+          <div><strong>16. Contracts added</strong> Harness, Crabbox, worker, Airbyte, and evidence boundaries are explicit.</div>
+          <div><strong>17. Failure semantics added</strong> Retry, correctness, and debug boundaries are stated.</div>
+          <div><strong>18. Finish-line tutorial</strong> A reader can reconstruct the full system without guessing what calls what.</div>
         </div>
       </div>
     </section>
