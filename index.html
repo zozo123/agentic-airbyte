@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f6f4ef">
   <meta name="description" content="Agentic Airbyte explains how an AI coding agent such as Claude Code, Codex, or OpenCode can plan ETL and reverse ETL jobs while Crabbox runs them and Airbyte moves the data.">
   <meta property="og:title" content="Agentic Airbyte">
-  <meta property="og:description" content="A concise zero-to-hero tutorial for the AI harness, Crabbox sandbox, Airbyte data movement, credentials, evidence, and failure boundaries.">
+  <meta property="og:description" content="A concise zero-to-hero tutorial for the AI harness, Crabbox sandbox, Airbyte data movement, credentials, evidence, specs, and failure boundaries.">
   <meta property="og:type" content="website">
   <title>Agentic Airbyte | End-to-End Execution Tutorial</title>
   <style>
@@ -210,9 +210,9 @@
 
     h1 {
       max-width: 960px;
-      margin-bottom: 18px;
-      font-size: 64px;
-      line-height: 0.98;
+      margin-bottom: 14px;
+      font-size: 48px;
+      line-height: 1.02;
       letter-spacing: 0;
       text-wrap: balance;
     }
@@ -237,8 +237,8 @@
     }
 
     .role-tabs {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 10px;
       margin-bottom: 24px;
     }
@@ -267,7 +267,7 @@
     }
 
     .section-heading {
-      max-width: 820px;
+      max-width: 760px;
       margin-bottom: 22px;
     }
 
@@ -337,7 +337,7 @@
       display: block;
       width: 100%;
       height: auto;
-      min-height: 480px;
+      min-height: 320px;
       background: var(--surface);
     }
 
@@ -418,7 +418,7 @@
 
     .legend {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr;
       border-top: 2px solid var(--line);
     }
 
@@ -427,7 +427,7 @@
       align-items: center;
       gap: 8px;
       min-height: 46px;
-      border-right: 2px solid var(--line);
+      border-bottom: 2px solid var(--line);
       padding: 10px 12px;
       color: var(--muted);
       font-size: 14px;
@@ -435,7 +435,7 @@
     }
 
     .legend-item:last-child {
-      border-right: 0;
+      border-bottom: 0;
     }
 
     .swatch {
@@ -462,14 +462,14 @@
 
     .truth-row {
       display: grid;
-      grid-template-columns: 190px 1fr;
+      grid-template-columns: 1fr;
       overflow: hidden;
     }
 
     .truth-row strong {
       display: flex;
       align-items: center;
-      border-right: 2px solid var(--line);
+      border-bottom: 2px solid var(--line);
       background: var(--surface-2);
       font-family: var(--mono);
       font-size: 13px;
@@ -497,9 +497,9 @@
 
     .metric strong {
       display: block;
-      font-size: 28px;
+      font-size: 22px;
       line-height: 1;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .metric span {
@@ -510,7 +510,7 @@
 
     .entity-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 12px;
     }
 
@@ -541,19 +541,19 @@
 
     .entity-io {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr;
     }
 
     .entity-io div {
       min-width: 0;
-      border-right: 2px solid var(--line);
+      border-bottom: 2px solid var(--line);
       padding: 12px;
       color: var(--muted);
       font-size: 14px;
     }
 
     .entity-io div:last-child {
-      border-right: 0;
+      border-bottom: 0;
     }
 
     .entity-io strong {
@@ -567,7 +567,7 @@
 
     .tool-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 12px;
     }
 
@@ -622,20 +622,22 @@
 
     .trace-step {
       display: grid;
-      grid-template-columns: 76px minmax(0, 1fr) 230px;
+      grid-template-columns: 1fr;
       overflow: hidden;
     }
 
     .trace-num {
       display: flex;
       align-items: center;
-      justify-content: center;
-      border-right: 2px solid var(--line);
+      justify-content: flex-start;
+      border-bottom: 2px solid var(--line);
       background: var(--ink);
       color: var(--surface);
       font-family: var(--mono);
-      font-size: 18px;
+      font-size: 14px;
       font-weight: 900;
+      letter-spacing: 0.08em;
+      padding: 12px 14px;
     }
 
     .trace-body {
@@ -657,7 +659,7 @@
     .trace-call {
       display: flex;
       align-items: center;
-      border-left: 2px solid var(--line);
+      border-top: 2px solid var(--line);
       background: var(--surface-2);
       color: var(--muted);
       font-family: var(--mono);
@@ -669,7 +671,7 @@
 
     .cutaway {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
+      grid-template-columns: 1fr;
       gap: 16px;
       align-items: start;
     }
@@ -703,13 +705,13 @@
 
     .paths {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr;
       gap: 12px;
     }
 
     .flow-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 12px;
     }
 
@@ -796,14 +798,14 @@
 
     .two {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
+      grid-template-columns: 1fr;
       gap: 16px;
       align-items: start;
     }
 
     .rationale-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 12px;
     }
 
@@ -824,7 +826,7 @@
 
     .audit {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 10px;
     }
 
@@ -874,41 +876,8 @@
         font-size: 48px;
       }
 
-      .tool-grid,
-      .entity-grid,
-      .flow-grid,
-      .paths,
-      .rationale-grid,
-      .cutaway,
-      .two {
-        grid-template-columns: 1fr;
-      }
-
-      .trace-step {
-        grid-template-columns: 64px minmax(0, 1fr);
-      }
-
-      .trace-call {
-        grid-column: 1 / -1;
-        border-left: 0;
-        border-top: 2px solid var(--line);
-      }
-
-      .legend {
-        grid-template-columns: 1fr;
-      }
-
       .metric-strip {
         grid-template-columns: repeat(2, 1fr);
-      }
-
-      .legend-item {
-        border-right: 0;
-        border-bottom: 2px solid var(--line);
-      }
-
-      .legend-item:last-child {
-        border-bottom: 0;
       }
     }
 
@@ -942,24 +911,6 @@
 
       .truth-row {
         grid-template-columns: 1fr;
-      }
-
-      .entity-io {
-        grid-template-columns: 1fr;
-      }
-
-      .entity-io div {
-        border-right: 0;
-        border-bottom: 2px solid var(--line);
-      }
-
-      .entity-io div:last-child {
-        border-bottom: 0;
-      }
-
-      .truth-row strong {
-        border-right: 0;
-        border-bottom: 2px solid var(--line);
       }
 
       .system-svg {
@@ -1024,10 +975,6 @@
         padding-left: 12px;
       }
 
-      .cutaway-svg {
-        min-height: 500px;
-      }
-
       .audit {
         grid-template-columns: 1fr;
       }
@@ -1054,12 +1001,10 @@
       </a>
       <div class="nav-links">
         <a href="#basics">Basics</a>
-        <a href="#map">Map</a>
-        <a href="#entities">Entities</a>
         <a href="#trace">Trace</a>
         <a href="#flows">Flows</a>
+        <a href="#failures">Failures</a>
         <a href="#commands">Commands</a>
-        <a href="#contracts">Contracts</a>
       </div>
       <a class="button" href="#trace">Trace run</a>
     </div>
@@ -1073,7 +1018,8 @@
         Assume the harness is <strong>Claude Code, Codex, OpenCode, or a similar AI coding agent</strong>. It reads the
         goal, edits generated config, and calls <strong>Crabbox</strong>. Crabbox leases a sandbox worker with scoped
         credentials. Inside that worker, <strong>Airbyte</strong> reads the source and writes the target. The agent gets
-        evidence back, not the production row stream.
+        evidence back, not the production row stream. The whole design is a contract: plan, run, inspect evidence,
+        repair only from facts.
       </p>
       <div class="hero-actions">
         <a class="button" href="#basics">Start at zero</a>
@@ -1184,7 +1130,7 @@
         <div class="metric"><strong>0</strong><span>production rows pass through the AI agent</span></div>
         <div class="metric"><strong>1</strong><span>run id gives logs, status, artifacts, and replay context</span></div>
         <div class="metric"><strong>4</strong><span>flows stay separate: control, credentials, data, evidence</span></div>
-        <div class="metric"><strong>14</strong><span>steps explain the whole run from goal to decision</span></div>
+        <div class="metric"><strong>6</strong><span>failure classes show where debugging actually happens</span></div>
       </div>
     </div>
   </header>
@@ -1484,6 +1430,8 @@ while true:
     update_memory(G, S, P, J, R, E)
 
     if complete(E): break
+    if auth_failed(E): repair_profile_or_allowlist(E); continue
+    if validation_failed(E): compile_repair_job(E); continue
     if retryable(E): continue
     alert(E); break</code></pre>
         </div>
@@ -1595,11 +1543,30 @@ while true:
       </div>
     </section>
 
+    <section id="failures" class="section">
+      <div class="wrap">
+        <div class="section-heading">
+          <span class="kicker">7 / failure map</span>
+          <h2>Where things break, who owns the break, what evidence proves it.</h2>
+          <p>A serious tutorial keeps the failure modes in the model. The agent should not guess. It should read the run id, logs, metrics, JUnit, and redacted config, then choose the next bounded action.</p>
+        </div>
+
+        <div class="trace">
+          <article class="trace-step"><div class="trace-num">F1</div><div class="trace-body"><h3>Bad goal or wrong target.</h3><p><strong>Owner:</strong> AI harness. The plan points at the wrong movement, table, freshness policy, or destination. Fix the generated spec before running again.</p></div><div class="trace-call">evidence: spec diff</div></article>
+          <article class="trace-step"><div class="trace-num">F2</div><div class="trace-body"><h3>No worker capacity.</h3><p><strong>Owner:</strong> Crabbox. Pool is cold, provider quota is exhausted, or hydration fails. Fix pool capacity, image, cache, or repo hydration.</p></div><div class="trace-call">evidence: pool/run status</div></article>
+          <article class="trace-step"><div class="trace-num">F3</div><div class="trace-body"><h3>Credential or allowlist failure.</h3><p><strong>Owner:</strong> profile boundary. The worker did not receive a needed env var, or the profile lacks permission. Fix profile mapping, not the prompt.</p></div><div class="trace-call">evidence: redacted env report</div></article>
+          <article class="trace-step"><div class="trace-num">F4</div><div class="trace-body"><h3>Connector or source failure.</h3><p><strong>Owner:</strong> Airbyte connector plus external system. Rate limits, schema drift, auth scope, API outage, or source pagination can break the read.</p></div><div class="trace-call">evidence: connector logs</div></article>
+          <article class="trace-step"><div class="trace-num">F5</div><div class="trace-body"><h3>Partial write or idempotency risk.</h3><p><strong>Owner:</strong> worker, target, and retry policy. Do not blindly rerun. Check target semantics, cursor state, dedupe key, and connector guarantees.</p></div><div class="trace-call">evidence: target counts</div></article>
+          <article class="trace-step"><div class="trace-num">F6</div><div class="trace-body"><h3>Validation fails after movement.</h3><p><strong>Owner:</strong> validation and next plan. The move ran, but row count, schema, freshness, or business rule checks failed. Repair with a new bounded job.</p></div><div class="trace-call">evidence: JUnit + metrics</div></article>
+        </div>
+      </div>
+    </section>
+
     <section id="credentials" class="section">
       <div class="wrap two">
         <div>
           <div class="section-heading">
-            <span class="kicker">7 / credentials</span>
+            <span class="kicker">8 / credentials</span>
             <h2>How credentials work.</h2>
             <p>"The AI agent spins up Crabbox with creds and target" means profile references and target config. Raw secrets should not be in prompts, command lines, logs, or artifact files.</p>
           </div>
@@ -1630,7 +1597,7 @@ while true:
       <div class="wrap two">
         <div>
           <div class="section-heading">
-            <span class="kicker">8 / runnable shape</span>
+            <span class="kicker">9 / runnable shape</span>
             <h2>The calls look like this.</h2>
             <p>This is the minimal shell shape an AI coding harness can emit. Claude Code, Codex, OpenCode, or another agent can call a local CLI, wrapper service, or future API, but the boundary is the same.</p>
           </div>
@@ -1648,7 +1615,7 @@ crabbox pool ensure example-org/data-movement/main/provider/linux/etl \
   --cache-volume airbyte-etl
 
 <span class="comment"># 2. AI harness writes the job spec.
-# It contains connector config, source ref, target ref, validation rules.
+# It contains connector config, source ref, target ref, profile, retry, validation.
 # It references a credential profile; it does not contain raw secrets.</span>
 mkdir -p .crabbox/generated
 cat > .crabbox/generated/accounts-sync.json <<'JSON'
@@ -1657,7 +1624,15 @@ cat > .crabbox/generated/accounts-sync.json <<'JSON'
   "source_ref": "source.crm.accounts",
   "target_ref": "warehouse.analytics.accounts",
   "airbyte_connection": "accounts_sync",
+  "credential_profile": "etl-warehouse",
+  "allow_env": ["AIRBYTE_*", "SOURCE_*", "TARGET_*", "WAREHOUSE_*"],
+  "idempotency_key": "accounts_sync:daily",
+  "retry": {
+    "max_attempts": 2,
+    "when": ["rate_limit", "transient_network"]
+  },
   "validation": ["row_count", "schema_drift", "freshness"],
+  "artifacts": ["reports/**", "metrics.json", "redacted-config.json"],
   "redact": ["password", "token", "secret"]
 }
 JSON
@@ -1677,9 +1652,19 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
           </div>
         </div>
 
-        <aside class="panel">
-          <h3>What calls what</h3>
-          <p>The AI agent calls Crabbox. Crabbox starts the worker command. The worker command invokes Airbyte. Airbyte calls source and target systems. The agent reads Crabbox results and artifacts.</p>
+        <aside class="side-list">
+          <article class="panel">
+            <h3>What calls what</h3>
+            <p>The AI agent calls Crabbox. Crabbox starts the worker command. The worker command invokes Airbyte. Airbyte calls source and target systems. The agent reads Crabbox results and artifacts.</p>
+          </article>
+          <article class="panel">
+            <h3>Spec boundary</h3>
+            <p>The job spec contains references, allowlists, validation, retry, and artifact rules. It should not contain raw secrets, copied rows, or a long prompt transcript.</p>
+          </article>
+          <article class="panel">
+            <h3>Debug rule</h3>
+            <p>Debug from the run id: status, phase log, connector log, metrics, JUnit, and redacted generated config. Then change one bounded input and rerun.</p>
+          </article>
         </aside>
       </div>
     </section>
@@ -1687,7 +1672,7 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
     <section id="contracts" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">9 / contracts</span>
+          <span class="kicker">10 / contracts</span>
           <h2>Component contracts and failure semantics.</h2>
           <p>The architecture works because each boundary is explicit. Every component has inputs, outputs, and failure behavior. That is what makes an AI-driven system auditable instead of magical.</p>
         </div>
@@ -1719,7 +1704,7 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
     <section id="why" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">10 / rationale</span>
+          <span class="kicker">11 / rationale</span>
           <h2>Why this design is worth doing.</h2>
           <p>The goal is not to add layers. The goal is to let an AI agent reason dynamically while keeping execution bounded, auditable, and repeatable.</p>
         </div>
@@ -1748,7 +1733,7 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
     <section id="audit" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">11 / finish-line audit</span>
+          <span class="kicker">12 / finish-line audit</span>
           <h2>What I checked before shipping this page.</h2>
           <p>The page should take a reader from zero to the full execution contract without hiding behind AI or ETL jargon.</p>
         </div>
@@ -1771,8 +1756,10 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
           <div><strong>16. End-to-end complete</strong> The trace starts at objective and ends at next decision.</div>
           <div><strong>17. Formal model added</strong> Goal, state, plan, job, run, evidence, and updated state are named.</div>
           <div><strong>18. Contracts added</strong> AI harness, Crabbox, worker, Airbyte, and evidence boundaries are explicit.</div>
-          <div><strong>19. Failure semantics added</strong> Retry, correctness, and debug boundaries are stated.</div>
-          <div><strong>20. Finish-line tutorial</strong> A reader can reconstruct the full system without guessing what calls what.</div>
+          <div><strong>19. Failure map added</strong> Six concrete breakpoints name owner, signal, and repair direction.</div>
+          <div><strong>20. Spec contract shown</strong> Generated job fields are concrete and raw secrets stay out.</div>
+          <div><strong>21. Failure semantics added</strong> Retry, correctness, and debug boundaries are stated.</div>
+          <div><strong>22. Finish-line tutorial</strong> A reader can reconstruct the full system without guessing what calls what.</div>
         </div>
       </div>
     </section>
