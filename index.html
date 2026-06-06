@@ -4,30 +4,31 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6f4ef">
-  <meta name="description" content="Agentic Airbyte explains exactly how a harness calls Crabbox, leases a sandbox worker, runs Airbyte inside it, moves data, and returns evidence.">
+  <meta name="description" content="Agentic Airbyte explains the exact end-to-end tool chain: harness, Crabbox, sandbox worker, Airbyte, source, target, credentials, and evidence.">
   <meta property="og:title" content="Agentic Airbyte">
-  <meta property="og:description" content="Driver, calls, data path, credential handling, execution trace, and rationale. No fluff.">
+  <meta property="og:description" content="A precise tutorial for what calls what, what runs where, how data moves, and why the design exists.">
   <meta property="og:type" content="website">
-  <title>Agentic Airbyte | Exact Execution Model</title>
+  <title>Agentic Airbyte | End-to-End Execution Tutorial</title>
   <style>
     :root {
       color-scheme: light;
       --bg: #f6f4ef;
       --surface: #ffffff;
       --surface-2: #ebe7dc;
-      --ink: #111111;
-      --muted: #5e5a51;
-      --line: #1c1c1c;
+      --ink: #101010;
+      --muted: #5d584f;
+      --line: #191919;
       --code: #101010;
       --code-text: #f7f0dd;
       --airbyte: #00a88f;
       --crabbox: #ff5a32;
       --harness: #6657ff;
       --evidence: #efbd38;
-      --blue: #4285f4;
+      --source: #4285f4;
+      --target: #7bbf42;
       --radius: 8px;
-      --max: 1040px;
-      --shadow: 6px 6px 0 #111111;
+      --max: 1120px;
+      --shadow: 6px 6px 0 #101010;
       --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     }
@@ -43,8 +44,8 @@
     body {
       margin: 0;
       background:
-        linear-gradient(rgb(17 17 17 / 0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(17 17 17 / 0.045) 1px, transparent 1px),
+        linear-gradient(rgb(16 16 16 / 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(16 16 16 / 0.045) 1px, transparent 1px),
         var(--bg);
       background-size: 32px 32px;
       color: var(--ink);
@@ -95,7 +96,7 @@
       top: 0;
       z-index: 100;
       border-bottom: 2px solid var(--line);
-      background: rgb(246 244 239 / 0.92);
+      background: rgb(246 244 239 / 0.94);
       backdrop-filter: blur(14px);
     }
 
@@ -149,7 +150,7 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
       color: var(--muted);
       font-size: 14px;
       font-weight: 800;
@@ -178,7 +179,7 @@
     }
 
     .hero {
-      padding: 72px 18px 50px;
+      padding: 72px 18px 42px;
     }
 
     .wrap {
@@ -208,16 +209,16 @@
     }
 
     h1 {
-      max-width: 920px;
+      max-width: 960px;
       margin-bottom: 18px;
-      font-size: 66px;
+      font-size: 64px;
       line-height: 0.98;
       letter-spacing: 0;
       text-wrap: balance;
     }
 
     .hero-copy {
-      max-width: 820px;
+      max-width: 880px;
       margin-bottom: 26px;
       color: var(--muted);
       font-size: 21px;
@@ -232,46 +233,16 @@
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 30px;
-    }
-
-    .facts {
-      display: grid;
-      gap: 10px;
-      max-width: 920px;
-    }
-
-    .fact {
-      display: grid;
-      grid-template-columns: 170px 1fr;
-      border: 2px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
-      overflow: hidden;
-    }
-
-    .fact strong {
-      display: flex;
-      align-items: center;
-      border-right: 2px solid var(--line);
-      background: var(--surface-2);
-      font-family: var(--mono);
-      font-size: 13px;
-      padding: 12px;
-      text-transform: uppercase;
-    }
-
-    .fact span {
-      padding: 12px 14px;
+      margin-bottom: 28px;
     }
 
     .section {
       padding: 58px 18px;
-      border-top: 2px solid rgb(17 17 17 / 0.16);
+      border-top: 2px solid rgb(16 16 16 / 0.16);
     }
 
     .section-heading {
-      max-width: 780px;
+      max-width: 820px;
       margin-bottom: 22px;
     }
 
@@ -303,15 +274,25 @@
       font-size: 18px;
     }
 
-    .diagram {
+    .board,
+    .panel,
+    .code-panel,
+    .trace-step,
+    .truth-row,
+    .tool-card,
+    .rationale-card {
       border: 2px solid var(--line);
       border-radius: var(--radius);
       background: var(--surface);
+    }
+
+    .board,
+    .code-panel {
       box-shadow: var(--shadow);
       overflow: hidden;
     }
 
-    .diagram-head,
+    .board-head,
     .code-head {
       display: flex;
       align-items: center;
@@ -326,43 +307,56 @@
       text-transform: uppercase;
     }
 
-    .flow-svg {
+    .system-svg {
       display: block;
       width: 100%;
       height: auto;
-      min-height: 360px;
+      min-height: 480px;
+      background: var(--surface);
     }
 
-    .node {
+    .mobile-flow {
+      display: none;
+    }
+
+    .box {
       fill: #fffdf8;
       stroke: var(--line);
       stroke-width: 3;
     }
 
-    .node.harness {
+    .box.harness {
       fill: #ebe8ff;
     }
 
-    .node.crabbox {
+    .box.crabbox {
       fill: #ffe2d7;
     }
 
-    .node.worker {
+    .box.worker {
       fill: #dffff7;
     }
 
-    .node.data {
+    .box.airbyte {
+      fill: #e0fff8;
+    }
+
+    .box.source {
       fill: #e4f0ff;
     }
 
-    .node.proof {
+    .box.target {
+      fill: #ecf8dd;
+    }
+
+    .box.evidence {
       fill: #fff1bd;
     }
 
     .svg-title {
       fill: var(--ink);
       font-family: var(--sans);
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 900;
     }
 
@@ -386,12 +380,12 @@
       stroke-dasharray: 8 8;
     }
 
-    .dataflow {
+    .data {
       stroke: var(--airbyte);
       stroke-dasharray: 12 8;
     }
 
-    .evidenceflow {
+    .evidence {
       stroke: var(--evidence);
       stroke-dasharray: 6 8;
     }
@@ -419,18 +413,96 @@
     }
 
     .swatch {
-      width: 22px;
+      width: 24px;
       height: 8px;
       border-radius: 999px;
       background: var(--harness);
     }
 
-    .swatch.data {
+    .swatch.data-swatch {
       background: var(--airbyte);
     }
 
-    .swatch.evidence {
+    .swatch.evidence-swatch {
       background: var(--evidence);
+    }
+
+    .truth-table {
+      display: grid;
+      gap: 10px;
+      margin-top: 24px;
+      max-width: 940px;
+    }
+
+    .truth-row {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      overflow: hidden;
+    }
+
+    .truth-row strong {
+      display: flex;
+      align-items: center;
+      border-right: 2px solid var(--line);
+      background: var(--surface-2);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 12px;
+      text-transform: uppercase;
+    }
+
+    .truth-row span {
+      padding: 12px 14px;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .tool-card {
+      padding: 16px;
+    }
+
+    .tool-icon {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 16px;
+      place-items: center;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+    }
+
+    .tool-icon svg {
+      width: 34px;
+      height: 34px;
+    }
+
+    .tool-card h3 {
+      margin-bottom: 8px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .tool-card p {
+      margin-bottom: 12px;
+      color: var(--muted);
+    }
+
+    .tool-card ul {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .tool-card code {
+      color: var(--ink);
+      font-weight: 800;
     }
 
     .trace {
@@ -438,16 +510,13 @@
       gap: 10px;
     }
 
-    .step {
+    .trace-step {
       display: grid;
-      grid-template-columns: 78px 1fr;
-      border: 2px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
+      grid-template-columns: 76px minmax(0, 1fr) 230px;
       overflow: hidden;
     }
 
-    .step-num {
+    .trace-num {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -459,71 +528,121 @@
       font-weight: 900;
     }
 
-    .step-body {
-      padding: 16px 18px;
+    .trace-body {
+      padding: 14px 16px;
     }
 
-    .step-body h3 {
-      margin-bottom: 6px;
-      font-size: 22px;
+    .trace-body h3 {
+      margin-bottom: 5px;
+      font-size: 20px;
       line-height: 1.2;
       letter-spacing: 0;
     }
 
-    .step-body p {
-      margin-bottom: 10px;
+    .trace-body p {
+      margin-bottom: 0;
       color: var(--muted);
     }
 
-    .step-body code {
-      color: var(--ink);
+    .trace-call {
+      display: flex;
+      align-items: center;
+      border-left: 2px solid var(--line);
+      background: var(--surface-2);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
       font-weight: 800;
+      padding: 12px;
+      overflow-wrap: anywhere;
     }
 
-    .mini {
+    .cutaway {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .cutaway-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 420px;
+    }
+
+    .side-list {
+      display: grid;
       gap: 10px;
     }
 
-    .mini-card,
-    .plain-card {
-      border: 2px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
+    .panel {
       padding: 16px;
     }
 
-    .mini-card h3,
-    .plain-card h3 {
+    .panel h3 {
       margin-bottom: 8px;
       font-size: 20px;
       letter-spacing: 0;
     }
 
-    .mini-card p,
-    .plain-card p {
+    .panel p {
       margin-bottom: 0;
       color: var(--muted);
     }
 
-    .mini-card code,
-    .plain-card code {
+    .paths {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .path-card {
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .path-head {
+      border-bottom: 2px solid var(--line);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 900;
+      padding: 10px 12px;
+      text-transform: uppercase;
+    }
+
+    .path-head.control-head {
+      background: #ebe8ff;
+    }
+
+    .path-head.data-head {
+      background: #dffff7;
+    }
+
+    .path-head.evidence-head {
+      background: #fff1bd;
+    }
+
+    .path-card p {
+      margin: 0;
+      padding: 14px;
+      color: var(--muted);
+    }
+
+    .path-card code {
       color: var(--ink);
       font-weight: 800;
     }
 
     .code-panel {
-      border: 2px solid var(--line);
-      border-radius: var(--radius);
       background: var(--code);
-      box-shadow: var(--shadow);
       color: var(--code-text);
-      overflow: hidden;
     }
 
     .code-head {
-      background: #222;
+      background: #232323;
       color: var(--code-text);
     }
 
@@ -552,48 +671,51 @@
 
     .two {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+      grid-template-columns: minmax(0, 1fr) 340px;
       gap: 16px;
       align-items: start;
     }
 
-    .list {
+    .rationale-grid {
       display: grid;
-      gap: 10px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
     }
 
-    .list li {
-      border: 2px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
-      padding: 14px 16px;
-      color: var(--muted);
-    }
-
-    .list strong {
-      display: block;
-      color: var(--ink);
-      margin-bottom: 3px;
-    }
-
-    .warning {
-      border: 2px solid var(--line);
-      border-radius: var(--radius);
-      background: #fff1bd;
+    .rationale-card {
       padding: 16px;
     }
 
-    .warning h3 {
+    .rationale-card h3 {
       margin-bottom: 8px;
-      font-size: 21px;
+      font-size: 19px;
+      letter-spacing: 0;
     }
 
-    .warning p {
+    .rationale-card p {
       margin-bottom: 0;
       color: var(--muted);
+    }
+
+    .audit {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .audit div {
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .audit strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 4px;
     }
 
     footer {
@@ -618,27 +740,31 @@
       font-weight: 800;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 980px) {
       .nav-links {
         display: none;
       }
 
       h1 {
-        font-size: 46px;
+        font-size: 48px;
       }
 
-      .fact,
+      .tool-grid,
+      .paths,
+      .rationale-grid,
+      .cutaway,
       .two {
         grid-template-columns: 1fr;
       }
 
-      .fact strong {
-        border-right: 0;
-        border-bottom: 2px solid var(--line);
+      .trace-step {
+        grid-template-columns: 64px minmax(0, 1fr);
       }
 
-      .mini {
-        grid-template-columns: 1fr;
+      .trace-call {
+        grid-column: 1 / -1;
+        border-left: 0;
+        border-top: 2px solid var(--line);
       }
 
       .legend {
@@ -683,32 +809,83 @@
         font-size: 17px;
       }
 
-      .step {
+      .truth-row {
         grid-template-columns: 1fr;
       }
 
-      .step-num {
-        min-height: 44px;
+      .truth-row strong {
         border-right: 0;
         border-bottom: 2px solid var(--line);
       }
 
-      .flow-svg {
-        min-height: 480px;
+      .system-svg {
+        display: none;
+      }
+
+      .mobile-flow {
+        display: grid;
+        gap: 10px;
+        padding: 14px;
+        background: var(--surface);
+      }
+
+      .mobile-node {
+        border: 2px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+        padding: 12px;
+      }
+
+      .mobile-node strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 16px;
+      }
+
+      .mobile-node span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .mobile-node.harness {
+        background: #ebe8ff;
+      }
+
+      .mobile-node.crabbox {
+        background: #ffe2d7;
+      }
+
+      .mobile-node.worker {
+        background: #dffff7;
+      }
+
+      .mobile-node.data-plane {
+        background: #e4f0ff;
+      }
+
+      .mobile-node.evidence-plane {
+        background: #fff1bd;
+      }
+
+      .mobile-arrow {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 900;
+        padding-left: 12px;
+      }
+
+      .cutaway-svg {
+        min-height: 500px;
+      }
+
+      .audit {
+        grid-template-columns: 1fr;
       }
 
       .footer-inner {
         align-items: flex-start;
         flex-direction: column;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        scroll-behavior: auto !important;
-        transition: none !important;
       }
     }
   </style>
@@ -723,116 +900,237 @@
         <span class="brand-text">agentic-airbyte</span>
       </a>
       <div class="nav-links">
-        <a href="#model">Model</a>
+        <a href="#tools">Tools</a>
         <a href="#trace">Trace</a>
-        <a href="#data">Data</a>
-        <a href="#creds">Creds</a>
+        <a href="#worker">Worker</a>
+        <a href="#paths">Paths</a>
         <a href="#commands">Commands</a>
+        <a href="#why">Why</a>
       </div>
-      <a class="button" href="#trace">Read trace</a>
+      <a class="button" href="#trace">Trace it</a>
     </div>
   </nav>
 
   <header id="top" class="hero">
     <div class="wrap">
-      <div class="eyebrow">Exact execution model</div>
-      <h1>The harness drives. Crabbox runs the worker. Airbyte moves the data.</h1>
+      <div class="eyebrow">End-to-end tutorial</div>
+      <h1>Goal in. Harness plans. Crabbox starts a worker. Airbyte moves rows. Evidence returns.</h1>
       <p class="hero-copy">
-        This page explains the actual mechanism. The <strong>harness</strong> receives a goal,
-        creates a concrete job spec, and calls <strong>Crabbox</strong>. Crabbox leases an isolated
-        sandbox. Inside that sandbox, <strong>Airbyte</strong> reads from the source and writes to the target.
-        The harness gets evidence back, not the data stream.
+        This is the exact mechanism. The <strong>harness is the driver</strong>. It builds a job spec and calls
+        <strong>Crabbox</strong>. Crabbox leases a sandbox worker with scoped credentials. Inside that worker,
+        <strong>Airbyte</strong> reads from the source and writes to the target. The harness receives proof, not the row stream.
       </p>
       <div class="hero-actions">
-        <a class="button" href="#model">See the model</a>
+        <a class="button" href="#tools">Start with tools</a>
         <a class="button secondary" href="https://github.com/zozo123/agentic-airbyte" target="_blank" rel="noreferrer">Source</a>
       </div>
 
-      <div class="facts" aria-label="Core facts">
-        <div class="fact">
+      <div class="board" aria-label="End-to-end system illustration">
+        <div class="board-head">
+          <span>e2e-system-map</span>
+          <span>who calls what / where data moves</span>
+        </div>
+        <svg class="system-svg" viewBox="0 0 1120 560" role="img" aria-labelledby="map-title map-desc">
+          <title id="map-title">End-to-end Agentic Airbyte system map</title>
+          <desc id="map-desc">A goal enters the harness. The harness calls Crabbox. Crabbox leases a sandbox worker. Airbyte runs inside the worker and moves data from source to target. Evidence returns to the harness.</desc>
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#101010"></path>
+            </marker>
+          </defs>
+
+          <rect class="box" x="34" y="74" width="146" height="84" rx="8"></rect>
+          <text class="svg-title" x="58" y="110">Caller</text>
+          <text class="svg-small" x="58" y="134">goal + policy</text>
+
+          <rect class="box harness" x="248" y="54" width="210" height="128" rx="8"></rect>
+          <text class="svg-title" x="272" y="93">Harness</text>
+          <text class="svg-small" x="272" y="120">driver</text>
+          <text class="svg-small" x="272" y="142">builds job spec</text>
+          <text class="svg-small" x="272" y="164">calls Crabbox</text>
+
+          <rect class="box crabbox" x="548" y="54" width="218" height="128" rx="8"></rect>
+          <text class="svg-title" x="572" y="93">Crabbox</text>
+          <text class="svg-small" x="572" y="120">pool ensure</text>
+          <text class="svg-small" x="572" y="142">lease sandbox</text>
+          <text class="svg-small" x="572" y="164">run command</text>
+
+          <rect class="box worker" x="858" y="54" width="220" height="188" rx="8"></rect>
+          <text class="svg-title" x="882" y="93">Sandbox worker</text>
+          <text class="svg-small" x="882" y="120">repo hydrated</text>
+          <text class="svg-small" x="882" y="142">profile env injected</text>
+          <text class="svg-small" x="882" y="164">runs sync script</text>
+          <rect class="box airbyte" x="884" y="184" width="168" height="38" rx="8"></rect>
+          <text class="svg-small" x="910" y="208">Airbyte engine</text>
+
+          <rect class="box source" x="226" y="354" width="178" height="84" rx="8"></rect>
+          <text class="svg-title" x="250" y="391">Source</text>
+          <text class="svg-small" x="250" y="414">API / DB / files</text>
+
+          <rect class="box target" x="840" y="354" width="190" height="84" rx="8"></rect>
+          <text class="svg-title" x="864" y="391">Target</text>
+          <text class="svg-small" x="864" y="414">warehouse / app</text>
+
+          <rect class="box evidence" x="506" y="354" width="230" height="84" rx="8"></rect>
+          <text class="svg-title" x="530" y="391">Evidence</text>
+          <text class="svg-small" x="530" y="414">metrics / JUnit / artifacts</text>
+
+          <path class="arrow control" d="M180 115 C205 114 219 113 238 112" marker-end="url(#arrow)"></path>
+          <path class="arrow control" d="M458 116 C492 116 512 116 538 116" marker-end="url(#arrow)"></path>
+          <path class="arrow control" d="M766 116 C805 117 823 119 848 124" marker-end="url(#arrow)"></path>
+          <path class="arrow data" d="M404 395 C560 260 710 236 884 205" marker-end="url(#arrow)"></path>
+          <path class="arrow data" d="M1052 205 C1092 284 1038 341 1024 366" marker-end="url(#arrow)"></path>
+          <path class="arrow evidence" d="M884 225 C804 310 764 352 736 386" marker-end="url(#arrow)"></path>
+          <path class="arrow evidence" d="M506 388 C390 344 320 265 333 190" marker-end="url(#arrow)"></path>
+        </svg>
+        <div class="mobile-flow" aria-label="Mobile end-to-end system flow">
+          <div class="mobile-node"><strong>Caller</strong><span>Submits goal, policy, freshness target.</span></div>
+          <div class="mobile-arrow">control call -></div>
+          <div class="mobile-node harness"><strong>Harness</strong><span>Driver. Builds job spec, chooses pool, target, credential profile, and validation.</span></div>
+          <div class="mobile-arrow">calls crabbox -></div>
+          <div class="mobile-node crabbox"><strong>Crabbox</strong><span>Ensures pool, leases sandbox, hydrates repo, injects allowed profile env, runs command.</span></div>
+          <div class="mobile-arrow">starts worker -></div>
+          <div class="mobile-node worker"><strong>Sandbox worker + Airbyte</strong><span>Airbyte runs here. Secrets materialize here. Source and target are touched here.</span></div>
+          <div class="mobile-arrow">data path -></div>
+          <div class="mobile-node data-plane"><strong>Source -> Airbyte -> Target</strong><span>Rows move through the worker, not through the harness.</span></div>
+          <div class="mobile-arrow">evidence path -></div>
+          <div class="mobile-node evidence-plane"><strong>Evidence returns</strong><span>Logs, phases, metrics, JUnit, artifacts, redacted config.</span></div>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="swatch"></span>Control calls: caller -> harness -> Crabbox -> worker.</div>
+          <div class="legend-item"><span class="swatch data-swatch"></span>Data path: source -> Airbyte in worker -> target.</div>
+          <div class="legend-item"><span class="swatch evidence-swatch"></span>Evidence path: worker -> Crabbox -> harness.</div>
+        </div>
+      </div>
+
+      <div class="truth-table" aria-label="Core truths">
+        <div class="truth-row">
           <strong>Driver</strong>
-          <span>The harness is the driver. It decides what should run and calls Crabbox.</span>
+          <span>The harness drives. It decides the job, target, credential profile, worker pool, validation, and next action.</span>
         </div>
-        <div class="fact">
-          <strong>Execution</strong>
-          <span>Crabbox leases or creates a sandbox worker, hydrates the repo, injects allowed environment values, and runs the command.</span>
+        <div class="truth-row">
+          <strong>Runner</strong>
+          <span>Crabbox runs the worker. It handles pools, sandbox lease, repo hydration, env/profile injection, command execution, artifacts, and history.</span>
         </div>
-        <div class="fact">
-          <strong>Data path</strong>
-          <span>Data flows source → sandbox worker running Airbyte → destination. It does not flow through the harness.</span>
-        </div>
-        <div class="fact">
-          <strong>Feedback</strong>
-          <span>Logs, phases, metrics, JUnit, and artifacts flow back to Crabbox and then to the harness.</span>
+        <div class="truth-row">
+          <strong>Mover</strong>
+          <span>Airbyte moves the data inside the worker. The harness does not stream rows. The Crabbox control plane does not transform rows.</span>
         </div>
       </div>
     </div>
   </header>
 
   <main id="main">
-    <section id="model" class="section">
+    <section id="tools" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">1 / model</span>
-          <h2>Separate control from data movement.</h2>
-          <p>The harness controls the job. The worker touches the data. Crabbox is the execution boundary between them.</p>
+          <span class="kicker">1 / tools</span>
+          <h2>What tools exist and what each one does.</h2>
+          <p>Keep these roles separate. If one component starts doing every job, the architecture becomes hard to audit and unsafe around credentials.</p>
         </div>
 
-        <div class="diagram" aria-label="Control plane and data plane diagram">
-          <div class="diagram-head">
-            <span>system-flow</span>
-            <span>control != data</span>
-          </div>
-          <svg class="flow-svg" viewBox="0 0 1040 420" role="img" aria-labelledby="flow-title flow-desc">
-            <title id="flow-title">Harness, Crabbox, worker, Airbyte, source, destination, and evidence flow</title>
-            <desc id="flow-desc">The harness calls Crabbox. Crabbox leases a sandbox worker. Airbyte inside the worker reads from source and writes to destination. Evidence returns to the harness.</desc>
-            <defs>
-              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#111"></path>
-              </marker>
-            </defs>
+        <div class="tool-grid">
+          <article class="tool-card">
+            <div class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none" stroke="#6657ff" stroke-width="5">
+                <circle cx="32" cy="32" r="18"></circle>
+                <path d="M32 6v12M32 46v12M6 32h12M46 32h12"></path>
+              </svg>
+            </div>
+            <h3>Harness</h3>
+            <p>The driver. It can be an agent graph, scheduler, backend service, or CLI wrapper.</p>
+            <ul>
+              <li>Reads objective and state.</li>
+              <li>Creates job spec.</li>
+              <li>Calls <code>crabbox</code>.</li>
+              <li>Reads evidence and decides next step.</li>
+            </ul>
+          </article>
 
-            <rect class="node harness" x="48" y="94" width="190" height="104" rx="8"></rect>
-            <text class="svg-title" x="72" y="130">Harness</text>
-            <text class="svg-small" x="72" y="157">driver / planner</text>
-            <text class="svg-small" x="72" y="178">calls Crabbox</text>
+          <article class="tool-card">
+            <div class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none" stroke="#ff5a32" stroke-width="5">
+                <rect x="12" y="18" width="40" height="30" rx="6"></rect>
+                <path d="M20 18V10h24v8M20 48v6M44 48v6M12 30H4M60 30h-8"></path>
+              </svg>
+            </div>
+            <h3>Crabbox</h3>
+            <p>The execution substrate. It makes a remote box available and runs the command there.</p>
+            <ul>
+              <li><code>pool ensure</code> keeps workers warm.</li>
+              <li><code>run --pool</code> leases a sandbox.</li>
+              <li>Profiles and allowlists scope credentials.</li>
+              <li>History/results/artifacts return proof.</li>
+            </ul>
+          </article>
 
-            <rect class="node crabbox" x="332" y="64" width="206" height="132" rx="8"></rect>
-            <text class="svg-title" x="356" y="102">Crabbox</text>
-            <text class="svg-small" x="356" y="129">pool ensure</text>
-            <text class="svg-small" x="356" y="150">lease worker</text>
-            <text class="svg-small" x="356" y="171">run command</text>
+          <article class="tool-card">
+            <div class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none" stroke="#00a88f" stroke-width="5">
+                <path d="M12 18h40v28H12z"></path>
+                <path d="M20 26h24M20 34h14M20 42h20"></path>
+              </svg>
+            </div>
+            <h3>Sandbox worker</h3>
+            <p>The process boundary that touches data. It is short-lived or borrowed from a ready pool.</p>
+            <ul>
+              <li>Repo is hydrated.</li>
+              <li>Airbyte and scripts run here.</li>
+              <li>Secrets materialize only here.</li>
+              <li>Reports and metrics are written here.</li>
+            </ul>
+          </article>
 
-            <rect class="node worker" x="646" y="72" width="252" height="142" rx="8"></rect>
-            <text class="svg-title" x="670" y="111">Sandbox worker</text>
-            <text class="svg-small" x="670" y="138">repo hydrated</text>
-            <text class="svg-small" x="670" y="159">credentials scoped</text>
-            <text class="svg-small" x="670" y="180">Airbyte runs here</text>
+          <article class="tool-card">
+            <div class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none" stroke="#00a88f" stroke-width="5">
+                <circle cx="18" cy="32" r="10"></circle>
+                <circle cx="46" cy="32" r="10"></circle>
+                <path d="M28 32h8M46 22V10M46 54V42"></path>
+              </svg>
+            </div>
+            <h3>Airbyte</h3>
+            <p>The data mover inside the sandbox. It handles connector logic and source-to-target movement.</p>
+            <ul>
+              <li>Reads source records.</li>
+              <li>Writes target records.</li>
+              <li>Uses connector config generated by the harness.</li>
+              <li>Emits sync status for validation.</li>
+            </ul>
+          </article>
 
-            <rect class="node data" x="140" y="286" width="170" height="80" rx="8"></rect>
-            <text class="svg-title" x="164" y="322">Source</text>
-            <text class="svg-small" x="164" y="345">API / DB / files</text>
+          <article class="tool-card">
+            <div class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none" stroke="#4285f4" stroke-width="5">
+                <path d="M12 16h40v32H12z"></path>
+                <path d="M18 24h28M18 32h18M18 40h24"></path>
+              </svg>
+            </div>
+            <h3>Source and target</h3>
+            <p>External systems. Examples: SaaS API, Postgres, S3, warehouse, CRM, or operational app.</p>
+            <ul>
+              <li>Source is read by Airbyte.</li>
+              <li>Target is written by Airbyte.</li>
+              <li>Harness stores references, not row streams.</li>
+            </ul>
+          </article>
 
-            <rect class="node data" x="730" y="286" width="190" height="80" rx="8"></rect>
-            <text class="svg-title" x="754" y="322">Target</text>
-            <text class="svg-small" x="754" y="345">warehouse / app</text>
-
-            <rect class="node proof" x="390" y="286" width="204" height="80" rx="8"></rect>
-            <text class="svg-title" x="414" y="322">Evidence</text>
-            <text class="svg-small" x="414" y="345">metrics / artifacts</text>
-
-            <path class="arrow control" d="M238 135 C276 128 292 126 322 126" marker-end="url(#arrow)"></path>
-            <path class="arrow control" d="M538 132 C584 130 606 131 636 135" marker-end="url(#arrow)"></path>
-            <path class="arrow dataflow" d="M310 326 C404 246 540 231 646 169" marker-end="url(#arrow)"></path>
-            <path class="arrow dataflow" d="M806 214 C834 242 840 255 838 276" marker-end="url(#arrow)"></path>
-            <path class="arrow evidenceflow" d="M670 214 C642 260 618 287 594 318" marker-end="url(#arrow)"></path>
-            <path class="arrow evidenceflow" d="M390 324 C300 294 226 249 178 203" marker-end="url(#arrow)"></path>
-          </svg>
-          <div class="legend">
-            <div class="legend-item"><span class="swatch"></span>Control calls: harness → Crabbox → worker.</div>
-            <div class="legend-item"><span class="swatch data"></span>Data path: source → Airbyte in worker → target.</div>
-            <div class="legend-item"><span class="swatch evidence"></span>Evidence path: worker → Crabbox → harness.</div>
-          </div>
+          <article class="tool-card">
+            <div class="tool-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none" stroke="#efbd38" stroke-width="5">
+                <path d="M16 10h24l8 8v36H16z"></path>
+                <path d="M40 10v10h10M22 30h20M22 40h20M22 50h12"></path>
+              </svg>
+            </div>
+            <h3>Evidence</h3>
+            <p>The feedback layer. It is what the harness reads after execution.</p>
+            <ul>
+              <li>Logs and phase events.</li>
+              <li>Row counts and timings.</li>
+              <li>JUnit and validation reports.</li>
+              <li>Artifacts and redacted config.</li>
+            </ul>
+          </article>
         </div>
       </div>
     </section>
@@ -840,123 +1138,158 @@
     <section id="trace" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">2 / trace</span>
-          <h2>What happens, step by step.</h2>
-          <p>This is the call sequence. No magic. The harness is the driver until Crabbox starts the worker command. Then the worker owns the data movement.</p>
+          <span class="kicker">2 / 14-step trace</span>
+          <h2>The full run, end to end.</h2>
+          <p>This is the actual sequence. It names who is active, what they call, and what changes hands.</p>
         </div>
 
         <div class="trace">
-          <article class="step">
-            <div class="step-num">01</div>
-            <div class="step-body">
-              <h3>Caller gives the harness an objective.</h3>
-              <p>Example: keep account records fresh in the warehouse and sync qualified accounts to a target application.</p>
-              <code>goal = {source, target, freshness, policy, schedule}</code>
-            </div>
-          </article>
-
-          <article class="step">
-            <div class="step-num">02</div>
-            <div class="step-body">
-              <h3>Harness turns the objective into a job spec.</h3>
-              <p>The spec names the worker pool, Airbyte connector/config, source reference, target reference, credential profile, artifact rules, and validation checks.</p>
-              <code>job = {pool, airbyte_config, target_config, credential_profile, allow_env, artifacts}</code>
-            </div>
-          </article>
-
-          <article class="step">
-            <div class="step-num">03</div>
-            <div class="step-body">
-              <h3>Harness calls Crabbox.</h3>
-              <p>It may first ensure capacity, then it starts a run against the chosen pool. The harness passes config references and profile names, not raw secrets.</p>
-              <code>crabbox pool ensure ... && crabbox run --pool ... --env-from-profile ...</code>
-            </div>
-          </article>
-
-          <article class="step">
-            <div class="step-num">04</div>
-            <div class="step-body">
-              <h3>Crabbox leases the sandbox worker.</h3>
-              <p>Crabbox borrows or creates a remote sandbox, hydrates the repository, attaches cache volumes if configured, injects only allowed environment values, and starts the command.</p>
-              <code>worker.exec("python -m workers.airbyte_sync --config generated.json")</code>
-            </div>
-          </article>
-
-          <article class="step">
-            <div class="step-num">05</div>
-            <div class="step-body">
-              <h3>Airbyte runs inside the worker.</h3>
-              <p>Airbyte, PyAirbyte, or connector code reads from the source using worker-scoped credentials and writes to the target. This is the data plane.</p>
-              <code>source → worker/Airbyte → target</code>
-            </div>
-          </article>
-
-          <article class="step">
-            <div class="step-num">06</div>
-            <div class="step-body">
-              <h3>Worker validates and emits evidence.</h3>
-              <p>The worker writes phases, row counts, status, logs, JUnit, validation reports, and artifacts. Sensitive values are redacted or omitted.</p>
-              <code>reports/**, metrics.json, junit.xml, CRABBOX_PHASE events</code>
-            </div>
-          </article>
-
-          <article class="step">
-            <div class="step-num">07</div>
-            <div class="step-body">
-              <h3>Harness reads the evidence and decides.</h3>
-              <p>The harness calls Crabbox history/results/artifacts, updates state, and chooses whether to finish, retry, alert, or launch a follow-up job.</p>
-              <code>crabbox results &lt;run-id&gt; --json</code>
-            </div>
-          </article>
+          <article class="trace-step"><div class="trace-num">01</div><div class="trace-body"><h3>Objective enters the harness.</h3><p>A human, scheduler, webhook, or data-change event asks for a data outcome.</p></div><div class="trace-call">input: goal + policy</div></article>
+          <article class="trace-step"><div class="trace-num">02</div><div class="trace-body"><h3>Harness reads state.</h3><p>It checks warehouse freshness, previous Crabbox history, existing artifacts, schema state, and destination constraints.</p></div><div class="trace-call">crabbox history --json</div></article>
+          <article class="trace-step"><div class="trace-num">03</div><div class="trace-body"><h3>Harness chooses the movement type.</h3><p>It decides whether this is standard ETL, reverse ETL, enrichment, validation, repair, or a mixed job.</p></div><div class="trace-call">decision: worker kind</div></article>
+          <article class="trace-step"><div class="trace-num">04</div><div class="trace-body"><h3>Harness chooses source and target references.</h3><p>It names the systems and target config. It does not fetch and hold the data rows.</p></div><div class="trace-call">source_ref + target_ref</div></article>
+          <article class="trace-step"><div class="trace-num">05</div><div class="trace-body"><h3>Harness chooses the credential profile.</h3><p>It selects a profile such as <code>etl-warehouse</code>. Raw secret values stay in profiles or the secret store.</p></div><div class="trace-call">--env-from-profile</div></article>
+          <article class="trace-step"><div class="trace-num">06</div><div class="trace-body"><h3>Harness builds the job spec.</h3><p>The spec contains pool, Airbyte connector config, script, env allowlist, artifact globs, validation rules, and retry policy. It is written into the workspace that Crabbox syncs to the worker.</p></div><div class="trace-call">.crabbox/generated/job.json</div></article>
+          <article class="trace-step"><div class="trace-num">07</div><div class="trace-body"><h3>Harness ensures capacity.</h3><p>It asks Crabbox to keep the right pool warm so dispatch is fast.</p></div><div class="trace-call">crabbox pool ensure</div></article>
+          <article class="trace-step"><div class="trace-num">08</div><div class="trace-body"><h3>Harness starts the run.</h3><p>It calls Crabbox with the pool, command, env allowlist, profile, artifact rules, and JUnit path.</p></div><div class="trace-call">crabbox run --pool</div></article>
+          <article class="trace-step"><div class="trace-num">09</div><div class="trace-body"><h3>Crabbox leases the sandbox.</h3><p>Crabbox borrows or creates a worker, hydrates the repo, attaches cache volumes, and injects allowed environment values.</p></div><div class="trace-call">worker lease</div></article>
+          <article class="trace-step"><div class="trace-num">10</div><div class="trace-body"><h3>Worker starts the sync script.</h3><p>The script reads the synced generated job file, prepares Airbyte config, and starts the connector or PyAirbyte flow.</p></div><div class="trace-call">python -m workers.sync</div></article>
+          <article class="trace-step"><div class="trace-num">11</div><div class="trace-body"><h3>Airbyte reads the source.</h3><p>Airbyte uses worker-scoped credentials to pull records from the source. This happens inside the sandbox.</p></div><div class="trace-call">source -> worker</div></article>
+          <article class="trace-step"><div class="trace-num">12</div><div class="trace-body"><h3>Airbyte writes the target.</h3><p>Records are normalized, streamed, loaded, or emitted according to the connector and target config.</p></div><div class="trace-call">worker -> target</div></article>
+          <article class="trace-step"><div class="trace-num">13</div><div class="trace-body"><h3>Worker validates and packages evidence.</h3><p>It emits phases, row counts, timings, validation reports, JUnit, logs, redacted config, and artifacts.</p></div><div class="trace-call">reports/** metrics.json</div></article>
+          <article class="trace-step"><div class="trace-num">14</div><div class="trace-body"><h3>Harness reads evidence and decides next action.</h3><p>The harness finishes, retries, alerts, opens a follow-up job, or changes the next plan.</p></div><div class="trace-call">results + artifacts</div></article>
         </div>
       </div>
     </section>
 
-    <section id="data" class="section">
+    <section id="worker" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">3 / data path</span>
-          <h2>How the data moves.</h2>
-          <p>There are two flows: control messages and data movement. Confusing them is the main source of bad architecture.</p>
+          <span class="kicker">3 / worker cutaway</span>
+          <h2>What runs inside the sandbox worker.</h2>
+          <p>The worker is not just a terminal. It is the execution envelope around Airbyte, generated config, scoped credentials, validation, and artifacts.</p>
         </div>
 
-        <div class="mini">
-          <article class="mini-card">
-            <h3>Control flow</h3>
-            <p><code>caller → harness → Crabbox → sandbox command</code>. This flow contains job specs, config references, profile names, and status.</p>
+        <div class="cutaway">
+          <div class="board" aria-label="Sandbox worker cutaway">
+            <div class="board-head">
+              <span>sandbox-worker</span>
+              <span>inside the box</span>
+            </div>
+            <svg class="cutaway-svg" viewBox="0 0 720 460" role="img" aria-labelledby="cutaway-title cutaway-desc">
+              <title id="cutaway-title">Sandbox worker internal components</title>
+              <desc id="cutaway-desc">The sandbox contains the hydrated repo, job config, environment profile, Airbyte engine, validation, and artifact writer.</desc>
+              <defs>
+                <marker id="small-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#101010"></path>
+                </marker>
+              </defs>
+              <rect class="box worker" x="28" y="28" width="664" height="404" rx="10"></rect>
+              <text class="svg-title" x="52" y="66">Remote sandbox leased by Crabbox</text>
+
+              <rect class="box" x="58" y="104" width="158" height="82" rx="8"></rect>
+              <text class="svg-title" x="80" y="138">Repo</text>
+              <text class="svg-small" x="80" y="162">workers/*.py</text>
+
+              <rect class="box evidence" x="58" y="244" width="158" height="82" rx="8"></rect>
+              <text class="svg-title" x="80" y="278">Job config</text>
+              <text class="svg-small" x="80" y="302">generated json</text>
+
+              <rect class="box crabbox" x="282" y="104" width="158" height="82" rx="8"></rect>
+              <text class="svg-title" x="304" y="138">Profile env</text>
+              <text class="svg-small" x="304" y="162">allowed only</text>
+
+              <rect class="box airbyte" x="282" y="244" width="158" height="82" rx="8"></rect>
+              <text class="svg-title" x="304" y="278">Airbyte</text>
+              <text class="svg-small" x="304" y="302">connector run</text>
+
+              <rect class="box" x="506" y="104" width="142" height="82" rx="8"></rect>
+              <text class="svg-title" x="528" y="138">Validator</text>
+              <text class="svg-small" x="528" y="162">counts/tests</text>
+
+              <rect class="box evidence" x="506" y="244" width="142" height="82" rx="8"></rect>
+              <text class="svg-title" x="528" y="278">Artifacts</text>
+              <text class="svg-small" x="528" y="302">reports/**</text>
+
+              <path class="arrow control" d="M216 145H272" marker-end="url(#small-arrow)"></path>
+              <path class="arrow control" d="M216 285H272" marker-end="url(#small-arrow)"></path>
+              <path class="arrow data" d="M361 186V234" marker-end="url(#small-arrow)"></path>
+              <path class="arrow evidence" d="M440 284H496" marker-end="url(#small-arrow)"></path>
+              <path class="arrow evidence" d="M440 145H496" marker-end="url(#small-arrow)"></path>
+              <text class="svg-small" x="58" y="382">Only this worker process receives runtime secrets. The harness receives evidence after the run.</text>
+            </svg>
+          </div>
+
+          <div class="side-list">
+            <article class="panel">
+              <h3>Airbyte runs here</h3>
+              <p>Airbyte is installed or hydrated in the worker environment, then invoked by a script or PyAirbyte wrapper.</p>
+            </article>
+            <article class="panel">
+              <h3>Config is generated before execution</h3>
+              <p>The harness creates or selects connector config, but secrets are represented by profile references and allowed environment variables.</p>
+            </article>
+            <article class="panel">
+              <h3>Validation is local to the worker</h3>
+              <p>The worker can compare row counts, check schema drift, write JUnit, and save redacted config for audit.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="paths" class="section">
+      <div class="wrap">
+        <div class="section-heading">
+          <span class="kicker">4 / paths</span>
+          <h2>Three paths exist. Do not mix them.</h2>
+          <p>This is the most important design rule. Control, data, and evidence are separate flows.</p>
+        </div>
+
+        <div class="paths">
+          <article class="path-card">
+            <div class="path-head control-head">Control path</div>
+            <p><code>caller -> harness -> Crabbox -> worker command</code>. Contains job specs, profile names, config references, retry rules, and status.</p>
           </article>
-          <article class="mini-card">
-            <h3>Data flow</h3>
-            <p><code>source → Airbyte in sandbox → target</code>. The harness does not stream rows. The Crabbox broker does not transform rows.</p>
+          <article class="path-card">
+            <div class="path-head data-head">Data path</div>
+            <p><code>source -> Airbyte in worker -> target</code>. Contains rows and records. The harness should not stream or store this path.</p>
           </article>
-          <article class="mini-card">
-            <h3>Evidence flow</h3>
-            <p><code>sandbox → Crabbox results/artifacts → harness</code>. This flow contains metrics, logs, test results, samples, and reports.</p>
+          <article class="path-card">
+            <div class="path-head evidence-head">Evidence path</div>
+            <p><code>worker -> Crabbox history/results/artifacts -> harness</code>. Contains logs, metrics, JUnit, reports, samples, and redacted config.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="creds" class="section">
+    <section id="credentials" class="section">
       <div class="wrap two">
         <div>
           <div class="section-heading">
-            <span class="kicker">4 / credentials</span>
-            <h2>How credentials are handled.</h2>
-            <p>The harness can decide which credential profile to use. It should not carry raw secrets in prompts, plans, command lines, or logs.</p>
+            <span class="kicker">5 / credentials</span>
+            <h2>How credentials work.</h2>
+            <p>"Harness spins up Crabbox with creds and target" means profile references and target config. Raw secrets should not be in prompts, command lines, logs, or artifact files.</p>
           </div>
-
-          <ul class="list">
-            <li><strong>The harness names a profile.</strong> Example: <code>etl-warehouse</code> or <code>activation-safe</code>.</li>
-            <li><strong>Crabbox resolves allowed environment values.</strong> Use <code>--env-from-profile</code> and <code>--allow-env</code>.</li>
-            <li><strong>The worker receives the secrets at execution time.</strong> Only the sandbox process sees them.</li>
-            <li><strong>Outputs are evidence, not secret dumps.</strong> Reports should include counts, statuses, and redacted config, not credentials.</li>
-          </ul>
+          <div class="paths">
+            <article class="path-card">
+              <div class="path-head control-head">Harness chooses</div>
+              <p><code>credential_profile = etl-warehouse</code>, <code>allow_env = AIRBYTE_*,SOURCE_*,TARGET_*</code>.</p>
+            </article>
+            <article class="path-card">
+              <div class="path-head data-head">Crabbox injects</div>
+              <p>Crabbox resolves profile-backed values and exposes only allowed environment variables to the sandbox process.</p>
+            </article>
+            <article class="path-card">
+              <div class="path-head evidence-head">Worker uses</div>
+              <p>Airbyte uses those values to authenticate source and target. Reports must redact secrets.</p>
+            </article>
+          </div>
         </div>
 
-        <aside class="warning">
-          <h3>Important distinction</h3>
-          <p>"Harness spins up Crabbox with creds and target" should mean: the harness passes a target config plus credential profile reference. Raw secret values should stay in profiles or the secret store and only materialize inside the worker.</p>
+        <aside class="panel">
+          <h3>Credential rule</h3>
+          <p>The harness may decide which credential profile is appropriate. It should not become the secret store. Secrets materialize at worker execution time and should not come back in evidence.</p>
         </aside>
       </div>
     </section>
@@ -965,67 +1298,109 @@
       <div class="wrap two">
         <div>
           <div class="section-heading">
-            <span class="kicker">5 / calls</span>
-            <h2>What calls what.</h2>
-            <p>The harness can be an agent service, scheduler, LangGraph workflow, or normal backend. The calls still look like this.</p>
+            <span class="kicker">6 / runnable shape</span>
+            <h2>The calls look like this.</h2>
+            <p>This is the minimal shell shape a harness can emit. A real harness can call a local CLI, wrapper service, or future API, but the boundary is the same.</p>
           </div>
-
           <div class="code-panel">
             <div class="code-head">
               <span>harness-dispatch.sh</span>
               <button class="copy-button" type="button" data-copy>Copy</button>
             </div>
-            <pre class="terminal"><code id="command-text"><span class="comment"># Harness ensures the worker pool exists and stays warm.</span>
+            <pre class="terminal"><code id="command-text"><span class="comment"># 1. Harness keeps the right worker type warm.</span>
 crabbox pool ensure example-org/data-movement/main/provider/linux/etl \
   --min-ready 3 \
   --create -- \
   --cache-volume airbyte-etl
 
-<span class="comment"># Harness dispatches one data movement job.
-# It passes target config and a credential profile reference.
-# Raw secrets are not embedded in the command.</span>
+<span class="comment"># 2. Harness writes the job spec.
+# It contains connector config, source ref, target ref, validation rules.
+# It references a credential profile; it does not contain raw secrets.</span>
+mkdir -p .crabbox/generated
+cat > .crabbox/generated/accounts-sync.json <<'JSON'
+{
+  "movement": "source_to_target",
+  "source_ref": "source.crm.accounts",
+  "target_ref": "warehouse.analytics.accounts",
+  "airbyte_connection": "accounts_sync",
+  "validation": ["row_count", "schema_drift", "freshness"],
+  "redact": ["password", "token", "secret"]
+}
+JSON
+
+<span class="comment"># 3. Harness dispatches the worker run through Crabbox.</span>
 crabbox run --pool example-org/data-movement/main/provider/linux/etl \
-  --shell 'python -m workers.airbyte_sync --config /tmp/job.json' \
+  --shell 'python -m workers.airbyte_sync --config .crabbox/generated/accounts-sync.json' \
   --allow-env 'AIRBYTE_*,SOURCE_*,TARGET_*,WAREHOUSE_*' \
   --env-from-profile etl-warehouse \
   --artifact-glob 'reports/**,metrics.json,redacted-config.json' \
   --junit reports/
 
-<span class="comment"># Harness reads evidence and decides the next action.</span>
+<span class="comment"># 4. Harness reads evidence and decides the next step.</span>
 crabbox history --limit 50 --json
 crabbox results &lt;run-id&gt; --json
 crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></pre>
           </div>
         </div>
 
-        <aside class="plain-card">
-          <h3>Who is the driver?</h3>
-          <p>The harness is the driver. Crabbox is the execution substrate. Airbyte is the data mover inside the sandbox. The source and target are external systems. Evidence is the feedback loop.</p>
+        <aside class="panel">
+          <h3>What calls what</h3>
+          <p>The harness calls Crabbox. Crabbox starts the worker command. The worker command invokes Airbyte. Airbyte calls source and target systems. The harness reads Crabbox results and artifacts.</p>
         </aside>
       </div>
     </section>
 
-    <section id="rationale" class="section">
+    <section id="why" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">6 / rationale</span>
-          <h2>Why design it this way.</h2>
-          <p>The design exists to let the harness make dynamic decisions without making the harness the place where data, secrets, and mutable execution state accumulate.</p>
+          <span class="kicker">7 / rationale</span>
+          <h2>Why this design is worth doing.</h2>
+          <p>The goal is not to add layers. The goal is to keep intelligence dynamic while making execution bounded, auditable, and repeatable.</p>
         </div>
 
-        <div class="mini">
-          <article class="mini-card">
-            <h3>Bounded blast radius</h3>
-            <p>Each job runs in a sandbox with scoped credentials and a clear artifact boundary.</p>
+        <div class="rationale-grid">
+          <article class="rationale-card">
+            <h3>Security</h3>
+            <p>The harness plans with references. The worker executes with scoped secrets. Secrets stay out of prompts and logs.</p>
           </article>
-          <article class="mini-card">
-            <h3>Real execution</h3>
-            <p>Airbyte and code run in an actual repo-defined environment, not inside a vague agent tool abstraction.</p>
+          <article class="rationale-card">
+            <h3>Observability</h3>
+            <p>Every run produces structured proof: phases, metrics, JUnit, artifacts, and history.</p>
           </article>
-          <article class="mini-card">
-            <h3>Useful memory</h3>
-            <p>The harness learns from run evidence: what moved, what failed, what changed, and what should happen next.</p>
+          <article class="rationale-card">
+            <h3>Reproducibility</h3>
+            <p>The worker runtime is repo-defined and hydrated consistently before execution.</p>
           </article>
+          <article class="rationale-card">
+            <h3>Adaptability</h3>
+            <p>The harness can change the plan next run without giving up execution control.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="audit" class="section">
+      <div class="wrap">
+        <div class="section-heading">
+          <span class="kicker">8 / 14-pass audit</span>
+          <h2>What I checked before shipping this page.</h2>
+          <p>The page should answer the execution questions directly. This audit is here so the tutorial stays honest.</p>
+        </div>
+        <div class="audit">
+          <div><strong>1. Driver named</strong> Harness is explicitly the driver.</div>
+          <div><strong>2. Runner named</strong> Crabbox is explicitly the execution substrate.</div>
+          <div><strong>3. Data mover named</strong> Airbyte is explicitly inside the worker.</div>
+          <div><strong>4. Source path shown</strong> Source records enter the sandbox worker, not the harness.</div>
+          <div><strong>5. Target path shown</strong> Airbyte writes to target from inside the worker.</div>
+          <div><strong>6. Credential path shown</strong> Profiles and allowlists are separated from raw secrets.</div>
+          <div><strong>7. Evidence path shown</strong> Results and artifacts return to the harness.</div>
+          <div><strong>8. Tools explained</strong> Each tool has a clear job and boundary.</div>
+          <div><strong>9. Calls listed</strong> The command surface is concrete.</div>
+          <div><strong>10. Worker internals illustrated</strong> Repo, config, env, Airbyte, validation, artifacts are shown.</div>
+          <div><strong>11. Rationale stated</strong> Security, observability, reproducibility, adaptability are explicit.</div>
+          <div><strong>12. No row streaming through harness</strong> The page says this directly.</div>
+          <div><strong>13. No secret dumping</strong> The page says raw secrets do not belong in prompts, logs, commands, or artifacts.</div>
+          <div><strong>14. End-to-end complete</strong> The trace starts at objective and ends at next decision.</div>
         </div>
       </div>
     </section>
