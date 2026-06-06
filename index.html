@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6f4ef">
-  <meta name="description" content="Agentic Airbyte explains the exact end-to-end tool chain: harness, Crabbox, sandbox worker, Airbyte, source, target, credentials, and evidence.">
+  <meta name="description" content="Agentic Airbyte explains how an AI coding agent such as Claude Code, Codex, or OpenCode can plan ETL and reverse ETL jobs while Crabbox runs them and Airbyte moves the data.">
   <meta property="og:title" content="Agentic Airbyte">
-  <meta property="og:description" content="A precise tutorial for what calls what, what runs where, how data moves, and why the design exists.">
+  <meta property="og:description" content="A concise zero-to-hero tutorial for the AI harness, Crabbox sandbox, Airbyte data movement, credentials, evidence, and failure boundaries.">
   <meta property="og:type" content="website">
   <title>Agentic Airbyte | End-to-End Execution Tutorial</title>
   <style>
@@ -236,6 +236,31 @@
       margin-bottom: 28px;
     }
 
+    .role-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .role-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      padding: 10px 12px;
+    }
+
+    .role-tab strong {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
     .section {
       padding: 58px 18px;
       border-top: 2px solid rgb(16 16 16 / 0.16);
@@ -455,9 +480,36 @@
       padding: 12px 14px;
     }
 
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .metric {
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 14px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
     .tool-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
 
@@ -678,7 +730,7 @@
 
     .rationale-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
 
@@ -771,6 +823,10 @@
         grid-template-columns: 1fr;
       }
 
+      .metric-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
       .legend-item {
         border-right: 0;
         border-bottom: 2px solid var(--line);
@@ -820,6 +876,11 @@
 
       .system-svg {
         display: none;
+      }
+
+      .board-head {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
       .mobile-flow {
@@ -883,6 +944,10 @@
         grid-template-columns: 1fr;
       }
 
+      .metric-strip {
+        grid-template-columns: 1fr;
+      }
+
       .footer-inner {
         align-items: flex-start;
         flex-direction: column;
@@ -900,41 +965,48 @@
         <span class="brand-text">agentic-airbyte</span>
       </a>
       <div class="nav-links">
-        <a href="#tools">Tools</a>
-        <a href="#formal">Model</a>
+        <a href="#basics">Basics</a>
+        <a href="#map">Map</a>
         <a href="#trace">Trace</a>
+        <a href="#formal">Model</a>
         <a href="#worker">Worker</a>
-        <a href="#paths">Paths</a>
         <a href="#commands">Commands</a>
         <a href="#contracts">Contracts</a>
-        <a href="#why">Why</a>
       </div>
-      <a class="button" href="#trace">Trace it</a>
+      <a class="button" href="#trace">Trace run</a>
     </div>
   </nav>
 
   <header id="top" class="hero">
     <div class="wrap">
-      <div class="eyebrow">End-to-end tutorial</div>
-      <h1>Goal in. Harness plans. Crabbox starts a worker. Airbyte moves rows. Evidence returns.</h1>
+      <div class="eyebrow">AI agent + Crabbox + Airbyte</div>
+      <h1>An AI coding agent plans the data job. Crabbox runs it. Airbyte moves the rows.</h1>
       <p class="hero-copy">
-        This is the exact mechanism. The <strong>harness is the driver</strong>. It builds a job spec and calls
-        <strong>Crabbox</strong>. Crabbox leases a sandbox worker with scoped credentials. Inside that worker,
-        <strong>Airbyte</strong> reads from the source and writes to the target. The harness receives proof, not the row stream.
+        Assume the harness is <strong>Claude Code, Codex, OpenCode, or a similar AI coding agent</strong>. It reads the
+        goal, edits generated config, and calls <strong>Crabbox</strong>. Crabbox leases a sandbox worker with scoped
+        credentials. Inside that worker, <strong>Airbyte</strong> reads the source and writes the target. The agent gets
+        evidence back, not the production row stream.
       </p>
       <div class="hero-actions">
-        <a class="button" href="#tools">Start with tools</a>
-        <a class="button secondary" href="https://github.com/zozo123/agentic-airbyte" target="_blank" rel="noreferrer">Source</a>
+        <a class="button" href="#basics">Start at zero</a>
+        <a class="button secondary" href="#commands">View command</a>
       </div>
 
-      <div class="board" aria-label="End-to-end system illustration">
+      <div class="role-tabs" aria-label="Core roles">
+        <div class="role-tab"><strong>AI agent</strong> decides and writes config</div>
+        <div class="role-tab"><strong>Crabbox</strong> leases and runs the sandbox</div>
+        <div class="role-tab"><strong>Airbyte</strong> moves source to target</div>
+        <div class="role-tab"><strong>Evidence</strong> closes the loop</div>
+      </div>
+
+      <div id="map" class="board" aria-label="End-to-end system illustration">
         <div class="board-head">
           <span>e2e-system-map</span>
-          <span>who calls what / where data moves</span>
+          <span>AI decides / Crabbox executes / Airbyte moves</span>
         </div>
         <svg class="system-svg" viewBox="0 0 1120 560" role="img" aria-labelledby="map-title map-desc">
           <title id="map-title">End-to-end Agentic Airbyte system map</title>
-          <desc id="map-desc">A goal enters the harness. The harness calls Crabbox. Crabbox leases a sandbox worker. Airbyte runs inside the worker and moves data from source to target. Evidence returns to the harness.</desc>
+          <desc id="map-desc">A goal enters an AI coding agent such as Claude Code, Codex, or OpenCode. The agent calls Crabbox. Crabbox leases a sandbox worker. Airbyte runs inside the worker and moves data from source to target. Evidence returns to the agent.</desc>
           <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
               <path d="M 0 0 L 10 5 L 0 10 z" fill="#101010"></path>
@@ -943,12 +1015,12 @@
 
           <rect class="box" x="34" y="74" width="146" height="84" rx="8"></rect>
           <text class="svg-title" x="58" y="110">Caller</text>
-          <text class="svg-small" x="58" y="134">goal + policy</text>
+          <text class="svg-small" x="58" y="134">human / schedule</text>
 
           <rect class="box harness" x="248" y="54" width="210" height="128" rx="8"></rect>
-          <text class="svg-title" x="272" y="93">Harness</text>
-          <text class="svg-small" x="272" y="120">driver</text>
-          <text class="svg-small" x="272" y="142">builds job spec</text>
+          <text class="svg-title" x="272" y="93">AI harness</text>
+          <text class="svg-small" x="272" y="120">AI coding agent</text>
+          <text class="svg-small" x="272" y="142">writes job spec</text>
           <text class="svg-small" x="272" y="164">calls Crabbox</text>
 
           <rect class="box crabbox" x="548" y="54" width="218" height="128" rx="8"></rect>
@@ -961,9 +1033,9 @@
           <text class="svg-title" x="882" y="93">Sandbox worker</text>
           <text class="svg-small" x="882" y="120">repo hydrated</text>
           <text class="svg-small" x="882" y="142">profile env injected</text>
-          <text class="svg-small" x="882" y="164">runs sync script</text>
+          <text class="svg-small" x="882" y="164">runs ETL script</text>
           <rect class="box airbyte" x="884" y="184" width="168" height="38" rx="8"></rect>
-          <text class="svg-small" x="910" y="208">Airbyte engine</text>
+          <text class="svg-small" x="910" y="208">Airbyte connector</text>
 
           <rect class="box source" x="226" y="354" width="178" height="84" rx="8"></rect>
           <text class="svg-title" x="250" y="391">Source</text>
@@ -986,29 +1058,29 @@
           <path class="arrow evidence" d="M506 388 C390 344 320 265 333 190" marker-end="url(#arrow)"></path>
         </svg>
         <div class="mobile-flow" aria-label="Mobile end-to-end system flow">
-          <div class="mobile-node"><strong>Caller</strong><span>Submits goal, policy, freshness target.</span></div>
+          <div class="mobile-node"><strong>Human or schedule</strong><span>Submits goal, policy, freshness target.</span></div>
           <div class="mobile-arrow">control call -></div>
-          <div class="mobile-node harness"><strong>Harness</strong><span>Driver. Builds job spec, chooses pool, target, credential profile, and validation.</span></div>
+          <div class="mobile-node harness"><strong>AI harness</strong><span>Claude Code, Codex, OpenCode, or similar. Writes the job spec and chooses pool, target, profile, and validation.</span></div>
           <div class="mobile-arrow">calls crabbox -></div>
           <div class="mobile-node crabbox"><strong>Crabbox</strong><span>Ensures pool, leases sandbox, hydrates repo, injects allowed profile env, runs command.</span></div>
           <div class="mobile-arrow">starts worker -></div>
           <div class="mobile-node worker"><strong>Sandbox worker + Airbyte</strong><span>Airbyte runs here. Secrets materialize here. Source and target are touched here.</span></div>
           <div class="mobile-arrow">data path -></div>
-          <div class="mobile-node data-plane"><strong>Source -> Airbyte -> Target</strong><span>Rows move through the worker, not through the harness.</span></div>
+          <div class="mobile-node data-plane"><strong>Source -> Airbyte -> Target</strong><span>Rows move through the worker, not through the AI agent.</span></div>
           <div class="mobile-arrow">evidence path -></div>
           <div class="mobile-node evidence-plane"><strong>Evidence returns</strong><span>Logs, phases, metrics, JUnit, artifacts, redacted config.</span></div>
         </div>
         <div class="legend">
-          <div class="legend-item"><span class="swatch"></span>Control calls: caller -> harness -> Crabbox -> worker.</div>
-          <div class="legend-item"><span class="swatch data-swatch"></span>Data path: source -> Airbyte in worker -> target.</div>
-          <div class="legend-item"><span class="swatch evidence-swatch"></span>Evidence path: worker -> Crabbox -> harness.</div>
+          <div class="legend-item"><span class="swatch"></span>Control calls: human/schedule -> AI harness -> Crabbox -> worker.</div>
+          <div class="legend-item"><span class="swatch data-swatch"></span>Data path: source -> Airbyte connector in worker -> target.</div>
+          <div class="legend-item"><span class="swatch evidence-swatch"></span>Evidence path: worker -> Crabbox -> AI harness.</div>
         </div>
       </div>
 
       <div class="truth-table" aria-label="Core truths">
         <div class="truth-row">
           <strong>Driver</strong>
-          <span>The harness drives. It decides the job, target, credential profile, worker pool, validation, and next action.</span>
+          <span>The AI coding agent drives. It decides the job, target, credential profile, worker pool, validation, and next action.</span>
         </div>
         <div class="truth-row">
           <strong>Runner</strong>
@@ -1016,19 +1088,26 @@
         </div>
         <div class="truth-row">
           <strong>Mover</strong>
-          <span>Airbyte moves the data inside the worker. The harness does not stream rows. The Crabbox control plane does not transform rows.</span>
+          <span>Airbyte moves the data inside the worker. The AI agent does not stream rows. The Crabbox control plane does not transform rows.</span>
         </div>
+      </div>
+
+      <div class="metric-strip" aria-label="Design promises">
+        <div class="metric"><strong>0</strong><span>production rows pass through the AI agent</span></div>
+        <div class="metric"><strong>1</strong><span>run id gives logs, status, artifacts, and replay context</span></div>
+        <div class="metric"><strong>3</strong><span>paths stay separate: control, data, evidence</span></div>
+        <div class="metric"><strong>14</strong><span>steps explain the whole run from goal to decision</span></div>
       </div>
     </div>
   </header>
 
   <main id="main">
-    <section id="tools" class="section">
+    <section id="basics" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">1 / tools</span>
-          <h2>What tools exist and what each one does.</h2>
-          <p>Keep these roles separate. If one component starts doing every job, the architecture becomes hard to audit and unsafe around credentials.</p>
+          <span class="kicker">1 / zero to hero</span>
+          <h2>The vocabulary, without assuming AI or ETL background.</h2>
+          <p>One sentence: the AI agent decides the bounded data job, Crabbox runs the job in an isolated worker, Airbyte moves the records, and evidence tells the agent what happened.</p>
         </div>
 
         <div class="tool-grid">
@@ -1039,13 +1118,13 @@
                 <path d="M32 6v12M32 46v12M6 32h12M46 32h12"></path>
               </svg>
             </div>
-            <h3>Harness</h3>
-            <p>The driver. It can be an agent graph, scheduler, backend service, or CLI wrapper.</p>
+            <h3>AI coding agent</h3>
+            <p>This is the harness: Claude Code, Codex, OpenCode, or a similar agent running in the repo.</p>
             <ul>
-              <li>Reads objective and state.</li>
-              <li>Creates job spec.</li>
+              <li>Reads the human goal and repository files.</li>
+              <li>Writes generated job config.</li>
               <li>Calls <code>crabbox</code>.</li>
-              <li>Reads evidence and decides next step.</li>
+              <li>Reads evidence and decides finish, retry, or repair.</li>
             </ul>
           </article>
 
@@ -1057,7 +1136,7 @@
               </svg>
             </div>
             <h3>Crabbox</h3>
-            <p>The execution substrate. It makes a remote box available and runs the command there.</p>
+            <p>The execution substrate. It gives the agent a controlled remote box instead of running data work in the agent session.</p>
             <ul>
               <li><code>pool ensure</code> keeps workers warm.</li>
               <li><code>run --pool</code> leases a sandbox.</li>
@@ -1074,7 +1153,7 @@
               </svg>
             </div>
             <h3>Sandbox worker</h3>
-            <p>The process boundary that touches data. It is short-lived or borrowed from a ready pool.</p>
+            <p>The process boundary that touches real systems. It is short-lived or borrowed from a ready pool.</p>
             <ul>
               <li>Repo is hydrated.</li>
               <li>Airbyte and scripts run here.</li>
@@ -1092,11 +1171,11 @@
               </svg>
             </div>
             <h3>Airbyte</h3>
-            <p>The data mover inside the sandbox. It handles connector logic and source-to-target movement.</p>
+            <p>The connector engine inside the sandbox. It knows how to read and write many APIs, databases, files, and warehouses.</p>
             <ul>
               <li>Reads source records.</li>
               <li>Writes target records.</li>
-              <li>Uses connector config generated by the harness.</li>
+              <li>Uses connector config generated by the AI agent.</li>
               <li>Emits sync status for validation.</li>
             </ul>
           </article>
@@ -1108,12 +1187,12 @@
                 <path d="M18 24h28M18 32h18M18 40h24"></path>
               </svg>
             </div>
-            <h3>Source and target</h3>
-            <p>External systems. Examples: SaaS API, Postgres, S3, warehouse, CRM, or operational app.</p>
+            <h3>ETL and reverse ETL</h3>
+            <p>ETL moves data into a place for analysis. Reverse ETL moves trusted data back into business apps.</p>
             <ul>
-              <li>Source is read by Airbyte.</li>
-              <li>Target is written by Airbyte.</li>
-              <li>Harness stores references, not row streams.</li>
+              <li>ETL: CRM or database -> warehouse.</li>
+              <li>Reverse ETL: warehouse -> CRM or support tool.</li>
+              <li>In both cases, Airbyte moves records inside the worker.</li>
             </ul>
           </article>
 
@@ -1125,7 +1204,7 @@
               </svg>
             </div>
             <h3>Evidence</h3>
-            <p>The feedback layer. It is what the harness reads after execution.</p>
+            <p>The feedback layer. It is what the AI agent reads after execution instead of reading production rows.</p>
             <ul>
               <li>Logs and phase events.</li>
               <li>Row counts and timings.</li>
@@ -1140,26 +1219,26 @@
     <section id="trace" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">2 / 14-step trace</span>
+          <span class="kicker">2 / 14-step run</span>
           <h2>The full run, end to end.</h2>
           <p>This is the actual sequence. It names who is active, what they call, and what changes hands.</p>
         </div>
 
         <div class="trace">
-          <article class="trace-step"><div class="trace-num">01</div><div class="trace-body"><h3>Objective enters the harness.</h3><p>A human, scheduler, webhook, or data-change event asks for a data outcome.</p></div><div class="trace-call">input: goal + policy</div></article>
-          <article class="trace-step"><div class="trace-num">02</div><div class="trace-body"><h3>Harness reads state.</h3><p>It checks warehouse freshness, previous Crabbox history, existing artifacts, schema state, and destination constraints.</p></div><div class="trace-call">crabbox history --json</div></article>
-          <article class="trace-step"><div class="trace-num">03</div><div class="trace-body"><h3>Harness chooses the movement type.</h3><p>It decides whether this is standard ETL, reverse ETL, enrichment, validation, repair, or a mixed job.</p></div><div class="trace-call">decision: worker kind</div></article>
-          <article class="trace-step"><div class="trace-num">04</div><div class="trace-body"><h3>Harness chooses source and target references.</h3><p>It names the systems and target config. It does not fetch and hold the data rows.</p></div><div class="trace-call">source_ref + target_ref</div></article>
-          <article class="trace-step"><div class="trace-num">05</div><div class="trace-body"><h3>Harness chooses the credential profile.</h3><p>It selects a profile such as <code>etl-warehouse</code>. Raw secret values stay in profiles or the secret store.</p></div><div class="trace-call">--env-from-profile</div></article>
-          <article class="trace-step"><div class="trace-num">06</div><div class="trace-body"><h3>Harness builds the job spec.</h3><p>The spec contains pool, Airbyte connector config, script, env allowlist, artifact globs, validation rules, and retry policy. It is written into the workspace that Crabbox syncs to the worker.</p></div><div class="trace-call">.crabbox/generated/job.json</div></article>
-          <article class="trace-step"><div class="trace-num">07</div><div class="trace-body"><h3>Harness ensures capacity.</h3><p>It asks Crabbox to keep the right pool warm so dispatch is fast.</p></div><div class="trace-call">crabbox pool ensure</div></article>
-          <article class="trace-step"><div class="trace-num">08</div><div class="trace-body"><h3>Harness starts the run.</h3><p>It calls Crabbox with the pool, command, env allowlist, profile, artifact rules, and JUnit path.</p></div><div class="trace-call">crabbox run --pool</div></article>
+          <article class="trace-step"><div class="trace-num">01</div><div class="trace-body"><h3>Goal enters the AI harness.</h3><p>A human, scheduler, webhook, or data-change event asks for a data outcome in plain terms.</p></div><div class="trace-call">input: goal + policy</div></article>
+          <article class="trace-step"><div class="trace-num">02</div><div class="trace-body"><h3>Agent reads state.</h3><p>Claude Code, Codex, OpenCode, or the chosen agent checks repo files, warehouse freshness, previous Crabbox history, artifacts, schema state, and destination constraints.</p></div><div class="trace-call">crabbox history --json</div></article>
+          <article class="trace-step"><div class="trace-num">03</div><div class="trace-body"><h3>Agent chooses the movement type.</h3><p>It decides whether this is ETL, reverse ETL, enrichment, validation, repair, or a mixed job.</p></div><div class="trace-call">decision: etl or reverse-etl</div></article>
+          <article class="trace-step"><div class="trace-num">04</div><div class="trace-body"><h3>Agent chooses source and target references.</h3><p>It names the systems and target config. It does not fetch, hold, or transform the data rows itself.</p></div><div class="trace-call">source_ref + target_ref</div></article>
+          <article class="trace-step"><div class="trace-num">05</div><div class="trace-body"><h3>Agent chooses the credential profile.</h3><p>It selects a profile such as <code>etl-warehouse</code>. Raw secret values stay in profiles or the secret store.</p></div><div class="trace-call">--env-from-profile</div></article>
+          <article class="trace-step"><div class="trace-num">06</div><div class="trace-body"><h3>Agent builds the job spec.</h3><p>The spec contains pool, Airbyte connector config, script, env allowlist, artifact globs, validation rules, and retry policy. It is written into the workspace that Crabbox syncs to the worker.</p></div><div class="trace-call">.crabbox/generated/accounts-sync.json</div></article>
+          <article class="trace-step"><div class="trace-num">07</div><div class="trace-body"><h3>Agent ensures capacity.</h3><p>It asks Crabbox to keep the right pool warm so dispatch is fast.</p></div><div class="trace-call">crabbox pool ensure</div></article>
+          <article class="trace-step"><div class="trace-num">08</div><div class="trace-body"><h3>Agent starts the run.</h3><p>It calls Crabbox with the pool, command, env allowlist, profile, artifact rules, and JUnit path.</p></div><div class="trace-call">crabbox run --pool</div></article>
           <article class="trace-step"><div class="trace-num">09</div><div class="trace-body"><h3>Crabbox leases the sandbox.</h3><p>Crabbox borrows or creates a worker, hydrates the repo, attaches cache volumes, and injects allowed environment values.</p></div><div class="trace-call">worker lease</div></article>
-          <article class="trace-step"><div class="trace-num">10</div><div class="trace-body"><h3>Worker starts the sync script.</h3><p>The script reads the synced generated job file, prepares Airbyte config, and starts the connector or PyAirbyte flow.</p></div><div class="trace-call">python -m workers.sync</div></article>
+          <article class="trace-step"><div class="trace-num">10</div><div class="trace-body"><h3>Worker starts the sync script.</h3><p>The script reads the synced generated job file, prepares Airbyte config, and starts the connector or PyAirbyte flow.</p></div><div class="trace-call">python -m workers.airbyte_sync</div></article>
           <article class="trace-step"><div class="trace-num">11</div><div class="trace-body"><h3>Airbyte reads the source.</h3><p>Airbyte uses worker-scoped credentials to pull records from the source. This happens inside the sandbox.</p></div><div class="trace-call">source -> worker</div></article>
           <article class="trace-step"><div class="trace-num">12</div><div class="trace-body"><h3>Airbyte writes the target.</h3><p>Records are normalized, streamed, loaded, or emitted according to the connector and target config.</p></div><div class="trace-call">worker -> target</div></article>
           <article class="trace-step"><div class="trace-num">13</div><div class="trace-body"><h3>Worker validates and packages evidence.</h3><p>It emits phases, row counts, timings, validation reports, JUnit, logs, redacted config, and artifacts.</p></div><div class="trace-call">reports/** metrics.json</div></article>
-          <article class="trace-step"><div class="trace-num">14</div><div class="trace-body"><h3>Harness reads evidence and decides next action.</h3><p>The harness finishes, retries, alerts, opens a follow-up job, or changes the next plan.</p></div><div class="trace-call">results + artifacts</div></article>
+          <article class="trace-step"><div class="trace-num">14</div><div class="trace-body"><h3>Agent reads evidence and decides next action.</h3><p>The agent finishes, retries, alerts, opens a follow-up job, or changes the next plan.</p></div><div class="trace-call">results + artifacts</div></article>
         </div>
       </div>
     </section>
@@ -1169,7 +1248,7 @@
         <div class="section-heading">
           <span class="kicker">3 / formal model</span>
           <h2>The system is a state transition with a bounded executor.</h2>
-          <p>This is the clean mental model. The harness computes the next action from state and evidence. Crabbox runs that action in a sandbox. Airbyte changes external data state. Evidence updates the harness state.</p>
+          <p>This is the clean mental model. The AI agent computes the next action from state and evidence. Crabbox runs that action in a sandbox. Airbyte changes external data state. Evidence updates the agent state.</p>
         </div>
 
         <div class="paths">
@@ -1179,20 +1258,20 @@
           </article>
           <article class="path-card">
             <div class="path-head data-head">Transition</div>
-            <p><code>(G, S) -> P -> J -> R -> E -> S'</code>. Only <code>R</code> touches source and target data. The harness handles decisions and memory.</p>
+            <p><code>(G, S) -> P -> J -> R -> E -> S'</code>. Only <code>R</code> touches source and target data. The AI harness handles decisions and memory.</p>
           </article>
           <article class="path-card">
             <div class="path-head evidence-head">Invariant</div>
-            <p>The harness may choose the job and credential profile. It must not become the data mover, secret store, or artifact sanitizer.</p>
+            <p>The AI harness may choose the job and credential profile. It must not become the data mover, secret store, or artifact sanitizer.</p>
           </article>
         </div>
 
         <div class="code-panel" style="margin-top: 16px">
           <div class="code-head">
-            <span>harness-loop.pseudo</span>
+            <span>ai-harness-loop.pseudo</span>
             <span>minimal algorithm</span>
           </div>
-          <pre class="terminal"><code><span class="comment"># The harness is a controller. It repeatedly chooses bounded actions.</span>
+          <pre class="terminal"><code><span class="comment"># Claude Code, Codex, OpenCode, or another AI harness is a controller.</span>
 while true:
     G = receive_goal_or_schedule()
     S = observe_state() + crabbox.history() + previous_artifacts()
@@ -1220,7 +1299,7 @@ while true:
         <div class="section-heading">
           <span class="kicker">4 / worker cutaway</span>
           <h2>What runs inside the sandbox worker.</h2>
-          <p>The worker is not just a terminal. It is the execution envelope around Airbyte, generated config, scoped credentials, validation, and artifacts.</p>
+          <p>The worker is not just a terminal. It is the execution envelope around Airbyte, generated config, scoped credentials, validation, and artifacts. The AI agent can inspect the result, but the worker does the dangerous work.</p>
         </div>
 
         <div class="cutaway">
@@ -1269,7 +1348,7 @@ while true:
               <path class="arrow data" d="M361 186V234" marker-end="url(#small-arrow)"></path>
               <path class="arrow evidence" d="M440 284H496" marker-end="url(#small-arrow)"></path>
               <path class="arrow evidence" d="M440 145H496" marker-end="url(#small-arrow)"></path>
-              <text class="svg-small" x="58" y="382">Only this worker process receives runtime secrets. The harness receives evidence after the run.</text>
+              <text class="svg-small" x="58" y="382">Only this worker process receives runtime secrets. The AI agent receives evidence after the run.</text>
             </svg>
           </div>
 
@@ -1280,7 +1359,7 @@ while true:
             </article>
             <article class="panel">
               <h3>Config is generated before execution</h3>
-              <p>The harness creates or selects connector config, but secrets are represented by profile references and allowed environment variables.</p>
+              <p>The AI agent creates or selects connector config, but secrets are represented by profile references and allowed environment variables.</p>
             </article>
             <article class="panel">
               <h3>Validation is local to the worker</h3>
@@ -1296,21 +1375,21 @@ while true:
         <div class="section-heading">
           <span class="kicker">5 / paths</span>
           <h2>Three paths exist. Do not mix them.</h2>
-          <p>This is the most important design rule. Control, data, and evidence are separate flows.</p>
+          <p>This is the most important design rule. Control, data, and evidence are separate flows. The agent owns control, Airbyte owns data movement, and Crabbox returns evidence.</p>
         </div>
 
         <div class="paths">
           <article class="path-card">
             <div class="path-head control-head">Control path</div>
-            <p><code>caller -> harness -> Crabbox -> worker command</code>. Contains job specs, profile names, config references, retry rules, and status.</p>
+            <p><code>human/schedule -> AI harness -> Crabbox -> worker command</code>. Contains job specs, profile names, config references, retry rules, and status.</p>
           </article>
           <article class="path-card">
             <div class="path-head data-head">Data path</div>
-            <p><code>source -> Airbyte in worker -> target</code>. Contains rows and records. The harness should not stream or store this path.</p>
+            <p><code>source -> Airbyte in worker -> target</code>. Contains rows and records. The AI agent should not stream or store this path.</p>
           </article>
           <article class="path-card">
             <div class="path-head evidence-head">Evidence path</div>
-            <p><code>worker -> Crabbox history/results/artifacts -> harness</code>. Contains logs, metrics, JUnit, reports, samples, and redacted config.</p>
+            <p><code>worker -> Crabbox history/results/artifacts -> AI harness</code>. Contains logs, metrics, JUnit, reports, samples, and redacted config.</p>
           </article>
         </div>
       </div>
@@ -1322,11 +1401,11 @@ while true:
           <div class="section-heading">
             <span class="kicker">6 / credentials</span>
             <h2>How credentials work.</h2>
-            <p>"Harness spins up Crabbox with creds and target" means profile references and target config. Raw secrets should not be in prompts, command lines, logs, or artifact files.</p>
+            <p>"The AI agent spins up Crabbox with creds and target" means profile references and target config. Raw secrets should not be in prompts, command lines, logs, or artifact files.</p>
           </div>
           <div class="paths">
             <article class="path-card">
-              <div class="path-head control-head">Harness chooses</div>
+              <div class="path-head control-head">Agent chooses</div>
               <p><code>credential_profile = etl-warehouse</code>, <code>allow_env = AIRBYTE_*,SOURCE_*,TARGET_*</code>.</p>
             </article>
             <article class="path-card">
@@ -1342,7 +1421,7 @@ while true:
 
         <aside class="panel">
           <h3>Credential rule</h3>
-          <p>The harness may decide which credential profile is appropriate. It should not become the secret store. Secrets materialize at worker execution time and should not come back in evidence.</p>
+          <p>The AI agent may decide which credential profile is appropriate. It should not become the secret store. Secrets materialize at worker execution time and should not come back in evidence.</p>
         </aside>
       </div>
     </section>
@@ -1353,20 +1432,22 @@ while true:
           <div class="section-heading">
             <span class="kicker">7 / runnable shape</span>
             <h2>The calls look like this.</h2>
-            <p>This is the minimal shell shape a harness can emit. A real harness can call a local CLI, wrapper service, or future API, but the boundary is the same.</p>
+            <p>This is the minimal shell shape an AI coding harness can emit. Claude Code, Codex, OpenCode, or another agent can call a local CLI, wrapper service, or future API, but the boundary is the same.</p>
           </div>
           <div class="code-panel">
             <div class="code-head">
-              <span>harness-dispatch.sh</span>
+              <span>ai-agent-dispatch.sh</span>
               <button class="copy-button" type="button" data-copy>Copy</button>
             </div>
-            <pre class="terminal"><code id="command-text"><span class="comment"># 1. Harness keeps the right worker type warm.</span>
+            <pre class="terminal"><code id="command-text"><span class="comment"># 0. AI harness receives: "sync CRM accounts into the warehouse safely."</span>
+
+<span class="comment"># 1. AI harness keeps the right worker type warm.</span>
 crabbox pool ensure example-org/data-movement/main/provider/linux/etl \
   --min-ready 3 \
   --create -- \
   --cache-volume airbyte-etl
 
-<span class="comment"># 2. Harness writes the job spec.
+<span class="comment"># 2. AI harness writes the job spec.
 # It contains connector config, source ref, target ref, validation rules.
 # It references a credential profile; it does not contain raw secrets.</span>
 mkdir -p .crabbox/generated
@@ -1381,7 +1462,7 @@ cat > .crabbox/generated/accounts-sync.json <<'JSON'
 }
 JSON
 
-<span class="comment"># 3. Harness dispatches the worker run through Crabbox.</span>
+<span class="comment"># 3. AI harness dispatches the worker run through Crabbox.</span>
 crabbox run --pool example-org/data-movement/main/provider/linux/etl \
   --shell 'python -m workers.airbyte_sync --config .crabbox/generated/accounts-sync.json' \
   --allow-env 'AIRBYTE_*,SOURCE_*,TARGET_*,WAREHOUSE_*' \
@@ -1389,7 +1470,7 @@ crabbox run --pool example-org/data-movement/main/provider/linux/etl \
   --artifact-glob 'reports/**,metrics.json,redacted-config.json' \
   --junit reports/
 
-<span class="comment"># 4. Harness reads evidence and decides the next step.</span>
+<span class="comment"># 4. AI harness reads evidence and decides the next step.</span>
 crabbox history --limit 50 --json
 crabbox results &lt;run-id&gt; --json
 crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></pre>
@@ -1398,7 +1479,7 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
 
         <aside class="panel">
           <h3>What calls what</h3>
-          <p>The harness calls Crabbox. Crabbox starts the worker command. The worker command invokes Airbyte. Airbyte calls source and target systems. The harness reads Crabbox results and artifacts.</p>
+          <p>The AI agent calls Crabbox. Crabbox starts the worker command. The worker command invokes Airbyte. Airbyte calls source and target systems. The agent reads Crabbox results and artifacts.</p>
         </aside>
       </div>
     </section>
@@ -1408,14 +1489,14 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
         <div class="section-heading">
           <span class="kicker">8 / contracts</span>
           <h2>Component contracts and failure semantics.</h2>
-          <p>The architecture works because each boundary is explicit. Every component has inputs, outputs, and failure behavior.</p>
+          <p>The architecture works because each boundary is explicit. Every component has inputs, outputs, and failure behavior. That is what makes an AI-driven system auditable instead of magical.</p>
         </div>
 
         <div class="trace">
-          <article class="trace-step"><div class="trace-num">A</div><div class="trace-body"><h3>Harness -> Crabbox contract</h3><p>Input: pool id, command, synced job config, env allowlist, credential profile, artifact rules, timeout, retry policy. Output: run id and execution status.</p></div><div class="trace-call">submit bounded work</div></article>
+          <article class="trace-step"><div class="trace-num">A</div><div class="trace-body"><h3>AI harness -> Crabbox contract</h3><p>Input: pool id, command, synced job config, env allowlist, credential profile, artifact rules, timeout, retry policy. Output: run id and execution status.</p></div><div class="trace-call">submit bounded work</div></article>
           <article class="trace-step"><div class="trace-num">B</div><div class="trace-body"><h3>Crabbox -> worker contract</h3><p>Input: hydrated repo, generated config, allowed env, cache volumes, command. Output: exit code, logs, phase events, artifacts, JUnit.</p></div><div class="trace-call">execute in sandbox</div></article>
           <article class="trace-step"><div class="trace-num">C</div><div class="trace-body"><h3>Worker -> source/target contract</h3><p>Input: connector config and scoped credentials. Output: records read, records written, sync status, validation details.</p></div><div class="trace-call">Airbyte connector I/O</div></article>
-          <article class="trace-step"><div class="trace-num">D</div><div class="trace-body"><h3>Worker -> harness evidence contract</h3><p>Input: execution result. Output: redacted config, row counts, timings, errors, validation reports, and replayable artifacts.</p></div><div class="trace-call">proof, not secrets</div></article>
+          <article class="trace-step"><div class="trace-num">D</div><div class="trace-body"><h3>Worker -> AI harness evidence contract</h3><p>Input: execution result. Output: redacted config, row counts, timings, errors, validation reports, and replayable artifacts.</p></div><div class="trace-call">proof, not secrets</div></article>
         </div>
 
         <div class="paths" style="margin-top: 16px">
@@ -1425,7 +1506,7 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
           </article>
           <article class="path-card">
             <div class="path-head data-head">Correctness boundary</div>
-            <p>Correctness is measured by target state plus validation artifacts, not by whether the harness felt confident about the plan.</p>
+            <p>Correctness is measured by target state plus validation artifacts, not by whether the AI agent sounded confident about the plan.</p>
           </article>
           <article class="path-card">
             <div class="path-head evidence-head">Debug boundary</div>
@@ -1440,13 +1521,13 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
         <div class="section-heading">
           <span class="kicker">9 / rationale</span>
           <h2>Why this design is worth doing.</h2>
-          <p>The goal is not to add layers. The goal is to keep intelligence dynamic while making execution bounded, auditable, and repeatable.</p>
+          <p>The goal is not to add layers. The goal is to let an AI agent reason dynamically while keeping execution bounded, auditable, and repeatable.</p>
         </div>
 
         <div class="rationale-grid">
           <article class="rationale-card">
             <h3>Security</h3>
-            <p>The harness plans with references. The worker executes with scoped secrets. Secrets stay out of prompts and logs.</p>
+            <p>The AI agent plans with references. The worker executes with scoped secrets. Secrets stay out of prompts and logs.</p>
           </article>
           <article class="rationale-card">
             <h3>Observability</h3>
@@ -1458,7 +1539,7 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
           </article>
           <article class="rationale-card">
             <h3>Adaptability</h3>
-            <p>The harness can change the plan next run without giving up execution control.</p>
+            <p>The AI agent can change the plan next run without giving up execution control.</p>
           </article>
         </div>
       </div>
@@ -1469,25 +1550,25 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
         <div class="section-heading">
           <span class="kicker">10 / finish-line audit</span>
           <h2>What I checked before shipping this page.</h2>
-          <p>The page should answer the execution questions directly and teach the system as a set of contracts, not an informal architecture sketch.</p>
+          <p>The page should take a reader from zero to the full execution contract without hiding behind AI or ETL jargon.</p>
         </div>
         <div class="audit">
-          <div><strong>1. Driver named</strong> Harness is explicitly the driver.</div>
+          <div><strong>1. Driver named</strong> Claude Code, Codex, OpenCode, or another AI coding agent is explicitly the driver.</div>
           <div><strong>2. Runner named</strong> Crabbox is explicitly the execution substrate.</div>
           <div><strong>3. Data mover named</strong> Airbyte is explicitly inside the worker.</div>
-          <div><strong>4. Source path shown</strong> Source records enter the sandbox worker, not the harness.</div>
+          <div><strong>4. Source path shown</strong> Source records enter the sandbox worker, not the AI agent.</div>
           <div><strong>5. Target path shown</strong> Airbyte writes to target from inside the worker.</div>
           <div><strong>6. Credential path shown</strong> Profiles and allowlists are separated from raw secrets.</div>
-          <div><strong>7. Evidence path shown</strong> Results and artifacts return to the harness.</div>
-          <div><strong>8. Tools explained</strong> Each tool has a clear job and boundary.</div>
+          <div><strong>7. Evidence path shown</strong> Results and artifacts return to the AI harness.</div>
+          <div><strong>8. Basics explained</strong> AI harness, ETL, reverse ETL, Crabbox, Airbyte, and evidence are defined.</div>
           <div><strong>9. Calls listed</strong> The command surface is concrete.</div>
           <div><strong>10. Worker internals illustrated</strong> Repo, config, env, Airbyte, validation, artifacts are shown.</div>
           <div><strong>11. Rationale stated</strong> Security, observability, reproducibility, adaptability are explicit.</div>
-          <div><strong>12. No row streaming through harness</strong> The page says this directly.</div>
+          <div><strong>12. No row streaming through agent</strong> The page says this directly.</div>
           <div><strong>13. No secret dumping</strong> The page says raw secrets do not belong in prompts, logs, commands, or artifacts.</div>
           <div><strong>14. End-to-end complete</strong> The trace starts at objective and ends at next decision.</div>
           <div><strong>15. Formal model added</strong> Goal, state, plan, job, run, evidence, and updated state are named.</div>
-          <div><strong>16. Contracts added</strong> Harness, Crabbox, worker, Airbyte, and evidence boundaries are explicit.</div>
+          <div><strong>16. Contracts added</strong> AI harness, Crabbox, worker, Airbyte, and evidence boundaries are explicit.</div>
           <div><strong>17. Failure semantics added</strong> Retry, correctness, and debug boundaries are stated.</div>
           <div><strong>18. Finish-line tutorial</strong> A reader can reconstruct the full system without guessing what calls what.</div>
         </div>
@@ -1497,7 +1578,7 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
 
   <footer>
     <div class="footer-inner">
-      <span>Exact model: harness drives, Crabbox executes, Airbyte moves data, evidence returns.</span>
+      <span>Exact model: AI agent drives, Crabbox executes, Airbyte moves data, evidence returns.</span>
       <div class="footer-links">
         <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" rel="noreferrer">GitHub</a>
         <a href="#top">Top</a>
