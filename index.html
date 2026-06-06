@@ -302,6 +302,7 @@
     .board,
     .panel,
     .code-panel,
+    .entity-card,
     .trace-step,
     .truth-row,
     .tool-card,
@@ -507,6 +508,63 @@
       font-weight: 700;
     }
 
+    .entity-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .entity-card {
+      overflow: hidden;
+    }
+
+    .entity-head {
+      border-bottom: 2px solid var(--line);
+      background: var(--surface-2);
+      padding: 12px 14px;
+    }
+
+    .entity-head h3 {
+      margin-bottom: 4px;
+      font-size: 20px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .entity-head span {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .entity-io {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .entity-io div {
+      min-width: 0;
+      border-right: 2px solid var(--line);
+      padding: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .entity-io div:last-child {
+      border-right: 0;
+    }
+
+    .entity-io strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
     .tool-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -649,6 +707,12 @@
       gap: 12px;
     }
 
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
     .path-card {
       border: 2px solid var(--line);
       border-radius: var(--radius);
@@ -677,6 +741,10 @@
       background: #fff1bd;
     }
 
+    .path-head.secret-head {
+      background: #ffe2d7;
+    }
+
     .path-card p {
       margin: 0;
       padding: 14px;
@@ -686,6 +754,11 @@
     .path-card code {
       color: var(--ink);
       font-weight: 800;
+    }
+
+    .path-card strong {
+      color: var(--ink);
+      font-weight: 900;
     }
 
     .code-panel {
@@ -802,6 +875,8 @@
       }
 
       .tool-grid,
+      .entity-grid,
+      .flow-grid,
       .paths,
       .rationale-grid,
       .cutaway,
@@ -867,6 +942,19 @@
 
       .truth-row {
         grid-template-columns: 1fr;
+      }
+
+      .entity-io {
+        grid-template-columns: 1fr;
+      }
+
+      .entity-io div {
+        border-right: 0;
+        border-bottom: 2px solid var(--line);
+      }
+
+      .entity-io div:last-child {
+        border-bottom: 0;
       }
 
       .truth-row strong {
@@ -967,9 +1055,9 @@
       <div class="nav-links">
         <a href="#basics">Basics</a>
         <a href="#map">Map</a>
+        <a href="#entities">Entities</a>
         <a href="#trace">Trace</a>
-        <a href="#formal">Model</a>
-        <a href="#worker">Worker</a>
+        <a href="#flows">Flows</a>
         <a href="#commands">Commands</a>
         <a href="#contracts">Contracts</a>
       </div>
@@ -1095,7 +1183,7 @@
       <div class="metric-strip" aria-label="Design promises">
         <div class="metric"><strong>0</strong><span>production rows pass through the AI agent</span></div>
         <div class="metric"><strong>1</strong><span>run id gives logs, status, artifacts, and replay context</span></div>
-        <div class="metric"><strong>3</strong><span>paths stay separate: control, data, evidence</span></div>
+        <div class="metric"><strong>4</strong><span>flows stay separate: control, credentials, data, evidence</span></div>
         <div class="metric"><strong>14</strong><span>steps explain the whole run from goal to decision</span></div>
       </div>
     </div>
@@ -1216,10 +1304,118 @@
       </div>
     </section>
 
+    <section id="entities" class="section">
+      <div class="wrap">
+        <div class="section-heading">
+          <span class="kicker">2 / entities and I/O</span>
+          <h2>Every entity, what it receives, what it does, what it returns.</h2>
+          <p>This is the system ledger. If an entity is not listed here, it is not part of the core execution path.</p>
+        </div>
+
+        <div class="entity-grid">
+          <article class="entity-card">
+            <div class="entity-head">
+              <h3>Human, schedule, or webhook</h3>
+              <span>caller</span>
+            </div>
+            <div class="entity-io">
+              <div><strong>Input</strong>Business goal, freshness target, policy, optional event payload.</div>
+              <div><strong>Does</strong>States the desired data outcome. Does not run ETL.</div>
+              <div><strong>Output</strong>Goal and constraints for the AI harness.</div>
+            </div>
+          </article>
+
+          <article class="entity-card">
+            <div class="entity-head">
+              <h3>AI harness</h3>
+              <span>Claude Code / Codex / OpenCode</span>
+            </div>
+            <div class="entity-io">
+              <div><strong>Input</strong>Goal, repo files, previous runs, schemas, target rules, evidence.</div>
+              <div><strong>Does</strong>Plans the job, writes config, chooses pool, profile, validation, retry rule.</div>
+              <div><strong>Output</strong>Generated job file, Crabbox command, next decision after evidence.</div>
+            </div>
+          </article>
+
+          <article class="entity-card">
+            <div class="entity-head">
+              <h3>Crabbox</h3>
+              <span>runner and control plane</span>
+            </div>
+            <div class="entity-io">
+              <div><strong>Input</strong>Pool id, command, profile name, env allowlist, artifact globs, timeout.</div>
+              <div><strong>Does</strong>Ensures capacity, leases sandbox, hydrates repo, injects allowed env, runs command.</div>
+              <div><strong>Output</strong>Run id, status, logs, history, collected artifacts.</div>
+            </div>
+          </article>
+
+          <article class="entity-card">
+            <div class="entity-head">
+              <h3>Sandbox worker</h3>
+              <span>execution boundary</span>
+            </div>
+            <div class="entity-io">
+              <div><strong>Input</strong>Hydrated repo, generated job config, allowed env, cache, command.</div>
+              <div><strong>Does</strong>Runs script, starts Airbyte, validates, writes metrics, redacts reports.</div>
+              <div><strong>Output</strong>Exit code, phase log, JUnit, metrics, redacted config, artifacts.</div>
+            </div>
+          </article>
+
+          <article class="entity-card">
+            <div class="entity-head">
+              <h3>Airbyte connector</h3>
+              <span>data mover</span>
+            </div>
+            <div class="entity-io">
+              <div><strong>Input</strong>Source config, target config, worker-scoped credentials.</div>
+              <div><strong>Does</strong>Reads source records and writes target records inside the worker.</div>
+              <div><strong>Output</strong>Target changes, sync status, row counts, connector errors.</div>
+            </div>
+          </article>
+
+          <article class="entity-card">
+            <div class="entity-head">
+              <h3>Source and target systems</h3>
+              <span>external data state</span>
+            </div>
+            <div class="entity-io">
+              <div><strong>Input</strong>Authenticated reads from source, authenticated writes to target.</div>
+              <div><strong>Does</strong>Source returns records. Target stores or updates records.</div>
+              <div><strong>Output</strong>Records read, records written, final target state.</div>
+            </div>
+          </article>
+
+          <article class="entity-card">
+            <div class="entity-head">
+              <h3>Credential profile</h3>
+              <span>secret boundary</span>
+            </div>
+            <div class="entity-io">
+              <div><strong>Input</strong>Profile name plus allowlist such as <code>AIRBYTE_*</code> and <code>TARGET_*</code>.</div>
+              <div><strong>Does</strong>Resolves runtime secrets for the sandbox process only.</div>
+              <div><strong>Output</strong>Allowed environment variables inside worker. No secret output to agent.</div>
+            </div>
+          </article>
+
+          <article class="entity-card">
+            <div class="entity-head">
+              <h3>Evidence</h3>
+              <span>feedback and audit</span>
+            </div>
+            <div class="entity-io">
+              <div><strong>Input</strong>Worker logs, metrics, JUnit, reports, redacted config, artifacts.</div>
+              <div><strong>Does</strong>Summarizes what happened without exposing raw secrets.</div>
+              <div><strong>Output</strong>Proof the AI harness can inspect for finish, retry, repair, or alert.</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section id="trace" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">2 / 14-step run</span>
+          <span class="kicker">3 / 14-step run</span>
           <h2>The full run, end to end.</h2>
           <p>This is the actual sequence. It names who is active, what they call, and what changes hands.</p>
         </div>
@@ -1246,7 +1442,7 @@
     <section id="formal" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">3 / formal model</span>
+          <span class="kicker">4 / formal model</span>
           <h2>The system is a state transition with a bounded executor.</h2>
           <p>This is the clean mental model. The AI agent computes the next action from state and evidence. Crabbox runs that action in a sandbox. Airbyte changes external data state. Evidence updates the agent state.</p>
         </div>
@@ -1297,7 +1493,7 @@ while true:
     <section id="worker" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">4 / worker cutaway</span>
+          <span class="kicker">5 / worker cutaway</span>
           <h2>What runs inside the sandbox worker.</h2>
           <p>The worker is not just a terminal. It is the execution envelope around Airbyte, generated config, scoped credentials, validation, and artifacts. The AI agent can inspect the result, but the worker does the dangerous work.</p>
         </div>
@@ -1370,26 +1566,30 @@ while true:
       </div>
     </section>
 
-    <section id="paths" class="section">
+    <section id="flows" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">5 / paths</span>
-          <h2>Three paths exist. Do not mix them.</h2>
-          <p>This is the most important design rule. Control, data, and evidence are separate flows. The agent owns control, Airbyte owns data movement, and Crabbox returns evidence.</p>
+          <span class="kicker">6 / flows</span>
+          <h2>4 flows exist. Do not mix them.</h2>
+          <p>This is the most important design rule. Control, credentials, data, and evidence move through different lanes. That keeps the AI useful without making it a secret store or data pipeline.</p>
         </div>
 
-        <div class="paths">
+        <div class="flow-grid">
           <article class="path-card">
             <div class="path-head control-head">Control path</div>
-            <p><code>human/schedule -> AI harness -> Crabbox -> worker command</code>. Contains job specs, profile names, config references, retry rules, and status.</p>
+            <p><strong>Input:</strong> goal, policy, state. <strong>Moves:</strong> <code>human/schedule -> AI harness -> Crabbox -> worker command</code>. <strong>Output:</strong> run id and status.</p>
+          </article>
+          <article class="path-card">
+            <div class="path-head secret-head">Credential path</div>
+            <p><strong>Input:</strong> profile name and env allowlist. <strong>Moves:</strong> <code>profile store -> Crabbox -> worker env</code>. <strong>Output:</strong> scoped env inside the worker only.</p>
           </article>
           <article class="path-card">
             <div class="path-head data-head">Data path</div>
-            <p><code>source -> Airbyte in worker -> target</code>. Contains rows and records. The AI agent should not stream or store this path.</p>
+            <p><strong>Input:</strong> source records and target config. <strong>Moves:</strong> <code>source -> Airbyte in worker -> target</code>. <strong>Output:</strong> changed target state and row counts.</p>
           </article>
           <article class="path-card">
             <div class="path-head evidence-head">Evidence path</div>
-            <p><code>worker -> Crabbox history/results/artifacts -> AI harness</code>. Contains logs, metrics, JUnit, reports, samples, and redacted config.</p>
+            <p><strong>Input:</strong> logs, metrics, reports, redacted config. <strong>Moves:</strong> <code>worker -> Crabbox history/results/artifacts -> AI harness</code>. <strong>Output:</strong> finish, retry, repair, or alert decision.</p>
           </article>
         </div>
       </div>
@@ -1399,7 +1599,7 @@ while true:
       <div class="wrap two">
         <div>
           <div class="section-heading">
-            <span class="kicker">6 / credentials</span>
+            <span class="kicker">7 / credentials</span>
             <h2>How credentials work.</h2>
             <p>"The AI agent spins up Crabbox with creds and target" means profile references and target config. Raw secrets should not be in prompts, command lines, logs, or artifact files.</p>
           </div>
@@ -1430,7 +1630,7 @@ while true:
       <div class="wrap two">
         <div>
           <div class="section-heading">
-            <span class="kicker">7 / runnable shape</span>
+            <span class="kicker">8 / runnable shape</span>
             <h2>The calls look like this.</h2>
             <p>This is the minimal shell shape an AI coding harness can emit. Claude Code, Codex, OpenCode, or another agent can call a local CLI, wrapper service, or future API, but the boundary is the same.</p>
           </div>
@@ -1487,7 +1687,7 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
     <section id="contracts" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">8 / contracts</span>
+          <span class="kicker">9 / contracts</span>
           <h2>Component contracts and failure semantics.</h2>
           <p>The architecture works because each boundary is explicit. Every component has inputs, outputs, and failure behavior. That is what makes an AI-driven system auditable instead of magical.</p>
         </div>
@@ -1519,7 +1719,7 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
     <section id="why" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">9 / rationale</span>
+          <span class="kicker">10 / rationale</span>
           <h2>Why this design is worth doing.</h2>
           <p>The goal is not to add layers. The goal is to let an AI agent reason dynamically while keeping execution bounded, auditable, and repeatable.</p>
         </div>
@@ -1548,7 +1748,7 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
     <section id="audit" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">10 / finish-line audit</span>
+          <span class="kicker">11 / finish-line audit</span>
           <h2>What I checked before shipping this page.</h2>
           <p>The page should take a reader from zero to the full execution contract without hiding behind AI or ETL jargon.</p>
         </div>
@@ -1556,21 +1756,23 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
           <div><strong>1. Driver named</strong> Claude Code, Codex, OpenCode, or another AI coding agent is explicitly the driver.</div>
           <div><strong>2. Runner named</strong> Crabbox is explicitly the execution substrate.</div>
           <div><strong>3. Data mover named</strong> Airbyte is explicitly inside the worker.</div>
-          <div><strong>4. Source path shown</strong> Source records enter the sandbox worker, not the AI agent.</div>
-          <div><strong>5. Target path shown</strong> Airbyte writes to target from inside the worker.</div>
-          <div><strong>6. Credential path shown</strong> Profiles and allowlists are separated from raw secrets.</div>
-          <div><strong>7. Evidence path shown</strong> Results and artifacts return to the AI harness.</div>
-          <div><strong>8. Basics explained</strong> AI harness, ETL, reverse ETL, Crabbox, Airbyte, and evidence are defined.</div>
-          <div><strong>9. Calls listed</strong> The command surface is concrete.</div>
-          <div><strong>10. Worker internals illustrated</strong> Repo, config, env, Airbyte, validation, artifacts are shown.</div>
-          <div><strong>11. Rationale stated</strong> Security, observability, reproducibility, adaptability are explicit.</div>
-          <div><strong>12. No row streaming through agent</strong> The page says this directly.</div>
-          <div><strong>13. No secret dumping</strong> The page says raw secrets do not belong in prompts, logs, commands, or artifacts.</div>
-          <div><strong>14. End-to-end complete</strong> The trace starts at objective and ends at next decision.</div>
-          <div><strong>15. Formal model added</strong> Goal, state, plan, job, run, evidence, and updated state are named.</div>
-          <div><strong>16. Contracts added</strong> AI harness, Crabbox, worker, Airbyte, and evidence boundaries are explicit.</div>
-          <div><strong>17. Failure semantics added</strong> Retry, correctness, and debug boundaries are stated.</div>
-          <div><strong>18. Finish-line tutorial</strong> A reader can reconstruct the full system without guessing what calls what.</div>
+          <div><strong>4. Entity ledger added</strong> Every core entity has input, work, and output.</div>
+          <div><strong>5. Source path shown</strong> Source records enter the sandbox worker, not the AI agent.</div>
+          <div><strong>6. Target path shown</strong> Airbyte writes to target from inside the worker.</div>
+          <div><strong>7. Credential flow shown</strong> Profiles and allowlists are separated from raw secrets.</div>
+          <div><strong>8. Evidence flow shown</strong> Results and artifacts return to the AI harness.</div>
+          <div><strong>9. Basics explained</strong> AI harness, ETL, reverse ETL, Crabbox, Airbyte, and evidence are defined.</div>
+          <div><strong>10. Calls listed</strong> The command surface is concrete.</div>
+          <div><strong>11. Worker internals illustrated</strong> Repo, config, env, Airbyte, validation, artifacts are shown.</div>
+          <div><strong>12. Four flows separated</strong> Control, credentials, data, and evidence are distinct lanes.</div>
+          <div><strong>13. Rationale stated</strong> Security, observability, reproducibility, adaptability are explicit.</div>
+          <div><strong>14. No row streaming through agent</strong> The page says this directly.</div>
+          <div><strong>15. No secret dumping</strong> The page says raw secrets do not belong in prompts, logs, commands, or artifacts.</div>
+          <div><strong>16. End-to-end complete</strong> The trace starts at objective and ends at next decision.</div>
+          <div><strong>17. Formal model added</strong> Goal, state, plan, job, run, evidence, and updated state are named.</div>
+          <div><strong>18. Contracts added</strong> AI harness, Crabbox, worker, Airbyte, and evidence boundaries are explicit.</div>
+          <div><strong>19. Failure semantics added</strong> Retry, correctness, and debug boundaries are stated.</div>
+          <div><strong>20. Finish-line tutorial</strong> A reader can reconstruct the full system without guessing what calls what.</div>
         </div>
       </div>
     </section>
