@@ -3,35 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f6f4ef">
-  <meta name="description" content="Agentic Airbyte is a visual tutorial for how an AI coding agent plans a bounded data job, Crabbox runs it, Airbyte moves rows, and evidence drives the next action.">
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="A visual tutorial for Agentic Airbyte: an AI harness writes a bounded job, Crabbox executes it, Airbyte moves data, and evidence drives repair.">
   <meta property="og:title" content="Agentic Airbyte">
-  <meta property="og:description" content="A compact dynamic flow: AI harness, Crabbox sandbox, Airbyte movement, credentials, evidence, and failure repair.">
+  <meta property="og:description" content="Intent becomes a bounded run. Data moves in the worker. Evidence comes back to the agent.">
   <meta property="og:type" content="website">
-  <title>Agentic Airbyte | Dynamic Execution Flow</title>
+  <title>Agentic Airbyte | Visual Execution Tutorial</title>
   <style>
     :root {
-      color-scheme: light;
-      --bg: #f6f4ef;
-      --paper: #fffdf8;
-      --panel: #ffffff;
-      --soft: #ebe7dc;
-      --ink: #101010;
-      --muted: #5d584f;
-      --line: #161616;
-      --harness: #6657ff;
-      --crabbox: #ff5a32;
-      --airbyte: #00a88f;
-      --source: #4285f4;
-      --target: #7bbf42;
-      --evidence: #efbd38;
-      --code: #111111;
-      --code-text: #f8efd9;
-      --radius: 8px;
-      --shadow: 6px 6px 0 #101010;
+      color-scheme: dark;
+      --bg: #050505;
+      --panel: #0d0d0d;
+      --panel-2: #151515;
+      --paper: #f7f4e8;
+      --ink: #f7f4e8;
+      --muted: #9f9b8f;
+      --line: #2d2d2d;
+      --line-strong: #f7f4e8;
+      --agent: #8f7aff;
+      --crabbox: #ff6a3d;
+      --airbyte: #24d6bd;
+      --source: #5aa2ff;
+      --target: #a6df62;
+      --evidence: #ffd166;
+      --danger: #ff4d6d;
       --max: 1120px;
-      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --radius: 8px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     * {
@@ -43,17 +42,21 @@
     }
 
     body {
+      min-width: 320px;
       margin: 0;
+      overflow-x: hidden;
       background:
-        linear-gradient(rgb(16 16 16 / 0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(16 16 16 / 0.045) 1px, transparent 1px),
+        linear-gradient(132deg, rgb(143 122 255 / 0.14), transparent 38%, rgb(36 214 189 / 0.11)),
+        linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px),
         var(--bg);
-      background-size: 32px 32px;
+      background-size: auto, 34px 34px, 34px 34px, auto;
       color: var(--ink);
       font-family: var(--sans);
-      line-height: 1.5;
+      line-height: 1.45;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: rgb(255 209 102 / 0.22);
     }
 
     a {
@@ -61,10 +64,9 @@
       text-decoration: none;
     }
 
-    button,
-    input,
-    textarea {
+    button {
       font: inherit;
+      touch-action: manipulation;
     }
 
     code,
@@ -74,8 +76,8 @@
 
     a:focus-visible,
     button:focus-visible {
-      outline: 3px solid var(--harness);
-      outline-offset: 3px;
+      outline: 2px solid var(--evidence);
+      outline-offset: 4px;
     }
 
     .skip-link {
@@ -83,42 +85,43 @@
       left: 16px;
       top: -80px;
       z-index: 300;
-      border: 2px solid var(--line);
+      border: 1px solid var(--line-strong);
       border-radius: var(--radius);
-      background: var(--panel);
-      padding: 10px 14px;
-      font-weight: 900;
+      background: var(--paper);
+      color: #050505;
+      padding: 10px 12px;
+      font-weight: 800;
     }
 
     .skip-link:focus {
-      top: 16px;
+      top: 14px;
     }
 
     .site-nav {
       position: sticky;
       top: 0;
       z-index: 100;
-      border-bottom: 2px solid var(--line);
-      background: rgb(246 244 239 / 0.95);
-      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+      background: rgb(5 5 5 / 0.86);
+      backdrop-filter: blur(18px);
     }
 
     .nav-inner {
       display: flex;
-      max-width: var(--max);
+      width: min(var(--max), calc(100% - 32px));
+      min-height: 58px;
       margin: 0 auto;
       align-items: center;
       justify-content: space-between;
       gap: 18px;
-      padding: 12px 18px;
     }
 
     .brand {
       display: inline-flex;
+      min-width: 0;
       align-items: center;
       gap: 10px;
-      min-width: 0;
-      font-weight: 950;
+      font-weight: 850;
     }
 
     .brand-mark {
@@ -131,12 +134,16 @@
     }
 
     .brand-mark span {
-      border: 2px solid var(--line);
+      border: 1px solid var(--line-strong);
       border-radius: 4px;
       background: var(--panel);
     }
 
     .brand-mark span:nth-child(1) {
+      background: var(--agent);
+    }
+
+    .brand-mark span:nth-child(2) {
       background: var(--crabbox);
     }
 
@@ -153,10 +160,15 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
       color: var(--muted);
-      font-size: 14px;
-      font-weight: 850;
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .nav-links a {
+      transition: color 140ms ease;
     }
 
     .nav-links a:hover {
@@ -165,48 +177,77 @@
 
     .button {
       display: inline-flex;
-      min-height: 40px;
+      min-height: 42px;
       align-items: center;
       justify-content: center;
-      border: 2px solid var(--line);
+      border: 1px solid var(--line-strong);
       border-radius: var(--radius);
       background: var(--ink);
-      color: var(--panel);
-      font-weight: 950;
+      color: var(--bg);
+      font-weight: 850;
       padding: 0 14px;
       white-space: nowrap;
+      transition: transform 140ms ease, background-color 140ms ease, color 140ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      background: var(--evidence);
+      color: #050505;
     }
 
     .button.secondary {
-      background: var(--panel);
+      background: transparent;
       color: var(--ink);
     }
 
+    .button.secondary:hover {
+      background: var(--panel-2);
+      color: var(--evidence);
+    }
+
     .wrap {
-      max-width: var(--max);
+      width: min(var(--max), calc(100% - 32px));
       margin: 0 auto;
     }
 
     .hero {
-      padding: 64px 18px 34px;
+      padding: 38px 0 18px;
     }
 
-    .eyebrow,
-    .kicker {
-      display: inline-flex;
-      border: 2px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--evidence);
-      box-shadow: 4px 4px 0 var(--line);
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 370px;
+      gap: 26px;
+      align-items: end;
+    }
+
+    .ascii {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: clamp(28px, 4.8vw, 60px);
+      font-weight: 950;
+      line-height: 0.82;
+      white-space: pre;
+    }
+
+    .hero-kicker,
+    .section-kicker,
+    .mini-label {
+      color: var(--muted);
       font-family: var(--mono);
       font-size: 12px;
-      font-weight: 950;
-      padding: 6px 9px;
+      font-weight: 800;
       text-transform: uppercase;
     }
 
-    .eyebrow {
-      margin-bottom: 18px;
+    .hero-kicker {
+      display: block;
+      margin-top: 10px;
+      color: var(--evidence);
     }
 
     h1,
@@ -217,297 +258,384 @@
     }
 
     h1 {
-      max-width: 900px;
-      margin-bottom: 14px;
-      font-size: 56px;
-      line-height: 0.98;
+      max-width: 840px;
+      margin: 22px 0 14px;
+      font-size: clamp(42px, 7vw, 76px);
+      line-height: 0.91;
       letter-spacing: 0;
       text-wrap: balance;
     }
 
-    .hero-copy {
-      max-width: 860px;
+    .lead {
+      max-width: 780px;
       margin-bottom: 22px;
       color: var(--muted);
-      font-size: 20px;
+      font-size: clamp(18px, 2vw, 23px);
+      line-height: 1.28;
+      text-wrap: pretty;
     }
 
-    .hero-copy strong {
+    .lead strong {
       color: var(--ink);
-      font-weight: 950;
     }
 
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 22px;
     }
 
-    .rail {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 22px;
-    }
-
-    .rail-item,
-    .metric,
-    .panel,
-    .mini-card,
-    .stage-button,
-    .flow-shell,
-    .code-panel,
-    .truth-row {
-      border: 2px solid var(--line);
+    .axiom {
+      border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--panel);
+      background: rgb(13 13 13 / 0.82);
+      padding: 16px;
     }
 
-    .rail-item {
-      padding: 12px;
+    .axiom h2 {
+      margin: 14px 0 10px;
+      font-size: 26px;
+      line-height: 1.05;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .axiom p {
+      margin: 0;
       color: var(--muted);
-      font-size: 14px;
-      font-weight: 800;
+      font-size: 15px;
     }
 
-    .rail-item strong {
+    .axiom-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .axiom-cell {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+    }
+
+    .axiom-cell strong {
       display: block;
       color: var(--ink);
-      font-size: 15px;
-      font-weight: 950;
+      font-family: var(--mono);
+      font-size: 18px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
     }
 
-    .flow-shell {
+    .axiom-cell span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .board {
+      padding: 12px 0 46px;
+    }
+
+    .lesson-shell {
       overflow: hidden;
-      box-shadow: var(--shadow);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 0 0 1px rgb(255 255 255 / 0.04), 0 30px 90px rgb(0 0 0 / 0.45);
     }
 
-    .flow-head,
-    .code-head {
+    .lesson-head {
       display: flex;
+      min-height: 48px;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      border-bottom: 2px solid var(--line);
-      background: var(--soft);
+      gap: 14px;
+      border-bottom: 1px solid var(--line);
+      background: #080808;
+      padding: 0 14px;
+      color: var(--muted);
       font-family: var(--mono);
       font-size: 12px;
-      font-weight: 950;
-      padding: 10px 12px;
       text-transform: uppercase;
     }
 
-    .flow-body {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 320px;
-      min-height: 570px;
-      background: var(--paper);
+    .lesson-head strong {
+      color: var(--ink);
     }
 
-    .flow-stage {
+    .lesson-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      min-height: 620px;
+    }
+
+    .diagram {
       position: relative;
-      border-right: 2px solid var(--line);
-      overflow: hidden;
+      min-width: 0;
+      border-right: 1px solid var(--line);
+      background:
+        linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+      background-size: 28px 28px, 28px 28px;
     }
 
     .flow-svg {
       display: block;
       width: 100%;
       height: 100%;
-      min-height: 570px;
+      min-height: 620px;
     }
 
-    .flow-path {
+    .lane {
       fill: none;
-      stroke: var(--line);
+      stroke: var(--line-strong);
       stroke-width: 4;
       stroke-linecap: round;
       stroke-linejoin: round;
-      opacity: 0.24;
+      opacity: 0.16;
+      transition: opacity 180ms ease, stroke-width 180ms ease;
     }
 
-    .flow-path.active {
+    .lane.active {
       opacity: 1;
-      stroke-dasharray: 14 10;
-      animation: dash 1.1s linear infinite;
+      stroke-width: 5;
+      stroke-dasharray: 12 12;
+      animation: lane-dash 1.25s linear infinite;
     }
 
-    .flow-path.control.active {
-      stroke: var(--harness);
+    .lane.control.active {
+      stroke: var(--agent);
     }
 
-    .flow-path.credential.active {
+    .lane.credential.active {
       stroke: var(--crabbox);
     }
 
-    .flow-path.data.active {
+    .lane.data.active {
       stroke: var(--airbyte);
     }
 
-    .flow-path.evidence.active {
+    .lane.evidence.active {
       stroke: var(--evidence);
     }
 
-    .flow-node rect {
-      fill: var(--panel);
-      stroke: var(--line);
-      stroke-width: 3;
-      transition: transform 160ms ease, fill 160ms ease;
+    .node rect,
+    .node circle {
+      stroke: var(--line-strong);
+      stroke-width: 2;
+      transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
     }
 
-    .flow-node text {
+    .node text {
       pointer-events: none;
     }
 
-    .flow-node .node-title {
+    .node .title {
       fill: var(--ink);
       font-size: 18px;
-      font-weight: 950;
+      font-weight: 900;
     }
 
-    .flow-node .node-sub {
+    .node .sub {
       fill: var(--muted);
       font-family: var(--mono);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 750;
     }
 
-    .flow-node.active rect {
-      filter: drop-shadow(4px 4px 0 rgb(16 16 16 / 0.95));
-      transform: translate(-2px, -2px);
+    .node:not(.active) {
+      opacity: 0.62;
     }
 
-    .flow-node.agent rect {
-      fill: #ebe8ff;
+    .node.active rect,
+    .node.active circle {
+      filter: drop-shadow(0 0 16px rgb(255 255 255 / 0.22));
+      transform: translateY(-2px);
     }
 
-    .flow-node.crabbox rect {
-      fill: #ffe2d7;
+    .node.agent rect {
+      fill: #21184a;
     }
 
-    .flow-node.worker rect {
-      fill: #dffff7;
+    .node.crabbox rect {
+      fill: #3d160c;
     }
 
-    .flow-node.source rect {
-      fill: #e4f0ff;
+    .node.worker rect {
+      fill: #07362f;
     }
 
-    .flow-node.target rect {
-      fill: #ecf8dd;
+    .node.source rect {
+      fill: #102a4d;
     }
 
-    .flow-node.evidence rect {
-      fill: #fff1bd;
+    .node.target rect {
+      fill: #24380f;
+    }
+
+    .node.evidence rect {
+      fill: #4a3610;
+    }
+
+    .node.goal circle {
+      fill: #171717;
     }
 
     .packet {
       r: 7;
       opacity: 0;
+      transition: opacity 140ms ease;
     }
 
     .packet.active {
       opacity: 1;
     }
 
-    .stage-panel {
+    .math-note {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
       display: grid;
-      grid-template-rows: auto 1fr auto;
-      background: var(--panel);
-    }
-
-    .stage-list {
-      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
-      padding: 12px;
-      border-bottom: 2px solid var(--line);
+      pointer-events: none;
     }
 
-    .stage-button {
-      display: grid;
-      grid-template-columns: 34px 1fr;
-      gap: 10px;
-      align-items: center;
-      cursor: pointer;
+    .math-note span {
+      min-width: 0;
+      border: 1px solid rgb(255 255 255 / 0.16);
+      border-radius: var(--radius);
+      background: rgb(5 5 5 / 0.72);
       color: var(--muted);
-      padding: 10px;
-      text-align: left;
-    }
-
-    .stage-button span {
-      display: grid;
-      width: 26px;
-      height: 26px;
-      place-items: center;
-      border: 2px solid var(--line);
-      border-radius: 999px;
-      background: var(--soft);
-      color: var(--ink);
       font-family: var(--mono);
       font-size: 12px;
-      font-weight: 950;
+      padding: 8px;
+      text-align: center;
     }
 
-    .stage-button strong {
+    .math-note b {
       color: var(--ink);
-      font-weight: 950;
+      font-weight: 900;
     }
 
-    .stage-button.is-active {
-      background: #fff1bd;
+    .mobile-flow {
+      display: none;
+    }
+
+    .proof-panel {
+      display: grid;
+      min-width: 0;
+      grid-template-rows: auto 1fr auto;
+      background: #0a0a0a;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      padding: 12px;
+    }
+
+    .step-button {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 10px;
+      text-align: left;
+      transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
+    }
+
+    .step-button:hover {
+      border-color: rgb(255 255 255 / 0.46);
       color: var(--ink);
-      box-shadow: 3px 3px 0 var(--line);
-      transform: translate(-2px, -2px);
     }
 
-    .stage-detail {
+    .step-button.is-active {
+      border-color: var(--line-strong);
+      background: var(--paper);
+      color: #050505;
+      transform: translateY(-1px);
+    }
+
+    .step-button span {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .step-button strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .proof-copy {
       display: grid;
       align-content: start;
-      gap: 12px;
-      padding: 16px;
+      gap: 14px;
+      padding: 18px;
     }
 
-    .stage-detail h2 {
+    .proof-copy h2 {
       margin: 0;
-      font-size: 30px;
-      line-height: 1.05;
+      font-size: 34px;
+      line-height: 1;
       letter-spacing: 0;
       text-wrap: balance;
     }
 
-    .stage-detail p {
+    .proof-copy p {
       margin: 0;
       color: var(--muted);
       font-size: 16px;
+      text-wrap: pretty;
     }
 
-    .io-stack {
+    .io-grid {
       display: grid;
       gap: 8px;
     }
 
-    .io-line {
-      border: 2px solid var(--line);
+    .io {
+      min-width: 0;
+      border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--paper);
       padding: 10px;
       color: var(--muted);
-      font-size: 14px;
     }
 
-    .io-line strong {
+    .io strong {
       display: block;
+      margin-bottom: 4px;
       color: var(--ink);
       font-family: var(--mono);
       font-size: 12px;
       text-transform: uppercase;
     }
 
-    .flow-controls {
+    .proof-controls {
       display: flex;
       gap: 8px;
-      border-top: 2px solid var(--line);
+      border-top: 1px solid var(--line);
       padding: 12px;
     }
 
@@ -516,30 +644,37 @@
       width: 42px;
       height: 42px;
       place-items: center;
-      border: 2px solid var(--line);
+      border: 1px solid var(--line-strong);
       border-radius: var(--radius);
       background: var(--ink);
-      color: var(--panel);
+      color: var(--bg);
       cursor: pointer;
-      font-weight: 950;
+      font-weight: 900;
+      transition: transform 140ms ease, background-color 140ms ease;
+    }
+
+    .icon-button:hover {
+      transform: translateY(-1px);
+      background: var(--evidence);
     }
 
     .section {
-      padding: 54px 18px;
-      border-top: 2px solid rgb(16 16 16 / 0.16);
+      padding: 54px 0;
+      border-top: 1px solid var(--line);
+      scroll-margin-top: 78px;
     }
 
     .section-heading {
       display: grid;
-      gap: 10px;
-      max-width: 760px;
+      max-width: 780px;
+      gap: 9px;
       margin-bottom: 18px;
     }
 
     .section-heading h2 {
       margin: 0;
-      font-size: 40px;
-      line-height: 1.06;
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 0.98;
       letter-spacing: 0;
       text-wrap: balance;
     }
@@ -550,246 +685,234 @@
       font-size: 18px;
     }
 
-    .truth-grid,
-    .entity-grid,
+    .equation-grid,
+    .ledger,
     .failure-grid,
-    .spec-grid,
-    .metric-grid {
+    .rule-grid {
       display: grid;
       gap: 10px;
     }
 
-    .truth-grid {
-      grid-template-columns: repeat(3, 1fr);
+    .equation-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    .truth-row {
-      overflow: hidden;
+    .equation-card,
+    .ledger-card,
+    .failure-card,
+    .rule-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgb(13 13 13 / 0.84);
     }
 
-    .truth-row strong {
+    .equation-card {
+      padding: 14px;
+    }
+
+    .equation-card .mini-label,
+    .ledger-card .mini-label,
+    .failure-card .mini-label,
+    .rule-card .mini-label {
       display: block;
-      border-bottom: 2px solid var(--line);
-      background: var(--soft);
-      font-family: var(--mono);
-      font-size: 12px;
-      padding: 10px 12px;
-      text-transform: uppercase;
+      margin-bottom: 8px;
     }
 
-    .truth-row span {
-      display: block;
-      padding: 12px;
+    .equation-card h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    .equation-card p {
+      margin: 0;
       color: var(--muted);
+      font-size: 14px;
     }
 
-    .entity-grid {
-      grid-template-columns: repeat(7, minmax(132px, 1fr));
+    .equation-card.agent {
+      border-color: rgb(143 122 255 / 0.48);
+    }
+
+    .equation-card.crabbox {
+      border-color: rgb(255 106 61 / 0.48);
+    }
+
+    .equation-card.airbyte {
+      border-color: rgb(36 214 189 / 0.48);
+    }
+
+    .equation-card.evidence {
+      border-color: rgb(255 209 102 / 0.48);
+    }
+
+    .ledger {
+      grid-template-columns: repeat(6, minmax(148px, 1fr));
       overflow-x: auto;
       padding-bottom: 4px;
     }
 
-    .mini-card {
-      min-width: 132px;
+    .ledger-card {
+      min-width: 148px;
       overflow: hidden;
     }
 
-    .mini-card h3 {
+    .ledger-card h3,
+    .failure-card h3,
+    .rule-card h3 {
       margin: 0;
-      border-bottom: 2px solid var(--line);
-      background: var(--soft);
-      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
       font-size: 16px;
       letter-spacing: 0;
     }
 
-    .mini-card p {
+    .ledger-card p,
+    .failure-card p,
+    .rule-card p {
       margin: 0;
-      padding: 10px;
+      padding: 12px;
       color: var(--muted);
       font-size: 14px;
     }
 
-    .split {
+    .command-layout {
       display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
+      grid-template-columns: minmax(0, 1fr) 330px;
       gap: 14px;
       align-items: start;
     }
 
-    .split > * {
+    .command-layout > * {
       min-width: 0;
     }
 
-    .metric-grid {
-      grid-template-columns: repeat(4, 1fr);
+    .terminal-card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: #090909;
     }
 
-    .metric {
-      padding: 14px;
-    }
-
-    .metric strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 30px;
-      line-height: 1;
-    }
-
-    .metric span {
+    .terminal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      background: #111111;
+      padding: 12px;
       color: var(--muted);
-      font-size: 14px;
-      font-weight: 800;
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .copy-button {
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--evidence);
+      color: #050505;
+      cursor: pointer;
+      font-weight: 850;
+      padding: 6px 10px;
+      transition: transform 140ms ease, background-color 140ms ease;
+    }
+
+    .copy-button:hover {
+      transform: translateY(-1px);
+      background: var(--ink);
+    }
+
+    .terminal {
+      max-width: 100%;
+      margin: 0;
+      overflow: auto;
+      padding: 18px;
+      color: #f5f0dd;
+      font-size: 13px;
+      line-height: 1.62;
+      white-space: pre;
+    }
+
+    .comment {
+      color: var(--evidence);
+    }
+
+    .rule-grid {
+      grid-template-columns: 1fr;
     }
 
     .failure-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
-    .panel {
-      overflow: hidden;
-    }
-
-    .panel h3 {
-      margin: 0;
-      border-bottom: 2px solid var(--line);
-      background: var(--soft);
-      padding: 11px 12px;
-      font-size: 18px;
-      letter-spacing: 0;
-    }
-
-    .panel p {
-      margin: 0;
-      padding: 12px;
-      color: var(--muted);
-    }
-
-    .panel code {
+    .failure-card h3 {
+      background: #121212;
       color: var(--ink);
-      font-weight: 900;
-    }
-
-    .panel.failure h3 {
-      background: var(--ink);
-      color: var(--panel);
       font-family: var(--mono);
       font-size: 13px;
       text-transform: uppercase;
     }
 
-    .panel.failure strong {
+    .failure-card strong,
+    .rule-card strong {
       color: var(--ink);
-      font-weight: 950;
+      font-weight: 850;
     }
 
-    .code-panel {
-      max-width: 100%;
-      min-width: 0;
-      overflow: hidden;
-      background: var(--code);
-      box-shadow: var(--shadow);
-      color: var(--code-text);
+    .final-band {
+      border-top: 1px solid var(--line);
+      padding: 50px 0 62px;
     }
 
-    .code-head {
-      background: #242424;
-      color: var(--code-text);
-    }
-
-    .copy-button {
-      border: 2px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--evidence);
-      color: var(--ink);
-      cursor: pointer;
-      font-weight: 950;
-      padding: 6px 10px;
-    }
-
-    .terminal {
-      margin: 0;
-      overflow: auto;
-      padding: 18px;
-      font-size: 13px;
-      line-height: 1.65;
-      white-space: pre;
-    }
-
-    .comment {
-      color: #e1bd5d;
-    }
-
-    .side-list {
+    .final-card {
       display: grid;
-      gap: 10px;
-    }
-
-    .mobile-only {
-      display: none;
-    }
-
-    .mobile-flow {
-      gap: 8px;
-      padding: 14px;
-      background: var(--paper);
-    }
-
-    .mobile-node {
-      border: 2px solid var(--line);
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      border: 1px solid var(--line-strong);
       border-radius: var(--radius);
-      background: var(--panel);
-      padding: 12px;
+      background: var(--paper);
+      color: #050505;
+      padding: 18px;
     }
 
-    .mobile-node strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 16px;
+    .final-card h2 {
+      margin: 0 0 6px;
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 0.98;
+      letter-spacing: 0;
     }
 
-    .mobile-node span {
-      display: block;
-      color: var(--muted);
-      font-size: 14px;
+    .final-card p {
+      margin: 0;
+      color: #48443d;
+      font-size: 17px;
     }
 
-    .mobile-node.harness {
-      background: #ebe8ff;
+    .final-card .button {
+      border-color: #050505;
+      background: #050505;
+      color: var(--paper);
     }
 
-    .mobile-node.crabbox {
-      background: #ffe2d7;
-    }
-
-    .mobile-node.worker {
-      background: #dffff7;
-    }
-
-    .mobile-node.evidence-plane {
-      background: #fff1bd;
-    }
-
-    .mobile-arrow {
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 950;
-      padding-left: 12px;
+    .final-card .button:hover {
+      background: var(--evidence);
+      color: #050505;
     }
 
     footer {
-      border-top: 2px solid var(--line);
-      background: var(--ink);
-      color: var(--panel);
-      padding: 26px 18px;
+      border-top: 1px solid var(--line);
+      padding: 24px 0;
+      color: var(--muted);
       font-size: 13px;
     }
 
     .footer-inner {
       display: flex;
-      max-width: var(--max);
-      margin: 0 auto;
       justify-content: space-between;
       gap: 16px;
     }
@@ -797,10 +920,11 @@
     .footer-links {
       display: flex;
       gap: 14px;
-      font-weight: 850;
+      color: var(--ink);
+      font-weight: 800;
     }
 
-    @keyframes dash {
+    @keyframes lane-dash {
       to {
         stroke-dashoffset: -24;
       }
@@ -811,112 +935,163 @@
         scroll-behavior: auto;
       }
 
-      .flow-path.active {
+      .lane.active {
         animation: none;
       }
 
       .packet {
         display: none;
       }
+
+      .button,
+      .icon-button,
+      .copy-button,
+      .step-button,
+      .nav-links a {
+        transition: none;
+      }
     }
 
     @media (max-width: 980px) {
+      .hero-grid,
+      .lesson-body,
+      .command-layout,
+      .final-card {
+        grid-template-columns: 1fr;
+      }
+
+      .axiom {
+        max-width: 560px;
+      }
+
+      .diagram {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .flow-svg {
+        min-height: 520px;
+      }
+
+      .math-note {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .equation-grid,
+      .failure-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-inner,
+      .wrap {
+        width: min(var(--max), calc(100% - 28px));
+      }
+
       .nav-links {
         display: none;
       }
 
-      h1 {
-        font-size: 46px;
+      .hero {
+        padding-top: 38px;
       }
 
-      .flow-body,
-      .split,
-      .truth-grid,
-      .failure-grid,
-      .metric-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .flow-stage {
-        border-right: 0;
-        border-bottom: 2px solid var(--line);
-      }
-
-      .flow-body {
-        min-height: auto;
-      }
-
-      .flow-svg {
-        min-height: 480px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .nav-inner {
-        padding: 10px 14px;
-      }
-
-      .hero,
-      .section {
-        padding-left: 14px;
-        padding-right: 14px;
+      .ascii {
+        font-size: clamp(26px, 10vw, 42px);
       }
 
       h1 {
-        font-size: 36px;
+        margin-top: 22px;
       }
 
-      .hero-copy,
-      .section-heading p {
-        font-size: 16px;
-      }
-
-      .rail {
-        grid-template-columns: 1fr;
-      }
-
-      .button.secondary {
-        display: none;
-      }
-
-      .flow-head,
-      .code-head {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .flow-svg {
-        display: none;
-      }
-
-      .mobile-only {
+      .hero-actions {
         display: grid;
       }
 
-      .stage-list {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .stage-button {
+      .axiom-grid,
+      .equation-grid,
+      .failure-grid,
+      .math-note {
         grid-template-columns: 1fr;
       }
 
-      .stage-button span {
-        width: 24px;
-        height: 24px;
+      .lesson-head {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 12px;
       }
 
-      .stage-detail h2,
-      .section-heading h2 {
+      .flow-svg,
+      .math-note {
+        display: none;
+      }
+
+      .mobile-flow {
+        display: grid;
+        gap: 8px;
+        padding: 14px;
+      }
+
+      .mobile-node {
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        padding: 12px;
+      }
+
+      .mobile-node strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .mobile-node span {
+        display: block;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .mobile-node.agent {
+        background: #21184a;
+      }
+
+      .mobile-node.crabbox {
+        background: #3d160c;
+      }
+
+      .mobile-node.worker {
+        background: #07362f;
+      }
+
+      .mobile-node.evidence {
+        background: #4a3610;
+      }
+
+      .mobile-arrow {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12px;
+        padding-left: 10px;
+      }
+
+      .step-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .step-button {
+        grid-template-columns: 1fr;
+      }
+
+      .proof-copy h2 {
         font-size: 30px;
       }
 
-      .metric-grid {
-        grid-template-columns: 1fr;
+      .section {
+        padding: 42px 0;
       }
 
-      .code-panel {
-        box-shadow: 4px 4px 0 var(--line);
+      .terminal-head {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
       .terminal {
@@ -924,8 +1099,11 @@
         font-size: 12px;
       }
 
+      .final-card {
+        align-items: start;
+      }
+
       .footer-inner {
-        align-items: flex-start;
         flex-direction: column;
       }
     }
@@ -941,233 +1119,235 @@
         <span class="brand-text">agentic-airbyte</span>
       </a>
       <div class="nav-links">
-        <a href="#flow">Flow</a>
-        <a href="#entities">Entities</a>
-        <a href="#failures">Failures</a>
-        <a href="#commands">Command</a>
+        <a href="#board">Board</a>
+        <a href="#model">Model</a>
+        <a href="#command">Command</a>
+        <a href="#failure">Failure</a>
       </div>
-      <a class="button" href="#flow">Run flow</a>
+      <a class="button" href="#board">Watch Run</a>
     </div>
   </nav>
 
   <header id="top" class="hero">
-    <div class="wrap">
-      <div class="eyebrow">AI agent + Crabbox + Airbyte</div>
-      <h1>Plan in the agent. Run in the sandbox. Move data with Airbyte. Repair from evidence.</h1>
-      <p class="hero-copy">
-        The harness can be <strong>Claude Code, Codex, OpenCode, or another AI coding agent</strong>. It writes a bounded
-        job spec and calls Crabbox. Crabbox runs the worker. Airbyte moves rows. Evidence decides the next step.
-      </p>
-      <div class="hero-actions">
-        <a class="button" href="#flow">Watch the flow</a>
-        <a class="button secondary" href="#commands">See the command</a>
-      </div>
-
-      <div class="rail" aria-label="Core roles">
-        <div class="rail-item"><strong>Agent</strong>Plan, config, next action</div>
-        <div class="rail-item"><strong>Crabbox</strong>Lease, hydrate, run</div>
-        <div class="rail-item"><strong>Airbyte</strong>Read source, write target</div>
-        <div class="rail-item"><strong>Evidence</strong>Logs, metrics, JUnit, artifacts</div>
-      </div>
-
-      <section id="flow" class="flow-shell" aria-label="Dynamic execution flow">
-        <div class="flow-head">
-          <span>interactive-execution-flow</span>
-          <span id="flow-mode">stage 1 / plan</span>
+    <div class="wrap hero-grid">
+      <div>
+        <span class="ascii" aria-hidden="true">AIRBYTE
+   x
+CRABBOX</span>
+        <span class="hero-kicker">visual execution tutorial</span>
+        <h1>Data movement is a proof, not a prompt.</h1>
+        <p class="lead">
+          The harness can be <strong>Claude Code, Codex, OpenCode, or another AI coding agent</strong>.
+          It writes a bounded job. Crabbox runs it. Airbyte moves rows. Evidence decides the next step.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="#board">See The Proof</a>
+          <a class="button secondary" href="#command">Copy The Shape</a>
         </div>
-        <div class="flow-body">
-          <div class="flow-stage">
-            <svg class="flow-svg" viewBox="0 0 760 560" role="img" aria-labelledby="flow-title flow-desc">
-              <title id="flow-title">Agentic Airbyte dynamic flow</title>
-              <desc id="flow-desc">An AI harness receives a goal, calls Crabbox, Crabbox starts a sandbox worker, Airbyte moves data from source to target, and evidence returns to the harness.</desc>
-              <defs>
-                <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#101010"></path>
-                </marker>
-                <path id="p-plan" d="M92 118 C142 118 172 118 214 118"></path>
-                <path id="p-lease" d="M356 118 C404 118 432 118 474 118"></path>
-                <path id="p-cred" d="M362 278 C408 250 444 214 492 166"></path>
-                <path id="p-data-a" d="M192 408 C286 350 374 284 510 192"></path>
-                <path id="p-data-b" d="M632 206 C690 270 682 350 632 402"></path>
-                <path id="p-proof" d="M500 408 C386 392 310 332 296 184"></path>
-                <path id="p-repair" d="M420 408 C330 470 212 452 158 178"></path>
-              </defs>
-
-              <path class="flow-path control" data-stage-path="plan" d="M92 118 C142 118 172 118 214 118" marker-end="url(#arrow)"></path>
-              <path class="flow-path control" data-stage-path="lease" d="M356 118 C404 118 432 118 474 118" marker-end="url(#arrow)"></path>
-              <path class="flow-path credential" data-stage-path="inject" d="M362 278 C408 250 444 214 492 166" marker-end="url(#arrow)"></path>
-              <path class="flow-path data" data-stage-path="move" d="M192 408 C286 350 374 284 510 192" marker-end="url(#arrow)"></path>
-              <path class="flow-path data" data-stage-path="move" d="M632 206 C690 270 682 350 632 402" marker-end="url(#arrow)"></path>
-              <path class="flow-path evidence" data-stage-path="prove" d="M500 408 C386 392 310 332 296 184" marker-end="url(#arrow)"></path>
-              <path class="flow-path evidence" data-stage-path="repair" d="M420 408 C330 470 212 452 158 178" marker-end="url(#arrow)"></path>
-
-              <circle class="packet" data-stage-path="plan" fill="#6657ff"><animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#p-plan"></mpath></animateMotion></circle>
-              <circle class="packet" data-stage-path="lease" fill="#6657ff"><animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#p-lease"></mpath></animateMotion></circle>
-              <circle class="packet" data-stage-path="inject" fill="#ff5a32"><animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#p-cred"></mpath></animateMotion></circle>
-              <circle class="packet" data-stage-path="move" fill="#00a88f"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#p-data-a"></mpath></animateMotion></circle>
-              <circle class="packet" data-stage-path="move" fill="#00a88f"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#p-data-b"></mpath></animateMotion></circle>
-              <circle class="packet" data-stage-path="prove" fill="#efbd38"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#p-proof"></mpath></animateMotion></circle>
-              <circle class="packet" data-stage-path="repair" fill="#efbd38"><animateMotion dur="2s" repeatCount="indefinite"><mpath href="#p-repair"></mpath></animateMotion></circle>
-
-              <g class="flow-node caller" data-stage-node="plan" transform="translate(34 70)">
-                <rect width="118" height="92" rx="8"></rect>
-                <text class="node-title" x="20" y="38">Goal</text>
-                <text class="node-sub" x="20" y="62">policy + intent</text>
-              </g>
-              <g class="flow-node agent" data-stage-node="plan lease prove repair" transform="translate(214 50)">
-                <rect width="158" height="136" rx="8"></rect>
-                <text class="node-title" x="20" y="42">AI harness</text>
-                <text class="node-sub" x="20" y="72">writes spec</text>
-                <text class="node-sub" x="20" y="96">calls Crabbox</text>
-              </g>
-              <g class="flow-node crabbox" data-stage-node="lease inject prove" transform="translate(474 50)">
-                <rect width="166" height="136" rx="8"></rect>
-                <text class="node-title" x="20" y="42">Crabbox</text>
-                <text class="node-sub" x="20" y="72">pool + lease</text>
-                <text class="node-sub" x="20" y="96">run command</text>
-              </g>
-              <g class="flow-node worker" data-stage-node="lease inject move prove" transform="translate(500 228)">
-                <rect width="190" height="140" rx="8"></rect>
-                <text class="node-title" x="20" y="42">Worker</text>
-                <text class="node-sub" x="20" y="72">env injected</text>
-                <text class="node-sub" x="20" y="96">Airbyte runs</text>
-              </g>
-              <g class="flow-node source" data-stage-node="move" transform="translate(62 380)">
-                <rect width="136" height="90" rx="8"></rect>
-                <text class="node-title" x="20" y="38">Source</text>
-                <text class="node-sub" x="20" y="62">API / DB / files</text>
-              </g>
-              <g class="flow-node target" data-stage-node="move" transform="translate(568 382)">
-                <rect width="140" height="90" rx="8"></rect>
-                <text class="node-title" x="20" y="38">Target</text>
-                <text class="node-sub" x="20" y="62">warehouse / app</text>
-              </g>
-              <g class="flow-node evidence" data-stage-node="prove repair" transform="translate(330 374)">
-                <rect width="170" height="100" rx="8"></rect>
-                <text class="node-title" x="20" y="42">Evidence</text>
-                <text class="node-sub" x="20" y="70">logs / JUnit / metrics</text>
-              </g>
-              <g class="flow-node crabbox" data-stage-node="inject" transform="translate(230 254)">
-                <rect width="134" height="78" rx="8"></rect>
-                <text class="node-title" x="18" y="34">Profile</text>
-                <text class="node-sub" x="18" y="58">scoped env</text>
-              </g>
-            </svg>
-
-            <div class="mobile-only mobile-flow" aria-label="Mobile execution flow">
-              <div class="mobile-node harness"><strong>AI harness</strong><span>Plans job and writes spec.</span></div>
-              <div class="mobile-arrow">calls -></div>
-              <div class="mobile-node crabbox"><strong>Crabbox</strong><span>Leases sandbox and runs command.</span></div>
-              <div class="mobile-arrow">injects env -></div>
-              <div class="mobile-node worker"><strong>Worker + Airbyte</strong><span>Touches source and target.</span></div>
-              <div class="mobile-arrow">returns -></div>
-              <div class="mobile-node evidence-plane"><strong>Evidence</strong><span>Logs, metrics, JUnit, artifacts.</span></div>
-            </div>
-          </div>
-
-          <aside class="stage-panel">
-            <div class="stage-list" role="tablist" aria-label="Flow stages">
-              <button class="stage-button is-active" type="button" data-stage="plan"><span>1</span><strong>Plan</strong></button>
-              <button class="stage-button" type="button" data-stage="lease"><span>2</span><strong>Lease</strong></button>
-              <button class="stage-button" type="button" data-stage="inject"><span>3</span><strong>Inject</strong></button>
-              <button class="stage-button" type="button" data-stage="move"><span>4</span><strong>Move</strong></button>
-              <button class="stage-button" type="button" data-stage="prove"><span>5</span><strong>Prove</strong></button>
-              <button class="stage-button" type="button" data-stage="repair"><span>6</span><strong>Repair</strong></button>
-            </div>
-            <div class="stage-detail" aria-live="polite">
-              <h2 id="stage-title">Agent turns intent into a job spec.</h2>
-              <p id="stage-copy">The agent reads goal, repo state, previous runs, schemas, and policy. It writes config. It does not stream data.</p>
-              <div class="io-stack">
-                <div class="io-line"><strong>Input</strong><span id="stage-input">goal + state + policy</span></div>
-                <div class="io-line"><strong>Output</strong><span id="stage-output">job spec + Crabbox command</span></div>
-              </div>
-            </div>
-            <div class="flow-controls">
-              <button class="icon-button" type="button" data-prev aria-label="Previous stage">&#8592;</button>
-              <button class="icon-button" type="button" data-play aria-label="Play or pause flow">||</button>
-              <button class="icon-button" type="button" data-next aria-label="Next stage">&#8594;</button>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <div class="metric-grid" aria-label="Design rules" style="margin-top: 18px">
-        <div class="metric"><strong>0</strong><span>prod rows through the agent</span></div>
-        <div class="metric"><strong>1</strong><span>run id for every execution</span></div>
-        <div class="metric"><strong>4</strong><span>flows: control, credentials, data, evidence</span></div>
-        <div class="metric"><strong>6</strong><span>failure classes with owners</span></div>
       </div>
+
+      <aside class="axiom" aria-label="Core invariant">
+        <span class="mini-label">the invariant</span>
+        <h2>Keep agency, execution, data, and evidence in separate lanes.</h2>
+        <p>The agent may choose a profile and a run spec. It must not become the data pipe, secret store, or artifact sanitizer.</p>
+        <div class="axiom-grid" aria-label="Boundary facts">
+          <div class="axiom-cell"><strong>0</strong><span>prod rows through the agent</span></div>
+          <div class="axiom-cell"><strong>1</strong><span>run id for every attempt</span></div>
+          <div class="axiom-cell"><strong>4</strong><span>lanes to keep separate</span></div>
+          <div class="axiom-cell"><strong>6</strong><span>failure classes with owners</span></div>
+        </div>
+      </aside>
     </div>
   </header>
 
   <main id="main">
-    <section id="entities" class="section">
+    <section id="board" class="board">
       <div class="wrap">
-        <div class="section-heading">
-          <span class="kicker">entities</span>
-          <h2>Who does what.</h2>
-          <p>Keep these boundaries clean. Most bad designs collapse two of these into one box.</p>
-        </div>
-        <div class="truth-grid">
-          <article class="truth-row"><strong>Driver</strong><span>AI harness chooses job, target, profile, validation, and next action.</span></article>
-          <article class="truth-row"><strong>Runner</strong><span>Crabbox leases worker, hydrates repo, injects allowed env, collects results.</span></article>
-          <article class="truth-row"><strong>Mover</strong><span>Airbyte runs in the worker and moves records from source to target.</span></article>
-        </div>
+        <div class="lesson-shell" aria-label="Interactive execution proof">
+          <div class="lesson-head">
+            <span><strong>Proof Board</strong> / intent becomes evidence</span>
+            <span id="mode-label">step 1 / plan</span>
+          </div>
 
-        <div class="entity-grid" aria-label="Entity ledger" style="margin-top: 14px">
-          <article class="mini-card"><h3>Caller</h3><p>Input: goal. Output: policy and constraints.</p></article>
-          <article class="mini-card"><h3>Agent</h3><p>Input: state. Output: job spec and command.</p></article>
-          <article class="mini-card"><h3>Crabbox</h3><p>Input: run request. Output: run id and artifacts.</p></article>
-          <article class="mini-card"><h3>Worker</h3><p>Input: repo, env, config. Output: exit code and reports.</p></article>
-          <article class="mini-card"><h3>Airbyte</h3><p>Input: connector config. Output: target writes and sync status.</p></article>
-          <article class="mini-card"><h3>Profile</h3><p>Input: profile name. Output: scoped env in worker only.</p></article>
-          <article class="mini-card"><h3>Evidence</h3><p>Input: logs and metrics. Output: finish, retry, repair, or alert.</p></article>
+          <div class="lesson-body">
+            <div class="diagram">
+              <svg class="flow-svg" viewBox="0 0 760 610" role="img" aria-labelledby="diagram-title diagram-desc">
+                <title id="diagram-title">Agentic Airbyte execution flow</title>
+                <desc id="diagram-desc">Goal enters the AI harness, the harness calls Crabbox, Crabbox injects a credential profile into a worker, Airbyte moves data from source to target, and evidence returns to the harness.</desc>
+                <defs>
+                  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+                    <path d="M2 2 L10 6 L2 10 Z" fill="#f7f4e8"></path>
+                  </marker>
+                  <path id="path-plan" d="M134 108 C178 108 204 108 246 108"></path>
+                  <path id="path-lease" d="M414 108 C464 108 486 108 532 108"></path>
+                  <path id="path-inject" d="M388 286 C456 274 506 224 556 166"></path>
+                  <path id="path-data-a" d="M178 462 C278 394 406 282 566 184"></path>
+                  <path id="path-data-b" d="M650 198 C704 280 694 374 642 458"></path>
+                  <path id="path-prove" d="M572 468 C454 448 344 358 318 184"></path>
+                  <path id="path-repair" d="M430 480 C306 548 162 394 112 164"></path>
+                </defs>
+
+                <path class="lane control" data-flow="plan" d="M134 108 C178 108 204 108 246 108" marker-end="url(#arrow)"></path>
+                <path class="lane control" data-flow="lease" d="M414 108 C464 108 486 108 532 108" marker-end="url(#arrow)"></path>
+                <path class="lane credential" data-flow="inject" d="M388 286 C456 274 506 224 556 166" marker-end="url(#arrow)"></path>
+                <path class="lane data" data-flow="move" d="M178 462 C278 394 406 282 566 184" marker-end="url(#arrow)"></path>
+                <path class="lane data" data-flow="move" d="M650 198 C704 280 694 374 642 458" marker-end="url(#arrow)"></path>
+                <path class="lane evidence" data-flow="prove" d="M572 468 C454 448 344 358 318 184" marker-end="url(#arrow)"></path>
+                <path class="lane evidence" data-flow="repair" d="M430 480 C306 548 162 394 112 164" marker-end="url(#arrow)"></path>
+
+                <circle class="packet" data-flow="plan" fill="#8f7aff"><animateMotion dur="1.55s" repeatCount="indefinite"><mpath href="#path-plan"></mpath></animateMotion></circle>
+                <circle class="packet" data-flow="lease" fill="#8f7aff"><animateMotion dur="1.55s" repeatCount="indefinite"><mpath href="#path-lease"></mpath></animateMotion></circle>
+                <circle class="packet" data-flow="inject" fill="#ff6a3d"><animateMotion dur="1.55s" repeatCount="indefinite"><mpath href="#path-inject"></mpath></animateMotion></circle>
+                <circle class="packet" data-flow="move" fill="#24d6bd"><animateMotion dur="1.85s" repeatCount="indefinite"><mpath href="#path-data-a"></mpath></animateMotion></circle>
+                <circle class="packet" data-flow="move" fill="#24d6bd"><animateMotion dur="1.85s" repeatCount="indefinite"><mpath href="#path-data-b"></mpath></animateMotion></circle>
+                <circle class="packet" data-flow="prove" fill="#ffd166"><animateMotion dur="1.9s" repeatCount="indefinite"><mpath href="#path-prove"></mpath></animateMotion></circle>
+                <circle class="packet" data-flow="repair" fill="#ffd166"><animateMotion dur="2s" repeatCount="indefinite"><mpath href="#path-repair"></mpath></animateMotion></circle>
+
+                <g class="node goal" data-node="plan repair" transform="translate(72 68)">
+                  <circle cx="44" cy="44" r="44"></circle>
+                  <text class="title" x="20" y="40">Goal</text>
+                  <text class="sub" x="15" y="62">policy</text>
+                </g>
+                <g class="node agent" data-node="plan lease prove repair" transform="translate(246 62)">
+                  <rect width="168" height="96" rx="8"></rect>
+                  <text class="title" x="18" y="38">AI harness</text>
+                  <text class="sub" x="18" y="64">writes spec</text>
+                  <text class="sub" x="18" y="82">chooses next action</text>
+                </g>
+                <g class="node crabbox" data-node="lease inject prove" transform="translate(532 62)">
+                  <rect width="152" height="96" rx="8"></rect>
+                  <text class="title" x="18" y="38">Crabbox</text>
+                  <text class="sub" x="18" y="64">lease + run</text>
+                  <text class="sub" x="18" y="82">collect artifacts</text>
+                </g>
+                <g class="node crabbox" data-node="inject" transform="translate(248 246)">
+                  <rect width="142" height="84" rx="8"></rect>
+                  <text class="title" x="18" y="36">Profile</text>
+                  <text class="sub" x="18" y="62">scoped env</text>
+                </g>
+                <g class="node worker" data-node="lease inject move prove" transform="translate(548 250)">
+                  <rect width="150" height="104" rx="8"></rect>
+                  <text class="title" x="18" y="38">Worker</text>
+                  <text class="sub" x="18" y="66">repo + env</text>
+                  <text class="sub" x="18" y="84">Airbyte runs</text>
+                </g>
+                <g class="node source" data-node="move" transform="translate(70 420)">
+                  <rect width="132" height="86" rx="8"></rect>
+                  <text class="title" x="18" y="34">Source</text>
+                  <text class="sub" x="18" y="60">API / DB</text>
+                </g>
+                <g class="node evidence" data-node="prove repair" transform="translate(306 442)">
+                  <rect width="170" height="96" rx="8"></rect>
+                  <text class="title" x="18" y="38">Evidence</text>
+                  <text class="sub" x="18" y="66">logs / JUnit</text>
+                  <text class="sub" x="18" y="84">metrics / config</text>
+                </g>
+                <g class="node target" data-node="move" transform="translate(596 420)">
+                  <rect width="128" height="86" rx="8"></rect>
+                  <text class="title" x="18" y="34">Target</text>
+                  <text class="sub" x="18" y="60">warehouse</text>
+                </g>
+              </svg>
+
+              <div class="mobile-flow" aria-label="Mobile execution flow">
+                <div class="mobile-node agent"><strong>AI Harness</strong><span>Reads goal and writes a bounded spec.</span></div>
+                <div class="mobile-arrow">calls Crabbox -></div>
+                <div class="mobile-node crabbox"><strong>Crabbox</strong><span>Leases a worker and injects the named profile.</span></div>
+                <div class="mobile-arrow">runs command -></div>
+                <div class="mobile-node worker"><strong>Worker + Airbyte</strong><span>Reads source and writes target. Agent never sees rows.</span></div>
+                <div class="mobile-arrow">returns evidence -></div>
+                <div class="mobile-node evidence"><strong>Evidence</strong><span>Logs, metrics, JUnit, redacted config.</span></div>
+              </div>
+
+              <div class="math-note" aria-hidden="true">
+                <span><b>control</b> = intent + command</span>
+                <span><b>credentials</b> = profile -> env</span>
+                <span><b>data</b> = source -> target</span>
+                <span><b>evidence</b> = artifacts -> decision</span>
+              </div>
+            </div>
+
+            <aside class="proof-panel">
+              <div class="step-list" role="tablist" aria-label="Execution steps">
+                <button class="step-button is-active" type="button" data-step="plan"><span>1</span><strong>Plan</strong></button>
+                <button class="step-button" type="button" data-step="lease"><span>2</span><strong>Lease</strong></button>
+                <button class="step-button" type="button" data-step="inject"><span>3</span><strong>Inject</strong></button>
+                <button class="step-button" type="button" data-step="move"><span>4</span><strong>Move</strong></button>
+                <button class="step-button" type="button" data-step="prove"><span>5</span><strong>Prove</strong></button>
+                <button class="step-button" type="button" data-step="repair"><span>6</span><strong>Repair</strong></button>
+              </div>
+
+              <div class="proof-copy" aria-live="polite">
+                <span class="mini-label" id="step-owner">owner: agent</span>
+                <h2 id="step-title">The agent compresses intent into a job spec.</h2>
+                <p id="step-copy">It reads the goal, repo state, schemas, previous evidence, and policy. It emits a bounded run. It does not move data.</p>
+                <div class="io-grid">
+                  <div class="io"><strong>Input</strong><span id="step-input">goal + policy + repo state</span></div>
+                  <div class="io"><strong>Output</strong><span id="step-output">job JSON + Crabbox command</span></div>
+                </div>
+              </div>
+
+              <div class="proof-controls">
+                <button class="icon-button" type="button" data-prev aria-label="Previous step">&#8592;</button>
+                <button class="icon-button" type="button" data-play aria-label="Play or pause">||</button>
+                <button class="icon-button" type="button" data-next aria-label="Next step">&#8594;</button>
+              </div>
+            </aside>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="flows" class="section">
+    <section id="model" class="section">
       <div class="wrap">
         <div class="section-heading">
-          <span class="kicker">flows</span>
-          <h2>Four lanes. Do not mix them.</h2>
+          <span class="section-kicker">mental model</span>
+          <h2>Everything is easier when each box has one job.</h2>
+          <p>Do not ask the agent to be clever with secrets or rows. Ask it to choose the next bounded experiment.</p>
         </div>
-        <div class="truth-grid">
-          <article class="truth-row"><strong>Control</strong><span>human/schedule -> agent -> Crabbox -> worker command</span></article>
-          <article class="truth-row"><strong>Credentials</strong><span>profile store -> Crabbox -> worker env. Never prompt text.</span></article>
-          <article class="truth-row"><strong>Data</strong><span>source -> Airbyte in worker -> target. Never through the agent.</span></article>
-          <article class="truth-row"><strong>Evidence</strong><span>worker -> Crabbox results/artifacts -> agent decision.</span></article>
+        <div class="equation-grid">
+          <article class="equation-card agent">
+            <span class="mini-label">agent</span>
+            <h3>chooses</h3>
+            <p>Target, source ref, profile name, validation, retry rule, next action.</p>
+          </article>
+          <article class="equation-card crabbox">
+            <span class="mini-label">crabbox</span>
+            <h3>executes</h3>
+            <p>Pool, lease, repo hydration, env injection, command, artifacts.</p>
+          </article>
+          <article class="equation-card airbyte">
+            <span class="mini-label">airbyte</span>
+            <h3>moves</h3>
+            <p>Connector reads source and writes target inside the worker.</p>
+          </article>
+          <article class="equation-card evidence">
+            <span class="mini-label">evidence</span>
+            <h3>decides</h3>
+            <p>Logs, JUnit, counts, metrics, redacted config. No guessing.</p>
+          </article>
+        </div>
+
+        <div class="ledger" style="margin-top: 12px" aria-label="Entity ledger">
+          <article class="ledger-card"><h3>Human / Schedule</h3><p>Provides goal and constraints. Does not provide secret values to the prompt.</p></article>
+          <article class="ledger-card"><h3>Harness</h3><p>Claude Code, Codex, OpenCode, or another coding agent surface.</p></article>
+          <article class="ledger-card"><h3>Job Spec</h3><p>References only: source, target, profile, retry, validation, artifacts.</p></article>
+          <article class="ledger-card"><h3>Profile Store</h3><p>Maps profile name to scoped environment variables.</p></article>
+          <article class="ledger-card"><h3>Worker</h3><p>Only place where repo, env, Airbyte config, and network meet.</p></article>
+          <article class="ledger-card"><h3>Target</h3><p>Receives writes through connector logic and idempotency checks.</p></article>
         </div>
       </div>
     </section>
 
-    <section id="failures" class="section">
-      <div class="wrap">
-        <div class="section-heading">
-          <span class="kicker">failure map</span>
-          <h2>Debug by owner, not by guessing.</h2>
-          <p>Every failure needs an owner and a signal. The agent repairs only from evidence.</p>
-        </div>
-        <div class="failure-grid">
-          <article class="panel failure"><h3>F1 Plan</h3><p><strong>Owner:</strong> agent. <strong>Signal:</strong> spec diff. Fix target, movement, or validation.</p></article>
-          <article class="panel failure"><h3>F2 Capacity</h3><p><strong>Owner:</strong> Crabbox. <strong>Signal:</strong> pool/run status. Fix pool or hydration.</p></article>
-          <article class="panel failure"><h3>F3 Credentials</h3><p><strong>Owner:</strong> profile. <strong>Signal:</strong> redacted env report. Fix profile mapping.</p></article>
-          <article class="panel failure"><h3>F4 Connector</h3><p><strong>Owner:</strong> Airbyte/source. <strong>Signal:</strong> connector logs. Fix API, schema, auth scope.</p></article>
-          <article class="panel failure"><h3>F5 Partial write</h3><p><strong>Owner:</strong> worker/target. <strong>Signal:</strong> target counts. Check idempotency before retry.</p></article>
-          <article class="panel failure"><h3>F6 Validation</h3><p><strong>Owner:</strong> next plan. <strong>Signal:</strong> JUnit and metrics. Compile a repair job.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="commands" class="section">
-      <div class="wrap split">
+    <section id="command" class="section">
+      <div class="wrap command-layout">
         <div>
           <div class="section-heading">
-            <span class="kicker">runnable shape</span>
-            <h2>The agent emits a bounded job.</h2>
+            <span class="section-kicker">runnable shape</span>
+            <h2>The agent emits a bounded job, not a transcript.</h2>
           </div>
-          <div class="code-panel">
-            <div class="code-head">
+          <div class="terminal-card">
+            <div class="terminal-head">
               <span>ai-agent-dispatch.sh</span>
               <button class="copy-button" type="button" data-copy>Copy</button>
             </div>
@@ -1210,18 +1390,57 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
           </div>
         </div>
 
-        <aside class="side-list">
-          <article class="panel"><h3>Spec boundary</h3><p>References, allowlists, retry, validation, artifacts. No raw secrets. No copied rows. No prompt transcript.</p></article>
-          <article class="panel"><h3>Debug rule</h3><p>Start from run id, phase log, connector log, metrics, JUnit, redacted config. Change one bounded input. Rerun.</p></article>
-          <article class="panel"><h3>Invariant</h3><p>The agent may choose the profile. It must not become the secret store, data mover, or artifact sanitizer.</p></article>
+        <aside class="rule-grid" aria-label="Command rules">
+          <article class="rule-card">
+            <h3>Spec Boundary</h3>
+            <p><strong>Allowed:</strong> refs, profile name, allowlists, validation, retry, artifact globs. <strong>Not allowed:</strong> raw secrets, copied rows, prompt transcript.</p>
+          </article>
+          <article class="rule-card">
+            <h3>Driver</h3>
+            <p>The AI harness drives the loop. Crabbox owns execution. Airbyte owns movement. Evidence owns the next decision.</p>
+          </article>
+          <article class="rule-card">
+            <h3>Repair Rule</h3>
+            <p>Start from run id, phase log, connector log, counts, JUnit, and redacted config. Change one bounded input. Rerun.</p>
+          </article>
         </aside>
+      </div>
+    </section>
+
+    <section id="failure" class="section">
+      <div class="wrap">
+        <div class="section-heading">
+          <span class="section-kicker">failure map</span>
+          <h2>Debug by owner, then by signal.</h2>
+          <p>The agent should not hallucinate fixes. It should read the failing boundary and choose the smallest repair.</p>
+        </div>
+        <div class="failure-grid">
+          <article class="failure-card"><h3>F1 Plan</h3><p><strong>Owner:</strong> agent. <strong>Signal:</strong> spec diff. Fix refs, profile, validation, or retry policy.</p></article>
+          <article class="failure-card"><h3>F2 Capacity</h3><p><strong>Owner:</strong> Crabbox. <strong>Signal:</strong> pool and lease status. Fix pool, image, cache, or hydration.</p></article>
+          <article class="failure-card"><h3>F3 Credentials</h3><p><strong>Owner:</strong> profile. <strong>Signal:</strong> redacted env report. Fix profile mapping or allowed env.</p></article>
+          <article class="failure-card"><h3>F4 Connector</h3><p><strong>Owner:</strong> Airbyte/source. <strong>Signal:</strong> connector log. Fix auth scope, schema, API limit, or cursor.</p></article>
+          <article class="failure-card"><h3>F5 Partial Write</h3><p><strong>Owner:</strong> worker/target. <strong>Signal:</strong> target counts. Check idempotency before retry.</p></article>
+          <article class="failure-card"><h3>F6 Validation</h3><p><strong>Owner:</strong> next plan. <strong>Signal:</strong> JUnit and metrics. Emit a repair job or alert.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-band">
+      <div class="wrap">
+        <div class="final-card">
+          <div>
+            <h2>The loop is simple because the boundaries are hard.</h2>
+            <p>Agent plans. Crabbox runs. Airbyte moves. Evidence returns. Repeat only when the evidence says what changed.</p>
+          </div>
+          <a class="button" href="#board">Replay</a>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="footer-inner">
-      <span>AI agent drives. Crabbox executes. Airbyte moves data. Evidence returns.</span>
+    <div class="wrap footer-inner">
+      <span>Agentic Airbyte: visual execution model for bounded ETL runs.</span>
       <div class="footer-links">
         <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" rel="noreferrer">GitHub</a>
         <a href="#top">Top</a>
@@ -1230,146 +1449,156 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
   </footer>
 
   <script>
-    const stages = {
+    const steps = {
       plan: {
-        mode: "stage 1 / plan",
-        title: "Agent turns intent into a job spec.",
-        copy: "Reads goal, repo state, previous runs, schemas, and policy. Writes config. Does not stream data.",
-        input: "goal + state + policy",
-        output: "job spec + Crabbox command",
+        mode: "step 1 / plan",
+        owner: "owner: agent",
+        title: "The agent compresses intent into a job spec.",
+        copy: "It reads the goal, repo state, schemas, previous evidence, and policy. It emits a bounded run. It does not move data.",
+        input: "goal + policy + repo state",
+        output: "job JSON + Crabbox command",
       },
       lease: {
-        mode: "stage 2 / lease",
-        title: "Crabbox leases the execution boundary.",
-        copy: "Ensures pool capacity, hydrates the repo, attaches cache, then runs the bounded command.",
+        mode: "step 2 / lease",
+        owner: "owner: Crabbox",
+        title: "Crabbox creates the execution boundary.",
+        copy: "It finds or creates a ready worker, hydrates the repo, attaches cache, and starts the requested command.",
         input: "pool id + command + artifact rules",
-        output: "sandbox worker + run id",
+        output: "worker lease + run id",
       },
       inject: {
-        mode: "stage 3 / inject",
-        title: "Credentials materialize only in the worker.",
-        copy: "The agent chooses a profile name. Crabbox resolves allowed env vars into the sandbox process.",
-        input: "credential profile + allowlist",
-        output: "scoped env inside worker",
+        mode: "step 3 / inject",
+        owner: "owner: profile + Crabbox",
+        title: "Credentials enter as scoped environment.",
+        copy: "The prompt carries only a profile name. Crabbox resolves it into allowed variables inside the worker.",
+        input: "credential_profile + allow_env",
+        output: "redacted env report + worker env",
       },
       move: {
-        mode: "stage 4 / move",
-        title: "Airbyte moves records.",
-        copy: "Airbyte runs in the worker, reads the source, writes the target, and emits connector status.",
-        input: "source config + target config",
-        output: "target state + row counts",
+        mode: "step 4 / move",
+        owner: "owner: Airbyte",
+        title: "Airbyte moves data where the agent cannot see it.",
+        copy: "The connector reads the source and writes the target in the worker. Rows do not pass through the model context.",
+        input: "source ref + target ref + connector config",
+        output: "target writes + sync status",
       },
       prove: {
-        mode: "stage 5 / prove",
-        title: "Evidence returns.",
-        copy: "The worker writes logs, metrics, JUnit, artifacts, and redacted config. Crabbox collects them.",
-        input: "exit code + logs + reports",
-        output: "evidence for the agent",
+        mode: "step 5 / prove",
+        owner: "owner: Crabbox + worker",
+        title: "The run returns evidence, not guesses.",
+        copy: "Logs, metrics, JUnit, counts, and redacted config come back under the run id.",
+        input: "exit code + reports + artifacts",
+        output: "structured evidence bundle",
       },
       repair: {
-        mode: "stage 6 / repair",
-        title: "Repair from facts.",
-        copy: "The agent reads evidence and chooses finish, retry, repair, or alert. No guessing.",
-        input: "run id + evidence",
-        output: "next bounded action",
+        mode: "step 6 / repair",
+        owner: "owner: agent",
+        title: "The agent repairs from the failing boundary.",
+        copy: "It chooses finish, retry, repair, or alert. The next command changes one bounded input and keeps the same audit shape.",
+        input: "evidence + failure owner",
+        output: "finish, retry, repair job, or alert",
       },
     };
 
-    const stageKeys = Object.keys(stages);
-    let current = 0;
+    const stepKeys = Object.keys(steps);
+    let currentStep = 0;
     let playing = true;
     let timer;
 
-    const buttons = [...document.querySelectorAll("[data-stage]")];
-    const paths = [...document.querySelectorAll("[data-stage-path]")];
-    const nodes = [...document.querySelectorAll("[data-stage-node]")];
-    const packets = [...document.querySelectorAll(".packet")];
-    const mode = document.querySelector("#flow-mode");
-    const title = document.querySelector("#stage-title");
-    const copy = document.querySelector("#stage-copy");
-    const input = document.querySelector("#stage-input");
-    const output = document.querySelector("#stage-output");
-    const play = document.querySelector("[data-play]");
+    const buttons = [...document.querySelectorAll("[data-step]")];
+    const lanes = [...document.querySelectorAll("[data-flow]")];
+    const nodes = [...document.querySelectorAll("[data-node]")];
+    const modeLabel = document.querySelector("#mode-label");
+    const ownerLabel = document.querySelector("#step-owner");
+    const title = document.querySelector("#step-title");
+    const copy = document.querySelector("#step-copy");
+    const input = document.querySelector("#step-input");
+    const output = document.querySelector("#step-output");
+    const playButton = document.querySelector("[data-play]");
 
-    function setStage(key) {
-      current = stageKeys.indexOf(key);
-      const data = stages[key];
-      mode.textContent = data.mode;
+    function setStep(key) {
+      currentStep = stepKeys.indexOf(key);
+      const data = steps[key];
+      modeLabel.textContent = data.mode;
+      ownerLabel.textContent = data.owner;
       title.textContent = data.title;
       copy.textContent = data.copy;
       input.textContent = data.input;
       output.textContent = data.output;
 
       buttons.forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.stage === key);
+        button.classList.toggle("is-active", button.dataset.step === key);
       });
-      paths.forEach((path) => {
-        path.classList.toggle("active", path.dataset.stagePath === key);
+
+      lanes.forEach((lane) => {
+        lane.classList.toggle("active", lane.dataset.flow === key);
       });
-      packets.forEach((packet) => {
-        packet.classList.toggle("active", packet.dataset.stagePath === key);
-      });
+
       nodes.forEach((node) => {
-        const stagesForNode = node.dataset.stageNode.split(" ");
-        node.classList.toggle("active", stagesForNode.includes(key));
+        node.classList.toggle("active", node.dataset.node.split(" ").includes(key));
       });
     }
 
-    function advance(step = 1) {
-      const next = (current + step + stageKeys.length) % stageKeys.length;
-      setStage(stageKeys[next]);
+    function advance(step) {
+      const next = (currentStep + step + stepKeys.length) % stepKeys.length;
+      setStep(stepKeys[next]);
     }
 
-    function schedule() {
+    function start() {
       clearInterval(timer);
-      if (playing) {
-        timer = setInterval(() => advance(1), 2600);
+      if (!playing) {
+        return;
       }
-      play.textContent = playing ? "||" : ">";
+      timer = setInterval(() => advance(1), 3600);
     }
 
     buttons.forEach((button) => {
       button.addEventListener("click", () => {
         playing = false;
-        setStage(button.dataset.stage);
-        schedule();
+        playButton.textContent = ">";
+        setStep(button.dataset.step);
+        start();
       });
     });
 
     document.querySelector("[data-prev]").addEventListener("click", () => {
       playing = false;
+      playButton.textContent = ">";
       advance(-1);
-      schedule();
+      start();
     });
 
     document.querySelector("[data-next]").addEventListener("click", () => {
       playing = false;
+      playButton.textContent = ">";
       advance(1);
-      schedule();
+      start();
     });
 
-    play.addEventListener("click", () => {
+    playButton.addEventListener("click", () => {
       playing = !playing;
-      schedule();
+      playButton.textContent = playing ? "||" : ">";
+      start();
     });
 
     const copyButton = document.querySelector("[data-copy]");
     const commandText = document.querySelector("#command-text");
 
     copyButton.addEventListener("click", async () => {
+      const text = commandText.textContent;
       try {
-        await navigator.clipboard.writeText(commandText.textContent.trim());
+        await navigator.clipboard.writeText(text);
         copyButton.textContent = "Copied";
+        setTimeout(() => {
+          copyButton.textContent = "Copy";
+        }, 1400);
       } catch {
-        copyButton.textContent = "Copy failed";
+        copyButton.textContent = "Select";
       }
-      setTimeout(() => {
-        copyButton.textContent = "Copy";
-      }, 1400);
     });
 
-    setStage("plan");
-    schedule();
+    setStep("plan");
+    start();
   </script>
 </body>
 </html>
