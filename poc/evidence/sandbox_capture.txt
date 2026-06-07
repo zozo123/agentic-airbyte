@@ -1,0 +1,185 @@
+→ Reconnecting to existing sandbox 'airbyte-etl' (running)
+@@@FULLLOG@@@
+::CRABBOX_PHASE::bootstrap
+::CRABBOX_PHASE::boot_clickhouse
+[1;36m[e2e][0m starting ClickHouse server on :8123
+[1;36m[e2e][0m ClickHouse up: 26.6.1.472
+::CRABBOX_PHASE::seed
+[1;36m[e2e][0m seeding source with 50000 events
+[seed] analytics.events ready: rows=50000 total_revenue=611815.02
+[1;36m[e2e][0m running ETL worker (ClickHouse -> DuckDB)
+::CRABBOX_PHASE::discover
+{"type": "LOG", "log": {"level": "INFO", "message": "discovered stream 'events'", "catalog": [{"name": "event_id", "source_type": "UInt64", "dest_type": "BIGINT"}, {"name": "user_id", "source_type": "UInt32", "dest_type": "BIGINT"}, {"name": "session_id", "source_type": "UInt32", "dest_type": "BIGINT"}, {"name": "event_type", "source_type": "LowCardinality(String)", "dest_type": "VARCHAR"}, {"name": "channel", "source_type": "LowCardinality(String)", "dest_type": "VARCHAR"}, {"name": "device", "source_type": "LowCardinality(String)", "dest_type": "VARCHAR"}, {"name": "country", "source_type": "LowCardinality(String)", "dest_type": "VARCHAR"}, {"name": "url", "source_type": "String", "dest_type": "VARCHAR"}, {"name": "revenue", "source_type": "Decimal(12, 2)", "dest_type": "DECIMAL(18,2)"}, {"name": "ts", "source_type": "DateTime", "dest_type": "TIMESTAMP"}]}}
+{"type": "LOG", "log": {"level": "INFO", "message": "source has 50000 records, total_revenue=611815.02"}}
+::CRABBOX_PHASE::write_setup
+::CRABBOX_PHASE::sync
+{"type": "LOG", "log": {"level": "INFO", "message": "synced 5000/50000 records"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "synced 10000/50000 records"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "synced 15000/50000 records"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "synced 20000/50000 records"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "synced 25000/50000 records"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "synced 30000/50000 records"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "synced 35000/50000 records"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "synced 40000/50000 records"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "synced 45000/50000 records"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "synced 50000/50000 records"}}
+::CRABBOX_PHASE::verify
+::CRABBOX_PHASE::analytics
+::CRABBOX_PHASE::emit
+{"type": "STATE", "state": {"records_moved": 50000, "status": "SUCCEEDED"}}
+{"type": "LOG", "log": {"level": "INFO", "message": "sync SUCCEEDED: moved 50000 rows in 0.549s (150700.2 rows/s); checks_passed=True"}}
+[1;36m[e2e][0m done. evidence in reports/metrics.json + reports/warehouse.duckdb
+@@@METRICS@@@
+{
+  "status": "SUCCEEDED",
+  "source": {
+    "type": "clickhouse",
+    "stream": "analytics.events",
+    "host": "127.0.0.1"
+  },
+  "destination": {
+    "type": "duckdb",
+    "table": "raw.events",
+    "path": "reports/warehouse.duckdb"
+  },
+  "sync_mode": "full_refresh_overwrite",
+  "records_moved": 50000,
+  "bytes_read": 9450617,
+  "batches": 10,
+  "duration_seconds": 0.549,
+  "sync_seconds": 0.332,
+  "throughput_rows_per_sec": 150700.2,
+  "read_seconds": 0.186,
+  "write_seconds": 0.145,
+  "checks": {
+    "row_count": {
+      "src": 50000,
+      "dst": 50000,
+      "ok": true
+    },
+    "revenue_sum": {
+      "src": "611815.02",
+      "dst": "611815.02",
+      "ok": true
+    },
+    "per_type_tally": {
+      "src": {
+        "add_to_cart": 6014,
+        "checkout": 3928,
+        "page_view": 29958,
+        "purchase": 2502,
+        "search": 7598
+      },
+      "dst": {
+        "add_to_cart": 6014,
+        "checkout": 3928,
+        "page_view": 29958,
+        "purchase": 2502,
+        "search": 7598
+      },
+      "ok": true
+    },
+    "content_sha256": {
+      "src": "a82239cc73c96e68528e61f885d0b073ea60fb68e4332aec8d586c2a5c73ebcb",
+      "dst": "a82239cc73c96e68528e61f885d0b073ea60fb68e4332aec8d586c2a5c73ebcb",
+      "ok": true
+    }
+  },
+  "all_checks_passed": true,
+  "analytics": {
+    "top_countries_by_revenue": [
+      {
+        "country": "BR",
+        "events": 5056,
+        "revenue": 66444.34
+      },
+      {
+        "country": "US",
+        "events": 4892,
+        "revenue": 66072.42
+      },
+      {
+        "country": "FR",
+        "events": 5145,
+        "revenue": 63935.33
+      },
+      {
+        "country": "AU",
+        "events": 4984,
+        "revenue": 62367.5
+      },
+      {
+        "country": "IL",
+        "events": 4987,
+        "revenue": 60967.33
+      }
+    ],
+    "funnel": {
+      "checkout": 3928,
+      "page_view": 29958,
+      "search": 7598,
+      "add_to_cart": 6014,
+      "purchase": 2502
+    }
+  },
+  "schema": [
+    {
+      "name": "event_id",
+      "source_type": "UInt64",
+      "dest_type": "BIGINT"
+    },
+    {
+      "name": "user_id",
+      "source_type": "UInt32",
+      "dest_type": "BIGINT"
+    },
+    {
+      "name": "session_id",
+      "source_type": "UInt32",
+      "dest_type": "BIGINT"
+    },
+    {
+      "name": "event_type",
+      "source_type": "LowCardinality(String)",
+      "dest_type": "VARCHAR"
+    },
+    {
+      "name": "channel",
+      "source_type": "LowCardinality(String)",
+      "dest_type": "VARCHAR"
+    },
+    {
+      "name": "device",
+      "source_type": "LowCardinality(String)",
+      "dest_type": "VARCHAR"
+    },
+    {
+      "name": "country",
+      "source_type": "LowCardinality(String)",
+      "dest_type": "VARCHAR"
+    },
+    {
+      "name": "url",
+      "source_type": "String",
+      "dest_type": "VARCHAR"
+    },
+    {
+      "name": "revenue",
+      "source_type": "Decimal(12, 2)",
+      "dest_type": "DECIMAL(18,2)"
+    },
+    {
+      "name": "ts",
+      "source_type": "DateTime",
+      "dest_type": "TIMESTAMP"
+    }
+  ]
+}@@@PROVENANCE@@@
+host=airbyte-etl
+kernel=Linux 6.16.9+
+arch=x86_64
+python=Python 3.12.13
+clickhouse=ClickHouse local version 26.6.1.472 (official build).
+duckdb=1.5.3
+cpus=4
+mem_mb=3930

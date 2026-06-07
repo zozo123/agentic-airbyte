@@ -966,8 +966,9 @@
         <a href="#model">Model</a>
         <a href="#command">Command</a>
         <a href="#failure">Failure</a>
+        <a href="poc.html">Live&nbsp;proof</a>
       </div>
-      <a class="button" href="#stage">Watch the flow</a>
+      <a class="button" href="poc.html">See it actually run &rarr;</a>
     </div>
     <div class="scroll-thread" id="scroll-thread" aria-hidden="true"></div>
   </nav>
@@ -988,9 +989,14 @@
           Evidence tells the agent what to do next &mdash; and the loop closes.
         </p>
         <div class="hero-actions">
-          <a class="button" href="#stage">Watch the flow &darr;</a>
+          <a class="button" href="poc.html">See a real run &rarr;</a>
+          <a class="button secondary" href="#stage">Watch the flow &darr;</a>
           <a class="button secondary" href="#command">Copy the job</a>
         </div>
+        <p class="lead" style="margin-top:18px;font-size:15px;color:var(--evidence)">
+          &#9889; New: a <a href="poc.html" style="border-bottom:1px solid currentColor">live end-to-end proof</a> &mdash;
+          50,000 rows moved ClickHouse&nbsp;&rarr;&nbsp;DuckDB inside a real islo sandbox, 4/4 parity checks, byte-exact checksum.
+        </p>
       </div>
 
       <div class="loop-stage" aria-label="The execution loop">

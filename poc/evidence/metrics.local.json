@@ -1,0 +1,145 @@
+{
+  "status": "SUCCEEDED",
+  "source": {
+    "type": "clickhouse",
+    "stream": "analytics.events",
+    "host": "127.0.0.1"
+  },
+  "destination": {
+    "type": "duckdb",
+    "table": "raw.events",
+    "path": "reports/warehouse.duckdb"
+  },
+  "sync_mode": "full_refresh_overwrite",
+  "records_moved": 50000,
+  "bytes_read": 9450617,
+  "batches": 10,
+  "duration_seconds": 0.289,
+  "sync_seconds": 0.132,
+  "throughput_rows_per_sec": 379987.7,
+  "read_seconds": 0.069,
+  "write_seconds": 0.063,
+  "checks": {
+    "row_count": {
+      "src": 50000,
+      "dst": 50000,
+      "ok": true
+    },
+    "revenue_sum": {
+      "src": "611815.02",
+      "dst": "611815.02",
+      "ok": true
+    },
+    "per_type_tally": {
+      "src": {
+        "add_to_cart": 6014,
+        "checkout": 3928,
+        "page_view": 29958,
+        "purchase": 2502,
+        "search": 7598
+      },
+      "dst": {
+        "add_to_cart": 6014,
+        "checkout": 3928,
+        "page_view": 29958,
+        "purchase": 2502,
+        "search": 7598
+      },
+      "ok": true
+    },
+    "content_sha256": {
+      "src": "a82239cc73c96e68528e61f885d0b073ea60fb68e4332aec8d586c2a5c73ebcb",
+      "dst": "a82239cc73c96e68528e61f885d0b073ea60fb68e4332aec8d586c2a5c73ebcb",
+      "ok": true
+    }
+  },
+  "all_checks_passed": true,
+  "analytics": {
+    "top_countries_by_revenue": [
+      {
+        "country": "BR",
+        "events": 5056,
+        "revenue": 66444.34
+      },
+      {
+        "country": "US",
+        "events": 4892,
+        "revenue": 66072.42
+      },
+      {
+        "country": "FR",
+        "events": 5145,
+        "revenue": 63935.33
+      },
+      {
+        "country": "AU",
+        "events": 4984,
+        "revenue": 62367.5
+      },
+      {
+        "country": "IL",
+        "events": 4987,
+        "revenue": 60967.33
+      }
+    ],
+    "funnel": {
+      "checkout": 3928,
+      "search": 7598,
+      "add_to_cart": 6014,
+      "page_view": 29958,
+      "purchase": 2502
+    }
+  },
+  "schema": [
+    {
+      "name": "event_id",
+      "source_type": "UInt64",
+      "dest_type": "BIGINT"
+    },
+    {
+      "name": "user_id",
+      "source_type": "UInt32",
+      "dest_type": "BIGINT"
+    },
+    {
+      "name": "session_id",
+      "source_type": "UInt32",
+      "dest_type": "BIGINT"
+    },
+    {
+      "name": "event_type",
+      "source_type": "LowCardinality(String)",
+      "dest_type": "VARCHAR"
+    },
+    {
+      "name": "channel",
+      "source_type": "LowCardinality(String)",
+      "dest_type": "VARCHAR"
+    },
+    {
+      "name": "device",
+      "source_type": "LowCardinality(String)",
+      "dest_type": "VARCHAR"
+    },
+    {
+      "name": "country",
+      "source_type": "LowCardinality(String)",
+      "dest_type": "VARCHAR"
+    },
+    {
+      "name": "url",
+      "source_type": "String",
+      "dest_type": "VARCHAR"
+    },
+    {
+      "name": "revenue",
+      "source_type": "Decimal(12, 2)",
+      "dest_type": "DECIMAL(18,2)"
+    },
+    {
+      "name": "ts",
+      "source_type": "DateTime",
+      "dest_type": "TIMESTAMP"
+    }
+  ]
+}

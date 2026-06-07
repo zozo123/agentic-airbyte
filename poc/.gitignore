@@ -1,6 +1,10 @@
 .venv/
 .run/
-reports/*.duckdb
-reports/.batch.jsonl
+reports/
 clickhouse
 __pycache__/
+# ClickHouse server runtime artifacts (created in cwd on local runs)
+access/
+preprocessed_configs/
+status
+*.duckdb
