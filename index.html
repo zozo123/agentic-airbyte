@@ -708,6 +708,24 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .role-flow {
+      position: relative;
+      counter-reset: role;
+    }
+
+    .role-flow::before {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      right: 12px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--agent), var(--crabbox), var(--airbyte), var(--evidence));
+      content: "";
+      opacity: 0.42;
+      pointer-events: none;
+      transform: translateY(-50%);
+    }
+
     .equation-card,
     .ledger-card,
     .failure-card,
@@ -719,7 +737,23 @@
     }
 
     .equation-card {
+      position: relative;
       padding: 14px;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .equation-card::after {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      color: rgb(255 255 255 / 0.18);
+      content: attr(data-index);
+      font-family: var(--mono);
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 1;
+      pointer-events: none;
     }
 
     button.equation-card,
@@ -781,12 +815,46 @@
       font-size: 14px;
     }
 
+    .role-io {
+      display: grid;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .role-io span {
+      display: block;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 7px;
+    }
+
+    .role-io b {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
     button.equation-card.is-active p,
     button.failure-card.is-active p,
     button.rule-card.is-active p,
     .event-button.is-active p,
     .design-button.is-active p {
       color: #48443d;
+    }
+
+    button.equation-card.is-active::after {
+      color: rgb(5 5 5 / 0.16);
+    }
+
+    button.equation-card.is-active .role-io span {
+      border-color: rgb(5 5 5 / 0.16);
+      color: #48443d;
+    }
+
+    button.equation-card.is-active .role-io b {
+      color: #050505;
     }
 
     button.failure-card.is-active strong,
@@ -827,9 +895,20 @@
       padding-bottom: 4px;
     }
 
+    .handoff-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 12px;
+      overflow: visible;
+      padding-bottom: 0;
+    }
+
     .ledger-card {
       min-width: 148px;
       overflow: hidden;
+    }
+
+    .handoff-grid .ledger-card {
+      min-width: 0;
     }
 
     .ledger-card h3,
@@ -910,6 +989,118 @@
 
     .detail-panel.is-bad {
       border-color: rgb(255 77 109 / 0.55);
+    }
+
+    .spec-anatomy {
+      align-content: start;
+    }
+
+    .spec-map {
+      display: grid;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgb(13 13 13 / 0.84);
+      padding: 12px;
+    }
+
+    .spec-map .mini-label {
+      margin-bottom: 0;
+    }
+
+    .spec-pipe {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .spec-pipe span {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .spec-pipe b {
+      display: block;
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .rule-card {
+      display: block;
+    }
+
+    .rule-card h3 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .rule-card h3 span {
+      color: var(--evidence);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    button.rule-card.is-active h3 span {
+      color: var(--paper);
+    }
+
+    .triage-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .failure-card {
+      overflow: hidden;
+    }
+
+    .failure-card .failure-meta {
+      display: block;
+      color: var(--evidence);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    button.failure-card.is-active .failure-meta {
+      color: #5c5548;
+    }
+
+    .failure-equation {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: stretch;
+      padding: 0 12px 12px;
+    }
+
+    .failure-equation span,
+    .failure-equation b {
+      display: grid;
+      min-width: 0;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-size: 13px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .failure-equation b {
+      color: var(--evidence);
+      font-family: var(--mono);
+      font-weight: 900;
     }
 
     .event-button {
@@ -1189,8 +1380,13 @@
       }
 
       .equation-grid,
-      .failure-grid {
+      .failure-grid,
+      .handoff-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .role-flow::before {
+        display: none;
       }
     }
 
@@ -1223,6 +1419,8 @@
       .axiom-grid,
       .equation-grid,
       .failure-grid,
+      .handoff-grid,
+      .spec-pipe,
       .design-toggle,
       .math-note {
         grid-template-columns: 1fr;
@@ -1230,6 +1428,14 @@
 
       .event-button {
         grid-template-columns: 1fr;
+      }
+
+      .failure-equation {
+        grid-template-columns: 1fr;
+      }
+
+      .failure-equation b {
+        min-height: 28px;
       }
 
       .lesson-head {
@@ -1574,26 +1780,42 @@ CRABBOX</span>
           <p>Do not ask the agent to be clever with secrets or rows. Ask it to choose the next bounded experiment.</p>
         </div>
         <div class="model-lab">
-          <div class="equation-grid" role="tablist" aria-label="System owners">
-            <button class="equation-card agent is-active" type="button" data-boundary="agent">
-              <span class="mini-label">agent</span>
-              <h3>chooses</h3>
-              <p>Target, source ref, profile name, validation, retry rule, next action.</p>
+          <div class="equation-grid role-flow" role="tablist" aria-label="System owners">
+            <button class="equation-card agent is-active" type="button" data-boundary="agent" data-index="01">
+              <span class="mini-label">agent / driver</span>
+              <h3>Chooses The Run</h3>
+              <p>Turns intent and evidence into the next bounded job spec.</p>
+              <div class="role-io">
+                <span><b>In</b> goal, repo, evidence</span>
+                <span><b>Out</b> job spec, next action</span>
+              </div>
             </button>
-            <button class="equation-card crabbox" type="button" data-boundary="crabbox">
-              <span class="mini-label">crabbox</span>
-              <h3>executes</h3>
-              <p>Pool, lease, repo hydration, env injection, command, artifacts.</p>
+            <button class="equation-card crabbox" type="button" data-boundary="crabbox" data-index="02">
+              <span class="mini-label">crabbox / runner</span>
+              <h3>Creates The Run</h3>
+              <p>Leases the sandbox, hydrates code, injects env, captures outputs.</p>
+              <div class="role-io">
+                <span><b>In</b> command, pool, profile</span>
+                <span><b>Out</b> run id, artifacts</span>
+              </div>
             </button>
-            <button class="equation-card airbyte" type="button" data-boundary="airbyte">
-              <span class="mini-label">airbyte</span>
-              <h3>moves</h3>
-              <p>Connector reads source and writes target inside the worker.</p>
+            <button class="equation-card airbyte" type="button" data-boundary="airbyte" data-index="03">
+              <span class="mini-label">airbyte / mover</span>
+              <h3>Moves The Rows</h3>
+              <p>Runs the connector in the worker. The model never sees data.</p>
+              <div class="role-io">
+                <span><b>In</b> source, target, env</span>
+                <span><b>Out</b> writes, sync status</span>
+              </div>
             </button>
-            <button class="equation-card evidence" type="button" data-boundary="evidence">
-              <span class="mini-label">evidence</span>
-              <h3>decides</h3>
-              <p>Logs, JUnit, counts, metrics, redacted config. No guessing.</p>
+            <button class="equation-card evidence" type="button" data-boundary="evidence" data-index="04">
+              <span class="mini-label">evidence / judge</span>
+              <h3>Decides The Next Step</h3>
+              <p>Converts logs and checks into finish, retry, repair, or alert.</p>
+              <div class="role-io">
+                <span><b>In</b> logs, JUnit, metrics</span>
+                <span><b>Out</b> decision, repair input</span>
+              </div>
             </button>
           </div>
 
@@ -1608,13 +1830,13 @@ CRABBOX</span>
           </aside>
         </div>
 
-        <div class="ledger" style="margin-top: 12px" aria-label="Entity ledger">
-          <article class="ledger-card"><h3>Human / Schedule</h3><p>Provides goal and constraints. Does not provide secret values to the prompt.</p></article>
-          <article class="ledger-card"><h3>Harness</h3><p>Claude Code, Codex, OpenCode, or another coding agent surface.</p></article>
-          <article class="ledger-card"><h3>Job Spec</h3><p>References only: source, target, profile, retry, validation, artifacts.</p></article>
-          <article class="ledger-card"><h3>Profile Store</h3><p>Maps profile name to scoped environment variables.</p></article>
-          <article class="ledger-card"><h3>Worker</h3><p>Only place where repo, env, Airbyte config, and network meet.</p></article>
-          <article class="ledger-card"><h3>Target</h3><p>Receives writes through connector logic and idempotency checks.</p></article>
+        <div class="ledger handoff-grid" aria-label="Entity handoff map">
+          <article class="ledger-card"><h3>Intent -> Spec</h3><p>Human or schedule gives goal. Harness emits refs, profile, retry, validation.</p></article>
+          <article class="ledger-card"><h3>Spec -> Run</h3><p>Crabbox turns the spec into a sandboxed command and a run id.</p></article>
+          <article class="ledger-card"><h3>Profile -> Env</h3><p>Profile store resolves scoped variables inside the worker only.</p></article>
+          <article class="ledger-card"><h3>Source -> Target</h3><p>Airbyte reads source and writes target. Rows stay out of the prompt.</p></article>
+          <article class="ledger-card"><h3>Worker -> Evidence</h3><p>Worker emits logs, JUnit, metrics, counts, redacted config.</p></article>
+          <article class="ledger-card"><h3>Evidence -> Action</h3><p>Agent chooses finish, retry, repair, or alert from signals.</p></article>
         </div>
 
         <div class="compare-lab" aria-label="Wrong design versus bounded design">
@@ -1695,17 +1917,25 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
           </div>
         </div>
 
-        <aside class="rule-grid" aria-label="Command rules">
+        <aside class="rule-grid spec-anatomy" aria-label="Command rules">
+          <div class="spec-map" aria-label="Job spec anatomy">
+            <span class="mini-label">job spec anatomy</span>
+            <div class="spec-pipe">
+              <span><b>Refs</b> source + target</span>
+              <span><b>Profile</b> scoped env</span>
+              <span><b>Proof</b> artifacts + tests</span>
+            </div>
+          </div>
           <button class="rule-card is-active" type="button" data-rule="spec">
-            <h3>Spec Boundary</h3>
+            <h3>Spec Boundary <span>plan</span></h3>
             <p><strong>Allowed:</strong> refs, profile name, allowlists, validation, retry, artifact globs. <strong>Not allowed:</strong> raw secrets, copied rows, prompt transcript.</p>
           </button>
           <button class="rule-card" type="button" data-rule="driver">
-            <h3>Driver</h3>
+            <h3>Execution Handoff <span>lease</span></h3>
             <p>The AI harness drives the loop. Crabbox owns execution. Airbyte owns movement. Evidence owns the next decision.</p>
           </button>
           <button class="rule-card" type="button" data-rule="repair">
-            <h3>Repair Rule</h3>
+            <h3>Repair Contract <span>repair</span></h3>
             <p>Start from run id, phase log, connector log, counts, JUnit, and redacted config. Change one bounded input. Rerun.</p>
           </button>
           <div class="detail-panel" aria-live="polite">
@@ -1729,19 +1959,26 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
           <p>The agent should not hallucinate fixes. It should read the failing boundary and choose the smallest repair.</p>
         </div>
         <div class="failure-lab">
-          <div class="failure-grid" role="tablist" aria-label="Failure classes">
-            <button class="failure-card is-active" type="button" data-failure="plan"><h3>F1 Plan</h3><p><strong>Owner:</strong> agent. <strong>Signal:</strong> spec diff. Fix refs, profile, validation, or retry policy.</p></button>
-            <button class="failure-card" type="button" data-failure="capacity"><h3>F2 Capacity</h3><p><strong>Owner:</strong> Crabbox. <strong>Signal:</strong> pool and lease status. Fix pool, image, cache, or hydration.</p></button>
-            <button class="failure-card" type="button" data-failure="credentials"><h3>F3 Credentials</h3><p><strong>Owner:</strong> profile. <strong>Signal:</strong> redacted env report. Fix profile mapping or allowed env.</p></button>
-            <button class="failure-card" type="button" data-failure="connector"><h3>F4 Connector</h3><p><strong>Owner:</strong> Airbyte/source. <strong>Signal:</strong> connector log. Fix auth scope, schema, API limit, or cursor.</p></button>
-            <button class="failure-card" type="button" data-failure="partial"><h3>F5 Partial Write</h3><p><strong>Owner:</strong> worker/target. <strong>Signal:</strong> target counts. Check idempotency before retry.</p></button>
-            <button class="failure-card" type="button" data-failure="validation"><h3>F6 Validation</h3><p><strong>Owner:</strong> next plan. <strong>Signal:</strong> JUnit and metrics. Emit a repair job or alert.</p></button>
+          <div class="failure-grid triage-grid" role="tablist" aria-label="Failure classes">
+            <button class="failure-card is-active" type="button" data-failure="plan"><h3>F1 Plan</h3><p><span class="failure-meta">before lease</span><strong>Owner:</strong> agent. <strong>Signal:</strong> spec diff. Fix refs, profile, validation, or retry policy.</p></button>
+            <button class="failure-card" type="button" data-failure="capacity"><h3>F2 Capacity</h3><p><span class="failure-meta">before command</span><strong>Owner:</strong> Crabbox. <strong>Signal:</strong> pool and lease status. Fix pool, image, cache, or hydration.</p></button>
+            <button class="failure-card" type="button" data-failure="credentials"><h3>F3 Credentials</h3><p><span class="failure-meta">before sync</span><strong>Owner:</strong> profile. <strong>Signal:</strong> redacted env report. Fix profile mapping or allowed env.</p></button>
+            <button class="failure-card" type="button" data-failure="connector"><h3>F4 Connector</h3><p><span class="failure-meta">during sync</span><strong>Owner:</strong> Airbyte/source. <strong>Signal:</strong> connector log. Fix auth scope, schema, API limit, or cursor.</p></button>
+            <button class="failure-card" type="button" data-failure="partial"><h3>F5 Partial Write</h3><p><span class="failure-meta">after write</span><strong>Owner:</strong> worker/target. <strong>Signal:</strong> target counts. Check idempotency before retry.</p></button>
+            <button class="failure-card" type="button" data-failure="validation"><h3>F6 Validation</h3><p><span class="failure-meta">after proof</span><strong>Owner:</strong> next plan. <strong>Signal:</strong> JUnit and metrics. Emit a repair job or alert.</p></button>
           </div>
 
           <aside class="detail-panel" aria-live="polite">
             <span class="mini-label" id="failure-owner">owner: agent</span>
             <h3 id="failure-title">The plan is wrong before execution starts.</h3>
             <p id="failure-copy">The job points at the wrong source, target, profile, validation, or retry rule. Fix the spec and rerun.</p>
+            <div class="failure-equation" aria-label="Failure triage equation">
+              <span id="failure-eq-owner">agent</span>
+              <b>+</b>
+              <span id="failure-eq-signal">spec diff</span>
+              <b>=</b>
+              <span id="failure-eq-action">repair spec</span>
+            </div>
             <div class="detail-grid">
               <div class="detail-line"><strong>Signal</strong><span id="failure-signal">spec diff</span></div>
               <div class="detail-line"><strong>Smallest repair</strong><span id="failure-repair">change refs, profile, validation, or retry policy</span></div>
@@ -1974,50 +2211,62 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
       plan: {
         step: "plan",
         owner: "owner: agent",
+        eqOwner: "agent",
         title: "The plan is wrong before execution starts.",
         copy: "The job points at the wrong source, target, profile, validation, or retry rule. Fix the spec and rerun.",
         signal: "spec diff",
         repair: "change refs, profile, validation, or retry policy",
+        action: "repair spec",
       },
       capacity: {
         step: "lease",
         owner: "owner: Crabbox",
+        eqOwner: "Crabbox",
         title: "The run cannot get a healthy execution boundary.",
         copy: "The pool, image, cache, or repo hydration failed before the data plane started.",
         signal: "pool status + lease log",
         repair: "fix pool capacity, image, cache, or hydration",
+        action: "repair pool",
       },
       credentials: {
         step: "inject",
         owner: "owner: profile",
+        eqOwner: "profile",
         title: "The worker did not receive the credentials it needs.",
         copy: "The profile name is valid only if it resolves to the allowed environment variables inside the worker.",
         signal: "redacted env report",
         repair: "fix profile mapping or allow_env",
+        action: "repair env",
       },
       connector: {
         step: "move",
         owner: "owner: Airbyte/source",
+        eqOwner: "Airbyte",
         title: "The connector failed at the source or movement boundary.",
         copy: "The API, schema, auth scope, cursor, or rate limit failed while Airbyte was moving data.",
         signal: "connector log",
         repair: "fix auth scope, schema, API limit, or cursor",
+        action: "repair connector",
       },
       partial: {
         step: "move",
         owner: "owner: worker/target",
+        eqOwner: "target",
         title: "The target saw a partial or uncertain write.",
         copy: "Retry only after checking idempotency, target counts, and connector commit state.",
         signal: "target counts + sync state",
         repair: "verify idempotency before retry",
+        action: "guard retry",
       },
       validation: {
         step: "prove",
         owner: "owner: next plan",
+        eqOwner: "evidence",
         title: "The run executed, but proof failed.",
         copy: "Counts, freshness, schema, or tests failed. The agent should emit a repair job or alert.",
         signal: "JUnit + metrics",
         repair: "compile a repair job from failing checks",
+        action: "repair or alert",
       },
     };
 
@@ -2150,6 +2399,9 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
       document.querySelector("#failure-owner").textContent = data.owner;
       document.querySelector("#failure-title").textContent = data.title;
       document.querySelector("#failure-copy").textContent = data.copy;
+      document.querySelector("#failure-eq-owner").textContent = data.eqOwner;
+      document.querySelector("#failure-eq-signal").textContent = data.signal;
+      document.querySelector("#failure-eq-action").textContent = data.action;
       document.querySelector("#failure-signal").textContent = data.signal;
       document.querySelector("#failure-repair").textContent = data.repair;
       document.querySelector("#failure-step").textContent = data.step;
