@@ -1,0 +1,17 @@
+# islo.yaml — defines the ETL worker sandbox the harness borrows.
+#
+# This is the "repo-defined worker" the README talks about: the box that runs
+# the data movement is described in version control, so every run is identical
+# and auditable on any provider.
+#
+#   islo use airbyte-etl --config poc/islo.yaml -- bash poc/run_e2e.sh
+#
+sandbox: airbyte-etl
+image: docker.io/library/python:3.12
+cpu: 4
+memory_mb: 4096
+disk_gb: 20
+workdir: /workspace
+env:
+  ETL_ROWS: "50000"
+  CH_PORT: "8123"

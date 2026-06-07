@@ -1,0 +1,21 @@
+{
+  "source": {
+    "type": "clickhouse",
+    "host": "127.0.0.1",
+    "port": 8123,
+    "database": "analytics",
+    "stream": "events",
+    "primary_key": "event_id",
+    "cursor_field": "ts"
+  },
+  "destination": {
+    "type": "duckdb",
+    "path": "reports/warehouse.duckdb",
+    "schema": "raw",
+    "table": "events"
+  },
+  "sync": {
+    "mode": "full_refresh_overwrite",
+    "batch_size": 5000
+  }
+}

@@ -1,0 +1,6 @@
+.venv/
+.run/
+reports/*.duckdb
+reports/.batch.jsonl
+clickhouse
+__pycache__/
