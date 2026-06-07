@@ -3,23 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#050505">
-  <meta name="description" content="A visual tutorial for Agentic Airbyte: agent plans, Crabbox runs, Airbyte moves, and evidence decides the next bounded repair.">
+  <meta name="theme-color" content="#07080d">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307080d'/%3E%3Crect x='5' y='5' width='10' height='10' rx='2.5' fill='%238f7aff'/%3E%3Crect x='17' y='5' width='10' height='10' rx='2.5' fill='%23ff6a3d'/%3E%3Crect x='5' y='17' width='10' height='10' rx='2.5' fill='%23ffd166'/%3E%3Crect x='17' y='17' width='10' height='10' rx='2.5' fill='%2324d6bd'/%3E%3C/svg%3E">
+  <meta name="description" content="A visual, scroll-driven tutorial for Agentic Airbyte: the agent plans, Crabbox runs, Airbyte moves, and evidence decides the next bounded repair.">
   <meta property="og:title" content="Agentic Airbyte">
   <meta property="og:description" content="Agent plans. Crabbox runs. Airbyte moves. Evidence decides.">
   <meta property="og:type" content="website">
-  <title>Agentic Airbyte | Visual Execution Tutorial</title>
+  <title>Agentic Airbyte | A Visual Execution Tutorial</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500;1,6..72,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       color-scheme: dark;
-      --bg: #050505;
-      --panel: #0d0d0d;
-      --panel-2: #151515;
-      --paper: #f7f4e8;
-      --ink: #f7f4e8;
-      --muted: #9f9b8f;
-      --line: #2d2d2d;
-      --line-strong: #f7f4e8;
+      --bg: #07080d;
+      --bg-2: #090b12;
+      --panel: #0d0f17;
+      --panel-2: #12141d;
+      --paper: #f5f2e6;
+      --ink: #f3efe2;
+      --muted: #9a9789;
+      --muted-2: #6f6d63;
+      --line: #23242f;
+      --line-strong: #f3efe2;
       --agent: #8f7aff;
       --crabbox: #ff6a3d;
       --airbyte: #24d6bd;
@@ -27,52 +35,56 @@
       --target: #a6df62;
       --evidence: #ffd166;
       --danger: #ff4d6d;
-      --max: 1120px;
-      --radius: 8px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --max: 1180px;
+      --radius: 10px;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+      --sans: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --serif: "Newsreader", Georgia, "Times New Roman", serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       min-width: 320px;
       margin: 0;
       overflow-x: hidden;
       background:
-        linear-gradient(132deg, rgb(143 122 255 / 0.14), transparent 38%, rgb(36 214 189 / 0.11)),
-        linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+        radial-gradient(1200px 700px at 78% -8%, rgb(143 122 255 / 0.16), transparent 60%),
+        radial-gradient(1100px 800px at 0% 12%, rgb(36 214 189 / 0.10), transparent 55%),
+        radial-gradient(900px 900px at 50% 120%, rgb(255 209 102 / 0.06), transparent 60%),
+        linear-gradient(rgb(255 255 255 / 0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 0.022) 1px, transparent 1px),
         var(--bg);
-      background-size: auto, 34px 34px, 34px 34px, auto;
+      background-size: auto, auto, auto, 36px 36px, 36px 36px, auto;
+      background-attachment: fixed, fixed, fixed, scroll, scroll, fixed;
       color: var(--ink);
       font-family: var(--sans);
-      line-height: 1.45;
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: -0.005em;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
       -webkit-tap-highlight-color: rgb(255 209 102 / 0.22);
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    /* faint film-grain atmosphere */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.04;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    button {
-      font: inherit;
-      touch-action: manipulation;
-    }
-
-    code,
-    pre {
-      font-family: var(--mono);
-    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; touch-action: manipulation; }
+    code, pre { font-family: var(--mono); }
 
     a:focus-visible,
     button:focus-visible {
@@ -88,43 +100,51 @@
       border: 1px solid var(--line-strong);
       border-radius: var(--radius);
       background: var(--paper);
-      color: #050505;
+      color: #06070c;
       padding: 10px 12px;
       font-weight: 800;
     }
+    .skip-link:focus { top: 14px; }
 
-    .skip-link:focus {
-      top: 14px;
-    }
-
+    /* ---- nav + scroll thread ---- */
     .site-nav {
       position: sticky;
       top: 0;
       z-index: 100;
       border-bottom: 1px solid var(--line);
-      background: rgb(5 5 5 / 0.86);
-      backdrop-filter: blur(18px);
+      background: rgb(7 8 13 / 0.72);
+      backdrop-filter: blur(18px) saturate(140%);
     }
-
+    .scroll-thread {
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      height: 2px;
+      width: 100%;
+      transform: scaleX(var(--p, 0));
+      transform-origin: 0 50%;
+      background: linear-gradient(90deg, var(--agent), var(--crabbox), var(--airbyte), var(--evidence));
+      will-change: transform;
+    }
     .nav-inner {
       display: flex;
-      width: min(var(--max), calc(100% - 32px));
-      min-height: 58px;
+      width: min(var(--max), calc(100% - 40px));
+      min-height: 60px;
       margin: 0 auto;
       align-items: center;
       justify-content: space-between;
       gap: 18px;
     }
-
     .brand {
       display: inline-flex;
       min-width: 0;
       align-items: center;
-      gap: 10px;
-      font-weight: 850;
+      gap: 11px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
-
     .brand-mark {
+      position: relative;
       display: grid;
       width: 30px;
       height: 30px;
@@ -132,1402 +152,802 @@
       gap: 4px;
       flex: 0 0 auto;
     }
-
     .brand-mark span {
-      border: 1px solid var(--line-strong);
       border-radius: 4px;
       background: var(--panel);
+      animation: markpulse 4.8s var(--ease) infinite;
     }
-
-    .brand-mark span:nth-child(1) {
-      background: var(--agent);
+    .brand-mark span:nth-child(1) { background: var(--agent); }
+    .brand-mark span:nth-child(2) { background: var(--crabbox); animation-delay: .35s; }
+    .brand-mark span:nth-child(3) { background: var(--evidence); animation-delay: 1.05s; }
+    .brand-mark span:nth-child(4) { background: var(--airbyte); animation-delay: .7s; }
+    @keyframes markpulse {
+      0%, 70%, 100% { opacity: 0.85; }
+      82% { opacity: 1; transform: translateY(-1px); }
     }
-
-    .brand-mark span:nth-child(2) {
-      background: var(--crabbox);
-    }
-
-    .brand-mark span:nth-child(4) {
-      background: var(--airbyte);
-    }
-
-    .brand-text {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
+    .brand-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 22px;
       color: var(--muted);
       font-family: var(--mono);
-      font-size: 12px;
+      font-size: 11.5px;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
     }
-
-    .nav-links a {
-      transition: color 140ms ease;
+    .nav-links a { position: relative; transition: color 160ms var(--ease); }
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: -6px;
+      height: 1.5px; width: 100%;
+      background: var(--evidence);
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      transition: transform 200ms var(--ease);
     }
-
-    .nav-links a:hover {
-      color: var(--ink);
-    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover::after { transform: scaleX(1); }
 
     .button {
       display: inline-flex;
-      min-height: 42px;
+      min-height: 44px;
       align-items: center;
       justify-content: center;
+      gap: 8px;
       border: 1px solid var(--line-strong);
       border-radius: var(--radius);
       background: var(--ink);
       color: var(--bg);
-      font-weight: 850;
-      padding: 0 14px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      padding: 0 18px;
       white-space: nowrap;
-      transition: transform 140ms ease, background-color 140ms ease, color 140ms ease;
+      transition: transform 160ms var(--ease), background-color 160ms var(--ease), color 160ms var(--ease), box-shadow 160ms var(--ease);
     }
-
     .button:hover {
-      transform: translateY(-1px);
+      transform: translateY(-2px);
       background: var(--evidence);
-      color: #050505;
+      color: #06070c;
+      box-shadow: 0 12px 34px rgb(255 209 102 / 0.22);
     }
-
     .button.secondary {
       background: transparent;
       color: var(--ink);
     }
-
     .button.secondary:hover {
       background: var(--panel-2);
       color: var(--evidence);
+      box-shadow: none;
+      border-color: var(--evidence);
     }
 
-    .wrap {
-      width: min(var(--max), calc(100% - 32px));
-      margin: 0 auto;
+    .wrap { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; position: relative; z-index: 2; }
+
+    .mini-label, .section-kicker, .hero-kicker {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
     }
 
-    .hero {
-      padding: 38px 0 18px;
-    }
-
+    /* ---- hero ---- */
+    .hero { padding: 64px 0 30px; }
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 370px;
-      gap: 26px;
-      align-items: end;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 40px;
+      align-items: center;
     }
-
-    .ascii {
-      display: block;
-      width: 100%;
-      overflow: hidden;
-      color: var(--ink);
-      font-family: var(--mono);
-      font-size: clamp(28px, 4.8vw, 60px);
-      font-weight: 950;
-      line-height: 0.82;
-      white-space: pre;
-    }
-
-    .hero-kicker,
-    .section-kicker,
-    .mini-label {
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
-    .hero-kicker {
-      display: block;
-      margin-top: 10px;
-      color: var(--evidence);
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
-
+    .hero-kicker { display: inline-block; color: var(--evidence); margin-bottom: 18px; }
+    .hero-kicker::before { content: "◆ "; color: var(--crabbox); }
     h1 {
-      max-width: 840px;
-      margin: 22px 0 14px;
-      font-size: clamp(42px, 7vw, 76px);
-      line-height: 0.91;
-      letter-spacing: 0;
+      margin: 0 0 22px;
+      font-family: var(--sans);
+      font-size: clamp(40px, 6.4vw, 82px);
+      font-weight: 800;
+      line-height: 0.96;
+      letter-spacing: -0.035em;
       text-wrap: balance;
     }
-
+    h1 .clause { display: block; transition: color 360ms var(--ease); }
+    h1 .c-agent { color: var(--agent); }
+    h1 .c-crabbox { color: var(--crabbox); }
+    h1 .c-airbyte { color: var(--airbyte); }
+    h1 .c-evidence { color: var(--evidence); }
     .lead {
-      max-width: 780px;
-      margin-bottom: 22px;
+      max-width: 600px;
+      margin: 0 0 28px;
       color: var(--muted);
-      font-size: clamp(18px, 2vw, 23px);
-      line-height: 1.28;
+      font-size: clamp(17px, 1.5vw, 20px);
+      line-height: 1.45;
       text-wrap: pretty;
     }
+    .lead strong { color: var(--ink); font-weight: 700; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
-    .lead strong {
-      color: var(--ink);
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .axiom {
+    /* hero self-drawing loop */
+    .loop-stage {
+      position: relative;
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgb(13 13 13 / 0.82);
-      padding: 16px;
+      border-radius: 18px;
+      background:
+        radial-gradient(420px 340px at 60% 35%, rgb(143 122 255 / 0.10), transparent 70%),
+        rgb(11 13 20 / 0.6);
+      padding: 14px;
+      box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.03), 0 40px 90px rgb(0 0 0 / 0.5);
     }
+    .loop-stage .mini-label { position: absolute; top: 14px; left: 16px; z-index: 3; }
+    .loop-svg { display: block; width: 100%; height: auto; }
+    .loop-edge {
+      fill: none;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      pathLength: 1;
+      animation: draw 0.95s var(--ease) forwards;
+    }
+    .loop-edge.e1 { stroke: var(--agent); animation-delay: 0.25s; }
+    .loop-edge.e2 { stroke: var(--crabbox); animation-delay: 0.7s; }
+    .loop-edge.e3 { stroke: var(--airbyte); animation-delay: 1.15s; }
+    .loop-edge.e4 { stroke: var(--evidence); animation-delay: 1.6s; }
+    .loop-edge.e5 { stroke: var(--evidence); opacity: 0.7; animation-delay: 2.05s; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    .loop-node {
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: pop 0.6s var(--ease) forwards;
+    }
+    .loop-node.n0 { animation-delay: 0.05s; }
+    .loop-node.n1 { animation-delay: 0.45s; }
+    .loop-node.n2 { animation-delay: 0.9s; }
+    .loop-node.n3 { animation-delay: 1.35s; }
+    .loop-node.n4 { animation-delay: 1.8s; }
+    @keyframes pop {
+      from { opacity: 0; transform: scale(0.82); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .loop-node rect, .loop-node circle { stroke: var(--line-strong); stroke-width: 1.5; }
+    .loop-node .lt { fill: var(--ink); font-family: var(--sans); font-weight: 800; font-size: 14px; }
+    .loop-node .ls { fill: var(--muted); font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.04em; }
+    .loop-node.agent rect { fill: #1d1648; }
+    .loop-node.crabbox rect { fill: #3a150b; }
+    .loop-node.worker rect { fill: #06332c; }
+    .loop-node.evidence rect { fill: #45330f; }
+    .loop-node.goal circle { fill: #14151c; }
+    .loop-spark {
+      r: 4.5;
+      fill: var(--evidence);
+      opacity: 0;
+      filter: drop-shadow(0 0 6px var(--evidence));
+      animation: sparkin 0.4s ease 2.5s forwards;
+    }
+    @keyframes sparkin { to { opacity: 1; } }
 
-    .axiom h2 {
-      margin: 14px 0 10px;
-      font-size: 26px;
-      line-height: 1.05;
-      letter-spacing: 0;
+    /* ---- shared section frame ---- */
+    .section {
+      padding: 88px 0;
+      border-top: 1px solid var(--line);
+      scroll-margin-top: 76px;
+      position: relative;
+    }
+    .section-heading { display: grid; max-width: 760px; gap: 12px; margin-bottom: 34px; }
+    .section-heading h2 {
+      margin: 0;
+      font-size: clamp(30px, 4.6vw, 52px);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
       text-wrap: balance;
     }
-
-    .axiom p {
+    .section-heading p {
       margin: 0;
+      max-width: 640px;
       color: var(--muted);
-      font-size: 15px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(18px, 2vw, 22px);
+      line-height: 1.42;
     }
 
-    .axiom-grid {
+    /* scroll reveal */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal.d1 { transition-delay: 0.08s; }
+    .reveal.d2 { transition-delay: 0.16s; }
+    .reveal.d3 { transition-delay: 0.24s; }
+
+    /* ================= THE STAGE (scrollytelling) ================= */
+    .stage { padding: 64px 0 24px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+    .stage-intro { max-width: 760px; margin: 0 auto 8px; text-align: center; }
+    .stage-intro h2 {
+      margin: 12px 0 10px;
+      font-size: clamp(30px, 4.6vw, 52px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.0;
+      text-wrap: balance;
+    }
+    .stage-intro p { margin: 0 auto; max-width: 600px; color: var(--muted); font-family: var(--serif); font-style: italic; font-size: 20px; }
+
+    .stage-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-top: 16px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+      gap: 36px;
+      align-items: start;
     }
 
-    .axiom-cell {
-      min-width: 0;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 10px;
-    }
-
-    .axiom-cell strong {
-      display: block;
-      color: var(--ink);
-      font-family: var(--mono);
-      font-size: 18px;
-      font-variant-numeric: tabular-nums;
-      line-height: 1;
-    }
-
-    .axiom-cell span {
-      display: block;
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .board {
-      padding: 12px 0 46px;
-    }
-
-    .lesson-shell {
+    .stage-canvas {
+      position: sticky;
+      top: 78px;
+      align-self: start;
+      height: min(78vh, 660px);
+      min-height: 460px;
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
       border: 1px solid var(--line-strong);
-      border-radius: var(--radius);
+      border-radius: 14px;
       background: var(--panel);
-      box-shadow: 0 0 0 1px rgb(255 255 255 / 0.04), 0 30px 90px rgb(0 0 0 / 0.45);
+      box-shadow: 0 0 0 1px rgb(255 255 255 / 0.04), 0 40px 100px rgb(0 0 0 / 0.5);
     }
-
-    .lesson-head {
+    .canvas-head {
       display: flex;
-      min-height: 48px;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
+      gap: 12px;
       border-bottom: 1px solid var(--line);
-      background: #080808;
-      padding: 0 14px;
+      background: #070810;
+      padding: 12px 16px;
       color: var(--muted);
       font-family: var(--mono);
-      font-size: 12px;
+      font-size: 11.5px;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
-
-    .lesson-head strong {
-      color: var(--ink);
+    .canvas-head strong { color: var(--ink); }
+    .canvas-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--evidence);
     }
-
-    .lesson-body {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 330px;
-      min-height: 620px;
-    }
-
     .diagram {
       position: relative;
-      min-width: 0;
-      border-right: 1px solid var(--line);
+      flex: 1;
+      min-height: 0;
       background:
-        linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
-      background-size: 28px 28px, 28px 28px;
+        linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px);
+      background-size: 30px 30px, 30px 30px;
     }
-
-    .flow-svg {
-      display: block;
-      width: 100%;
-      height: 100%;
-      min-height: 620px;
-    }
+    .flow-svg { display: block; width: 100%; height: 100%; }
 
     .lane {
       fill: none;
       stroke: var(--line-strong);
-      stroke-width: 4;
+      stroke-width: 3.5;
       stroke-linecap: round;
       stroke-linejoin: round;
-      opacity: 0.16;
-      transition: opacity 180ms ease, stroke-width 180ms ease;
+      opacity: 0.12;
+      transition: opacity 320ms var(--ease), stroke-width 320ms var(--ease);
     }
+    .lane.active { opacity: 1; stroke-width: 5; stroke-dasharray: 11 12; animation: lane-dash 1.1s linear infinite; }
+    .lane.control.active { stroke: var(--agent); }
+    .lane.credential.active { stroke: var(--crabbox); }
+    .lane.data.active { stroke: var(--airbyte); }
+    .lane.evidence.active { stroke: var(--evidence); }
 
-    .lane.active {
-      opacity: 1;
-      stroke-width: 5;
-      stroke-dasharray: 12 12;
-      animation: lane-dash 1.25s linear infinite;
-    }
-
-    .lane.control.active {
-      stroke: var(--agent);
-    }
-
-    .lane.credential.active {
-      stroke: var(--crabbox);
-    }
-
-    .lane.data.active {
-      stroke: var(--airbyte);
-    }
-
-    .lane.evidence.active {
-      stroke: var(--evidence);
-    }
-
-    .node rect,
-    .node circle {
+    .node rect, .node circle {
       stroke: var(--line-strong);
-      stroke-width: 2;
-      transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
+      stroke-width: 1.8;
+      transition: opacity 320ms var(--ease), transform 320ms var(--ease), filter 320ms var(--ease);
     }
-
-    .node text {
-      pointer-events: none;
-    }
-
-    .node .title {
-      fill: var(--ink);
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .node .sub {
-      fill: var(--muted);
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 750;
-    }
-
-    .node:not(.active) {
-      opacity: 0.62;
-    }
-
-    .node.active rect,
-    .node.active circle {
-      filter: drop-shadow(0 0 16px rgb(255 255 255 / 0.22));
+    .node text { pointer-events: none; }
+    .node .title { fill: var(--ink); font-family: var(--sans); font-size: 17px; font-weight: 800; }
+    .node .sub { fill: var(--muted); font-family: var(--mono); font-size: 11px; font-weight: 500; }
+    .node:not(.active) { opacity: 0.5; }
+    .node.active { opacity: 1; }
+    .node.active rect, .node.active circle {
+      filter: drop-shadow(0 0 18px rgb(255 255 255 / 0.26));
       transform: translateY(-2px);
     }
+    .node.agent rect { fill: #1d1648; }
+    .node.crabbox rect { fill: #3a150b; }
+    .node.worker rect { fill: #06332c; }
+    .node.source rect { fill: #0f2748; }
+    .node.target rect { fill: #21330d; }
+    .node.evidence rect { fill: #45330f; }
+    .node.goal circle { fill: #14151c; }
 
-    .node.agent rect {
-      fill: #21184a;
-    }
-
-    .node.crabbox rect {
-      fill: #3d160c;
-    }
-
-    .node.worker rect {
-      fill: #07362f;
-    }
-
-    .node.source rect {
-      fill: #102a4d;
-    }
-
-    .node.target rect {
-      fill: #24380f;
-    }
-
-    .node.evidence rect {
-      fill: #4a3610;
-    }
-
-    .node.goal circle {
-      fill: #171717;
-    }
-
-    .packet {
-      r: 7;
-      opacity: 0;
-      transition: opacity 140ms ease;
-    }
-
-    .packet.active {
-      opacity: 1;
-    }
+    .packet { r: 6.5; opacity: 0; transition: opacity 200ms var(--ease); }
+    .packet.active { opacity: 1; }
 
     .math-note {
       position: absolute;
-      left: 18px;
-      right: 18px;
-      bottom: 18px;
+      left: 16px; right: 16px; bottom: 16px;
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
+      gap: 7px;
       pointer-events: none;
     }
-
     .math-note span {
       min-width: 0;
-      border: 1px solid rgb(255 255 255 / 0.16);
-      border-radius: var(--radius);
-      background: rgb(5 5 5 / 0.72);
+      border: 1px solid rgb(255 255 255 / 0.12);
+      border-radius: 8px;
+      background: rgb(7 8 13 / 0.78);
       color: var(--muted);
       font-family: var(--mono);
-      font-size: 12px;
-      padding: 8px;
+      font-size: 10.5px;
+      letter-spacing: 0.02em;
+      padding: 7px 6px;
       text-align: center;
+      transition: border-color 280ms var(--ease), color 280ms var(--ease), background-color 280ms var(--ease);
     }
+    .math-note span b { color: var(--ink); font-weight: 700; }
+    .math-note span.lit { color: var(--ink); border-color: rgb(255 255 255 / 0.4); background: rgb(255 255 255 / 0.05); }
+    .math-note span.lit.control b { color: var(--agent); }
+    .math-note span.lit.credential b { color: var(--crabbox); }
+    .math-note span.lit.data b { color: var(--airbyte); }
+    .math-note span.lit.evidence b { color: var(--evidence); }
 
-    .math-note b {
-      color: var(--ink);
-      font-weight: 900;
-    }
-
-    .mobile-flow {
-      display: none;
-    }
-
-    .proof-panel {
-      display: grid;
-      min-width: 0;
-      grid-template-rows: auto 1fr auto;
-      background: #0a0a0a;
-    }
-
-    .step-list {
-      display: grid;
-      gap: 8px;
-      border-bottom: 1px solid var(--line);
-      padding: 12px;
-    }
-
-    .step-button {
-      display: grid;
-      grid-template-columns: 38px minmax(0, 1fr);
-      gap: 10px;
-      align-items: center;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 10px;
-      text-align: left;
-      transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, transform 140ms ease;
-    }
-
-    .step-button:hover {
-      border-color: rgb(255 255 255 / 0.46);
-      color: var(--ink);
-    }
-
-    .step-button.is-active {
-      border-color: var(--line-strong);
-      background: var(--paper);
-      color: #050505;
-      transform: translateY(-1px);
-    }
-
-    .step-button span {
-      display: grid;
-      width: 30px;
-      height: 30px;
-      place-items: center;
-      border: 1px solid currentColor;
-      border-radius: 999px;
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 900;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .step-button strong {
-      display: block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .proof-copy {
-      display: grid;
-      align-content: start;
-      gap: 14px;
-      padding: 18px;
-    }
-
-    .proof-copy h2 {
-      margin: 0;
-      font-size: 34px;
-      line-height: 1;
-      letter-spacing: 0;
-      text-wrap: balance;
-    }
-
-    .proof-copy p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 16px;
-      text-wrap: pretty;
-    }
-
-    .io-grid {
-      display: grid;
-      gap: 8px;
-    }
-
-    .io {
-      min-width: 0;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 10px;
-      color: var(--muted);
-    }
-
-    .io strong {
-      display: block;
-      margin-bottom: 4px;
-      color: var(--ink);
-      font-family: var(--mono);
-      font-size: 12px;
-      text-transform: uppercase;
-    }
-
-    .proof-controls {
+    .canvas-controls {
       display: flex;
+      align-items: center;
       gap: 8px;
       border-top: 1px solid var(--line);
-      padding: 12px;
+      padding: 10px 12px;
     }
-
+    .canvas-controls .hint { margin-left: auto; color: var(--muted-2); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; }
     .icon-button {
       display: inline-grid;
-      width: 42px;
-      height: 42px;
+      width: 40px; height: 40px;
       place-items: center;
       border: 1px solid var(--line-strong);
-      border-radius: var(--radius);
+      border-radius: 9px;
       background: var(--ink);
       color: var(--bg);
       cursor: pointer;
       font-weight: 900;
-      transition: transform 140ms ease, background-color 140ms ease;
+      transition: transform 160ms var(--ease), background-color 160ms var(--ease);
     }
+    .icon-button:hover { transform: translateY(-2px); background: var(--evidence); }
 
-    .icon-button:hover {
-      transform: translateY(-1px);
-      background: var(--evidence);
+    /* scrolling rail of scenes */
+    .stage-rail { display: grid; }
+    .scene {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5vh 0;
+      opacity: 0.34;
+      transition: opacity 0.5s var(--ease);
     }
-
-    .section {
-      padding: 54px 0;
-      border-top: 1px solid var(--line);
-      scroll-margin-top: 78px;
-    }
-
-    .section-heading {
-      display: grid;
-      max-width: 780px;
-      gap: 9px;
-      margin-bottom: 18px;
-    }
-
-    .section-heading h2 {
-      margin: 0;
-      font-size: clamp(32px, 5vw, 56px);
-      line-height: 0.98;
-      letter-spacing: 0;
-      text-wrap: balance;
-    }
-
-    .section-heading p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 18px;
-    }
-
-    .replay-lab,
-    .model-lab,
-    .failure-lab,
-    .compare-lab {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
-      gap: 14px;
-      align-items: start;
-    }
-
-    .equation-grid,
-    .ledger,
-    .failure-grid,
-    .rule-grid,
-    .timeline-list {
-      display: grid;
+    .scene.is-active { opacity: 1; }
+    .scene-num {
+      display: inline-flex;
+      align-items: baseline;
       gap: 10px;
-    }
-
-    .equation-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .role-flow {
-      position: relative;
-      counter-reset: role;
-    }
-
-    .role-flow::before {
-      position: absolute;
-      top: 50%;
-      left: 12px;
-      right: 12px;
-      height: 1px;
-      background: linear-gradient(90deg, var(--agent), var(--crabbox), var(--airbyte), var(--evidence));
-      content: "";
-      opacity: 0.42;
-      pointer-events: none;
-      transform: translateY(-50%);
-    }
-
-    .equation-card,
-    .ledger-card,
-    .failure-card,
-    .rule-card {
-      min-width: 0;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgb(13 13 13 / 0.84);
-    }
-
-    .equation-card {
-      position: relative;
-      padding: 14px;
-      overflow: hidden;
-      z-index: 1;
-    }
-
-    .equation-card::after {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      color: rgb(255 255 255 / 0.18);
-      content: attr(data-index);
+      margin-bottom: 14px;
       font-family: var(--mono);
-      font-size: 34px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .scene-num b {
+      font-family: var(--sans);
+      font-size: 46px;
       font-weight: 900;
       line-height: 1;
-      pointer-events: none;
-    }
-
-    button.equation-card,
-    button.failure-card,
-    button.rule-card,
-    .event-button,
-    .design-button {
-      appearance: none;
-      color: inherit;
-      cursor: pointer;
-      font: inherit;
-      text-align: left;
-    }
-
-    button.equation-card:hover,
-    button.failure-card:hover,
-    button.rule-card:hover,
-    .event-button:hover,
-    .design-button:hover {
-      border-color: rgb(255 255 255 / 0.5);
-      transform: translateY(-1px);
-    }
-
-    button.equation-card.is-active,
-    button.failure-card.is-active,
-    button.rule-card.is-active,
-    .event-button.is-active,
-    .design-button.is-active {
-      border-color: var(--line-strong);
-      background: var(--paper);
-      color: #050505;
-    }
-
-    button.equation-card,
-    button.failure-card,
-    button.rule-card,
-    .event-button,
-    .design-button {
-      transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease, transform 140ms ease;
-    }
-
-    .equation-card .mini-label,
-    .ledger-card .mini-label,
-    .failure-card .mini-label,
-    .rule-card .mini-label {
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .equation-card h3 {
-      margin: 0 0 8px;
-      font-size: 20px;
-      letter-spacing: 0;
-    }
-
-    .equation-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .role-io {
-      display: grid;
-      gap: 6px;
-      margin-top: 12px;
-    }
-
-    .role-io span {
-      display: block;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 12px;
-      padding: 7px;
-    }
-
-    .role-io b {
+      letter-spacing: -0.04em;
       color: var(--ink);
-      font-weight: 900;
+      transition: color 0.4s var(--ease);
     }
-
-    button.equation-card.is-active p,
-    button.failure-card.is-active p,
-    button.rule-card.is-active p,
-    .event-button.is-active p,
-    .design-button.is-active p {
-      color: #48443d;
-    }
-
-    button.equation-card.is-active::after {
-      color: rgb(5 5 5 / 0.16);
-    }
-
-    button.equation-card.is-active .role-io span {
-      border-color: rgb(5 5 5 / 0.16);
-      color: #48443d;
-    }
-
-    button.equation-card.is-active .role-io b {
-      color: #050505;
-    }
-
-    button.failure-card.is-active strong,
-    button.rule-card.is-active strong {
-      color: #050505;
-    }
-
-    button.failure-card.is-active h3 {
-      border-bottom-color: #050505;
-      background: #050505;
-      color: var(--paper);
-    }
-
-    button.equation-card.is-active .mini-label,
-    button.rule-card.is-active .mini-label {
-      color: #5c5548;
-    }
-
-    .equation-card.agent {
-      border-color: rgb(143 122 255 / 0.48);
-    }
-
-    .equation-card.crabbox {
-      border-color: rgb(255 106 61 / 0.48);
-    }
-
-    .equation-card.airbyte {
-      border-color: rgb(36 214 189 / 0.48);
-    }
-
-    .equation-card.evidence {
-      border-color: rgb(255 209 102 / 0.48);
-    }
-
-    .ledger {
-      grid-template-columns: repeat(6, minmax(148px, 1fr));
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-
-    .handoff-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      margin-top: 12px;
-      overflow: visible;
-      padding-bottom: 0;
-    }
-
-    .ledger-card {
-      min-width: 148px;
-      overflow: hidden;
-    }
-
-    .handoff-grid .ledger-card {
-      min-width: 0;
-    }
-
-    .ledger-card h3,
-    .failure-card h3,
-    .rule-card h3 {
-      margin: 0;
-      border-bottom: 1px solid var(--line);
-      padding: 10px 12px;
-      font-size: 16px;
-      letter-spacing: 0;
-    }
-
-    .ledger-card p,
-    .failure-card p,
-    .rule-card p {
-      margin: 0;
-      padding: 12px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .detail-panel {
-      min-width: 0;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgb(13 13 13 / 0.84);
-      overflow: hidden;
-    }
-
-    .detail-panel h3 {
-      margin: 0;
-      border-bottom: 1px solid var(--line);
-      padding: 12px;
-      font-size: 22px;
-      line-height: 1.08;
-      letter-spacing: 0;
+    .scene[data-step="plan"].is-active .scene-num b,
+    .scene[data-step="repair"].is-active .scene-num b { color: var(--agent); }
+    .scene[data-step="lease"].is-active .scene-num b { color: var(--crabbox); }
+    .scene[data-step="inject"].is-active .scene-num b { color: var(--crabbox); }
+    .scene[data-step="move"].is-active .scene-num b { color: var(--airbyte); }
+    .scene[data-step="prove"].is-active .scene-num b { color: var(--evidence); }
+    .scene h3 {
+      margin: 0 0 14px;
+      font-size: clamp(26px, 3.2vw, 38px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
       text-wrap: balance;
     }
-
-    .detail-panel > .mini-label {
-      display: block;
-      padding: 12px 12px 0;
-    }
-
-    .detail-panel p {
-      margin: 0;
+    .scene .scene-copy {
+      margin: 0 0 20px;
+      max-width: 460px;
       color: var(--muted);
-      padding: 12px;
+      font-family: var(--serif);
+      font-size: 19px;
+      line-height: 1.5;
     }
-
-    .detail-grid {
-      display: grid;
-      gap: 8px;
-      padding: 0 12px 12px;
-    }
-
-    .detail-line {
-      min-width: 0;
+    .scene-io { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 460px; }
+    .scene-io .io {
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 10px;
-      color: var(--muted);
-      font-size: 14px;
+      border-radius: 10px;
+      background: rgb(13 15 23 / 0.7);
+      padding: 11px 12px;
     }
-
-    .detail-line strong {
+    .scene-io .io strong {
       display: block;
-      margin-bottom: 4px;
-      color: var(--ink);
+      margin-bottom: 5px;
+      color: var(--muted);
       font-family: var(--mono);
-      font-size: 12px;
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
+    .scene-io .io span { color: var(--ink); font-size: 13.5px; }
 
-    .detail-panel.is-good {
-      border-color: rgb(36 214 189 / 0.45);
-    }
-
-    .detail-panel.is-bad {
-      border-color: rgb(255 77 109 / 0.55);
-    }
-
-    .spec-anatomy {
-      align-content: start;
-    }
-
-    .spec-map {
+    /* ---- generic interactive widgets (replay/model/command/failure) ---- */
+    .lab-grid {
       display: grid;
-      gap: 8px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgb(13 13 13 / 0.84);
-      padding: 12px;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
+      align-items: start;
     }
-
-    .spec-map .mini-label {
-      margin-bottom: 0;
-    }
-
-    .spec-pipe {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 7px;
-    }
-
-    .spec-pipe span {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 12px;
-      padding: 8px;
-      text-align: center;
-    }
-
-    .spec-pipe b {
-      display: block;
-      color: var(--ink);
-      font-family: var(--sans);
-      font-size: 13px;
-      margin-bottom: 2px;
-    }
-
-    .rule-card {
-      display: block;
-    }
-
-    .rule-card h3 {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .rule-card h3 span {
-      color: var(--evidence);
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    button.rule-card.is-active h3 span {
-      color: var(--paper);
-    }
-
-    .triage-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .failure-card {
-      overflow: hidden;
-    }
-
-    .failure-card .failure-meta {
-      display: block;
-      color: var(--evidence);
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 900;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-    }
-
-    button.failure-card.is-active .failure-meta {
-      color: #5c5548;
-    }
-
-    .failure-equation {
-      display: grid;
-      gap: 8px;
-      grid-template-columns: 1fr auto 1fr auto 1fr;
-      align-items: stretch;
-      padding: 0 12px 12px;
-    }
-
-    .failure-equation span,
-    .failure-equation b {
-      display: grid;
-      min-width: 0;
-      place-items: center;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      color: var(--muted);
-      font-size: 13px;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .failure-equation b {
-      color: var(--evidence);
-      font-family: var(--mono);
-      font-weight: 900;
-    }
-
+    .timeline-list { display: grid; gap: 10px; }
     .event-button {
       display: grid;
-      grid-template-columns: 74px minmax(0, 1fr);
-      gap: 12px;
+      grid-template-columns: 70px minmax(0, 1fr);
+      gap: 14px;
       align-items: start;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: rgb(13 13 13 / 0.84);
-      padding: 12px;
+      background: rgb(13 15 23 / 0.8);
+      padding: 14px;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      transition: border-color 180ms var(--ease), background-color 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease);
     }
-
+    .event-button:hover { border-color: rgb(255 255 255 / 0.42); transform: translateY(-2px); }
+    .event-button.is-active { border-color: var(--line-strong); background: var(--paper); color: #06070c; }
     .event-button span {
       color: var(--evidence);
       font-family: var(--mono);
       font-size: 12px;
       font-variant-numeric: tabular-nums;
-      font-weight: 800;
-      text-transform: uppercase;
+      font-weight: 700;
     }
+    .event-button.is-active span { color: #6a5418; }
+    .event-button strong { display: block; margin-bottom: 4px; font-size: 16px; font-weight: 800; }
+    .event-button p { margin: 0; color: var(--muted); font-size: 14px; }
+    .event-button.is-active p { color: #4b473c; }
 
-    .event-button strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 16px;
+    .detail-panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgb(13 15 23 / 0.84);
+      overflow: hidden;
     }
-
-    .event-button p {
+    .detail-panel > .mini-label { display: block; padding: 14px 14px 0; }
+    .detail-panel h3 {
       margin: 0;
+      padding: 6px 14px 12px;
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      text-wrap: balance;
+    }
+    .detail-panel > p {
+      margin: 0;
+      padding: 0 14px 14px;
+      color: var(--muted);
+      font-family: var(--serif);
+      font-size: 16.5px;
+      line-height: 1.45;
+    }
+    .detail-grid { display: grid; gap: 9px; padding: 0 14px 14px; }
+    .detail-line {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 11px;
       color: var(--muted);
       font-size: 14px;
     }
-
-    .event-button.is-active span,
-    .event-button.is-active .mini-label {
-      color: #5c5548;
+    .detail-line strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
     }
+    .detail-panel.is-good { border-color: rgb(36 214 189 / 0.45); }
+    .detail-panel.is-bad { border-color: rgb(255 77 109 / 0.5); }
 
-    .compare-lab {
-      margin-top: 14px;
-    }
-
-    .design-toggle {
+    /* replay live metrics */
+    .metric-strip {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      padding: 0 14px 14px;
     }
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 10px;
+      text-align: left;
+    }
+    .metric b {
+      display: block;
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.01em;
+      color: var(--evidence);
+      line-height: 1;
+    }
+    .metric span { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; }
 
+    /* model section */
+    .equation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .equation-card {
+      position: relative;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgb(13 15 23 / 0.84);
+      padding: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      transition: border-color 180ms var(--ease), background-color 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease);
+    }
+    .equation-card::after {
+      position: absolute;
+      top: 14px; right: 16px;
+      content: attr(data-index);
+      font-family: var(--mono);
+      font-size: 30px;
+      font-weight: 700;
+      color: rgb(255 255 255 / 0.14);
+      pointer-events: none;
+    }
+    .equation-card:hover { border-color: rgb(255 255 255 / 0.46); transform: translateY(-2px); }
+    .equation-card.is-active { background: var(--paper); color: #06070c; border-color: var(--line-strong); }
+    .equation-card.is-active::after { color: rgb(6 7 12 / 0.14); }
+    .equation-card.agent { border-color: rgb(143 122 255 / 0.42); }
+    .equation-card.crabbox { border-color: rgb(255 106 61 / 0.42); }
+    .equation-card.airbyte { border-color: rgb(36 214 189 / 0.42); }
+    .equation-card.evidence { border-color: rgb(255 209 102 / 0.42); }
+    .equation-card .mini-label { display: block; margin-bottom: 10px; }
+    .equation-card.is-active .mini-label { color: #6a6555; }
+    .equation-card h3 { margin: 0 0 8px; font-size: 21px; font-weight: 800; letter-spacing: -0.02em; }
+    .equation-card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .equation-card.is-active p { color: #4b473c; }
+    .role-io { display: grid; gap: 6px; margin-top: 13px; }
+    .role-io span {
+      display: block;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      padding: 8px;
+    }
+    .role-io b { color: var(--ink); font-weight: 700; }
+    .equation-card.is-active .role-io span { border-color: rgb(6 7 12 / 0.16); color: #4b473c; }
+    .equation-card.is-active .role-io b { color: #06070c; }
+
+    .ledger { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+    .ledger-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgb(13 15 23 / 0.84);
+      overflow: hidden;
+    }
+    .ledger-card h3 {
+      margin: 0;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .ledger-card p { margin: 0; padding: 13px 14px; color: var(--muted); font-size: 14px; }
+
+    .compare-lab { display: grid; grid-template-columns: minmax(0,1fr) 360px; gap: 18px; align-items: start; margin-top: 18px; }
+    .design-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .design-button {
       min-width: 0;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: rgb(13 13 13 / 0.84);
-      padding: 14px;
+      background: rgb(13 15 23 / 0.84);
+      padding: 16px;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      transition: border-color 180ms var(--ease), background-color 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease);
     }
+    .design-button:hover { border-color: rgb(255 255 255 / 0.46); transform: translateY(-2px); }
+    .design-button.is-active { background: var(--paper); color: #06070c; border-color: var(--line-strong); }
+    .design-button .mini-label { display: block; margin-bottom: 8px; }
+    .design-button.is-active .mini-label { color: #6a6555; }
+    .design-button strong { display: block; margin-bottom: 7px; font-size: 19px; font-weight: 800; letter-spacing: -0.02em; }
+    .design-button p { margin: 0; color: var(--muted); font-size: 14px; }
+    .design-button.is-active p { color: #4b473c; }
 
-    .design-button strong {
-      display: block;
-      margin-bottom: 7px;
-      font-size: 20px;
-    }
-
-    .design-button p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .command-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 330px;
-      gap: 14px;
-      align-items: start;
-    }
-
-    .command-layout > * {
-      min-width: 0;
-    }
-
-    .terminal-card {
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid var(--line-strong);
-      border-radius: var(--radius);
-      background: #090909;
-    }
-
+    /* command section */
+    .command-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
+    .command-layout > * { min-width: 0; }
+    .terminal-card { min-width: 0; overflow: hidden; border: 1px solid var(--line-strong); border-radius: var(--radius); background: #06070d; box-shadow: 0 30px 80px rgb(0 0 0 / 0.45); }
     .terminal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
       border-bottom: 1px solid var(--line);
-      background: #111111;
-      padding: 12px;
+      background: #0c0e16;
+      padding: 13px 14px;
       color: var(--muted);
       font-family: var(--mono);
-      font-size: 12px;
+      font-size: 11.5px;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
     }
-
+    .terminal-dots { display: inline-flex; gap: 6px; margin-right: 8px; }
+    .terminal-dots i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .terminal-dots i:nth-child(1){ background: var(--danger); }
+    .terminal-dots i:nth-child(2){ background: var(--evidence); }
+    .terminal-dots i:nth-child(3){ background: var(--airbyte); }
     .copy-button {
       border: 1px solid var(--line-strong);
-      border-radius: var(--radius);
+      border-radius: 8px;
       background: var(--evidence);
-      color: #050505;
+      color: #06070c;
       cursor: pointer;
-      font-weight: 850;
-      padding: 6px 10px;
-      transition: transform 140ms ease, background-color 140ms ease;
-    }
-
-    .copy-button:hover {
-      transform: translateY(-1px);
-      background: var(--ink);
-    }
-
-    .terminal {
-      max-width: 100%;
-      margin: 0;
-      overflow: auto;
-      padding: 18px;
-      color: #f5f0dd;
-      font-size: 13px;
-      line-height: 1.62;
-      white-space: pre;
-    }
-
-    .comment {
-      color: var(--evidence);
-    }
-
-    .rule-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .failure-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .failure-card h3 {
-      background: #121212;
-      color: var(--ink);
-      font-family: var(--mono);
-      font-size: 13px;
-      text-transform: uppercase;
-    }
-
-    .failure-card strong,
-    .rule-card strong {
-      color: var(--ink);
-      font-weight: 850;
-    }
-
-    .final-band {
-      border-top: 1px solid var(--line);
-      padding: 50px 0 62px;
-    }
-
-    .final-card {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 18px;
-      align-items: center;
-      border: 1px solid var(--line-strong);
-      border-radius: var(--radius);
-      background: var(--paper);
-      color: #050505;
-      padding: 18px;
-    }
-
-    .final-card h2 {
-      margin: 0 0 6px;
-      font-size: clamp(30px, 5vw, 52px);
-      line-height: 0.98;
-      letter-spacing: 0;
-    }
-
-    .final-card p {
-      margin: 0;
-      color: #48443d;
-      font-size: 17px;
-    }
-
-    .final-card .button {
-      border-color: #050505;
-      background: #050505;
-      color: var(--paper);
-    }
-
-    .final-card .button:hover {
-      background: var(--evidence);
-      color: #050505;
-    }
-
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 24px 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .footer-inner {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 14px;
-      color: var(--ink);
       font-weight: 800;
+      padding: 7px 12px;
+      transition: transform 160ms var(--ease), background-color 160ms var(--ease);
     }
+    .copy-button:hover { transform: translateY(-2px); background: var(--ink); }
+    .terminal { max-width: 100%; margin: 0; overflow: auto; padding: 18px; color: #eee7cf; font-size: 12.5px; line-height: 1.7; white-space: pre; }
+    .comment { color: var(--evidence); }
+    .terminal .k { color: var(--airbyte); }
+    .terminal .s { color: var(--target); }
 
-    @keyframes lane-dash {
-      to {
-        stroke-dashoffset: -24;
-      }
+    .rule-grid { display: grid; gap: 12px; }
+    .spec-map { border: 1px solid var(--line); border-radius: var(--radius); background: rgb(13 15 23 / 0.84); padding: 14px; }
+    .spec-map .mini-label { display: block; margin-bottom: 10px; }
+    .spec-pipe { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+    .spec-pipe span {
+      border: 1px solid var(--line); border-radius: 8px; color: var(--muted);
+      font-family: var(--mono); font-size: 11px; padding: 9px 6px; text-align: center;
     }
+    .spec-pipe b { display: block; color: var(--ink); font-family: var(--sans); font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+    .rule-card {
+      display: block; width: 100%;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: rgb(13 15 23 / 0.84); cursor: pointer; text-align: left; color: inherit; overflow: hidden;
+      transition: border-color 180ms var(--ease), background-color 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease);
+    }
+    .rule-card:hover { border-color: rgb(255 255 255 / 0.46); transform: translateY(-2px); }
+    .rule-card.is-active { background: var(--paper); color: #06070c; border-color: var(--line-strong); }
+    .rule-card h3 {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      margin: 0; border-bottom: 1px solid var(--line); padding: 11px 14px;
+      font-size: 16px; font-weight: 800; letter-spacing: -0.01em;
+    }
+    .rule-card h3 span { color: var(--evidence); font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .rule-card.is-active h3 span { color: #6a5418; }
+    .rule-card p { margin: 0; padding: 13px 14px; color: var(--muted); font-size: 14px; }
+    .rule-card.is-active p { color: #4b473c; }
+    .rule-card strong { color: var(--ink); font-weight: 800; }
+    .rule-card.is-active strong { color: #06070c; }
 
+    /* failure section */
+    .failure-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .failure-card {
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: rgb(13 15 23 / 0.84); cursor: pointer; text-align: left; color: inherit; overflow: hidden;
+      transition: border-color 180ms var(--ease), background-color 180ms var(--ease), color 180ms var(--ease), transform 180ms var(--ease);
+    }
+    .failure-card:hover { border-color: rgb(255 255 255 / 0.46); transform: translateY(-2px); }
+    .failure-card.is-active { background: var(--paper); color: #06070c; border-color: var(--line-strong); }
+    .failure-card h3 {
+      margin: 0; border-bottom: 1px solid var(--line);
+      background: #11131b; padding: 10px 14px;
+      font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .failure-card.is-active h3 { background: #06070c; color: var(--paper); border-bottom-color: #06070c; }
+    .failure-card p { margin: 0; padding: 13px 14px; color: var(--muted); font-size: 14px; }
+    .failure-card.is-active p { color: #4b473c; }
+    .failure-card .failure-meta {
+      display: block; margin-bottom: 6px; color: var(--evidence);
+      font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .failure-card.is-active .failure-meta { color: #6a5418; }
+    .failure-card strong { color: var(--ink); font-weight: 800; }
+    .failure-card.is-active strong { color: #06070c; }
+    .failure-equation {
+      display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 9px; align-items: stretch;
+      padding: 0 14px 14px;
+    }
+    .failure-equation span, .failure-equation b {
+      display: grid; min-width: 0; place-items: center;
+      border: 1px solid var(--line); border-radius: 9px; color: var(--muted);
+      font-size: 13px; padding: 11px 8px; text-align: center;
+    }
+    .failure-equation b { color: var(--evidence); font-family: var(--mono); font-weight: 700; border: 0; }
+
+    /* final loop */
+    .final-band { border-top: 1px solid var(--line); padding: 90px 0 110px; }
+    .final-card {
+      display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+      border: 1px solid var(--line-strong); border-radius: 16px;
+      background: var(--paper); color: #06070c; padding: 30px;
+      box-shadow: 0 40px 100px rgb(0 0 0 / 0.5);
+    }
+    .final-card h2 { margin: 0 0 10px; font-size: clamp(28px, 4.4vw, 48px); font-weight: 800; line-height: 1.0; letter-spacing: -0.03em; }
+    .final-card p { margin: 0; color: #4b473c; font-family: var(--serif); font-size: 18px; line-height: 1.45; max-width: 620px; }
+    .final-card .closer { margin-top: 14px; font-family: var(--mono); font-size: 13px; color: #6a5418; }
+    .final-card .closer b { color: #06070c; }
+    .final-card .button { border-color: #06070c; background: #06070c; color: var(--paper); }
+    .final-card .button:hover { background: var(--crabbox); color: #06070c; box-shadow: 0 12px 30px rgb(255 106 61 / 0.3); }
+
+    footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted); font-size: 13px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+    .footer-links { display: flex; gap: 16px; color: var(--ink); font-weight: 700; }
+    .footer-links a:hover { color: var(--evidence); }
+
+    @keyframes lane-dash { to { stroke-dashoffset: -23; } }
+
+    /* ---- reduced motion ---- */
     @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      .lane.active {
-        animation: none;
-      }
-
-      .packet {
-        display: none;
-      }
-
-      .button,
-      .icon-button,
-      .copy-button,
-      .step-button,
-      button.equation-card,
-      button.failure-card,
-      button.rule-card,
-      .event-button,
-      .design-button,
-      .nav-links a {
-        transition: none;
-      }
+      html { scroll-behavior: auto; }
+      .lane.active { animation: none; }
+      .packet { display: none; }
+      .loop-edge { stroke-dashoffset: 0; animation: none; }
+      .loop-node { opacity: 1; transform: none; animation: none; }
+      .loop-spark { opacity: 1; animation: none; }
+      .brand-mark span { animation: none; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .button, .icon-button, .copy-button, .event-button, .equation-card,
+      .design-button, .rule-card, .failure-card, .nav-links a, .nav-links a::after { transition: none; }
     }
 
+    /* ---- responsive ---- */
     @media (max-width: 980px) {
-      .hero-grid,
-      .lesson-body,
-      .command-layout,
-      .replay-lab,
-      .model-lab,
-      .failure-lab,
-      .compare-lab,
-      .final-card {
-        grid-template-columns: 1fr;
-      }
-
-      .axiom {
-        max-width: 560px;
-      }
-
-      .diagram {
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .flow-svg {
-        min-height: 520px;
-      }
-
-      .math-note {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .equation-grid,
-      .failure-grid,
-      .handoff-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .role-flow::before {
-        display: none;
-      }
+      .hero-grid { grid-template-columns: 1fr; gap: 30px; }
+      .loop-stage { max-width: 480px; }
+      .stage-grid { grid-template-columns: 1fr; gap: 8px; }
+      .stage-canvas { position: sticky; top: 66px; height: min(56vh, 440px); min-height: 360px; }
+      .scene { min-height: 52vh; }
+      .lab-grid, .compare-lab, .command-layout, .final-card { grid-template-columns: 1fr; }
+      .equation-grid, .ledger, .failure-grid, .design-toggle { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .final-card { gap: 18px; }
     }
 
-    @media (max-width: 720px) {
-      .nav-inner,
-      .wrap {
-        width: min(var(--max), calc(100% - 28px));
-      }
-
-      .nav-links {
-        display: none;
-      }
-
-      .hero {
-        padding-top: 38px;
-      }
-
-      .ascii {
-        font-size: clamp(26px, 10vw, 42px);
-      }
-
-      h1 {
-        margin-top: 22px;
-      }
-
-      .hero-actions {
-        display: grid;
-      }
-
-      .axiom-grid,
-      .equation-grid,
-      .failure-grid,
-      .handoff-grid,
-      .spec-pipe,
-      .design-toggle,
-      .math-note {
-        grid-template-columns: 1fr;
-      }
-
-      .event-button {
-        grid-template-columns: 1fr;
-      }
-
-      .failure-equation {
-        grid-template-columns: 1fr;
-      }
-
-      .failure-equation b {
-        min-height: 28px;
-      }
-
-      .lesson-head {
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 12px;
-      }
-
-      .flow-svg,
-      .math-note {
-        display: none;
-      }
-
-      .mobile-flow {
-        display: grid;
-        gap: 8px;
-        padding: 14px;
-      }
-
-      .mobile-node {
-        border: 1px solid var(--line-strong);
-        border-radius: var(--radius);
-        padding: 12px;
-      }
-
-      .mobile-node strong {
-        display: block;
-        margin-bottom: 4px;
-      }
-
-      .mobile-node span {
-        display: block;
-        color: var(--muted);
-        font-size: 14px;
-      }
-
-      .mobile-node.agent {
-        background: #21184a;
-      }
-
-      .mobile-node.crabbox {
-        background: #3d160c;
-      }
-
-      .mobile-node.worker {
-        background: #07362f;
-      }
-
-      .mobile-node.evidence {
-        background: #4a3610;
-      }
-
-      .mobile-arrow {
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 12px;
-        padding-left: 10px;
-      }
-
-      .step-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .step-button {
-        grid-template-columns: 1fr;
-      }
-
-      .proof-copy h2 {
-        font-size: 30px;
-      }
-
-      .section {
-        padding: 42px 0;
-      }
-
-      .terminal-head {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .terminal {
-        padding: 16px 14px;
-        font-size: 12px;
-      }
-
-      .final-card {
-        align-items: start;
-      }
-
-      .footer-inner {
-        flex-direction: column;
-      }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero { padding-top: 44px; }
+      .hero-actions { display: grid; }
+      .equation-grid, .ledger, .failure-grid, .design-toggle, .spec-pipe, .scene-io, .metric-strip { grid-template-columns: 1fr; }
+      .math-note { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .failure-equation { grid-template-columns: 1fr; }
+      .failure-equation b { min-height: 26px; }
+      .event-button { grid-template-columns: 1fr; gap: 6px; }
+      .section { padding: 64px 0; }
+      .final-card { padding: 22px; }
+      .terminal-head { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -1538,68 +958,133 @@
     <div class="nav-inner">
       <a class="brand" href="#top" aria-label="Agentic Airbyte home">
         <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
-        <span class="brand-text">agentic-airbyte</span>
+        <span class="brand-text">agentic&middot;airbyte</span>
       </a>
       <div class="nav-links">
-        <a href="#board">Board</a>
+        <a href="#stage">Flow</a>
         <a href="#replay">Replay</a>
         <a href="#model">Model</a>
         <a href="#command">Command</a>
         <a href="#failure">Failure</a>
       </div>
-      <a class="button" href="#board">Watch Flow</a>
+      <a class="button" href="#stage">Watch the flow</a>
     </div>
+    <div class="scroll-thread" id="scroll-thread" aria-hidden="true"></div>
   </nav>
 
   <header id="top" class="hero">
     <div class="wrap hero-grid">
       <div>
-        <span class="ascii" aria-hidden="true">AIRBYTE
-   x
-CRABBOX</span>
-        <span class="hero-kicker">bounded ETL loop</span>
-        <h1>Agent plans. Crabbox runs. Airbyte moves. Evidence decides.</h1>
+        <span class="hero-kicker">a bounded ETL loop, drawn</span>
+        <h1>
+          <span class="clause c-agent">Agent plans.</span>
+          <span class="clause c-crabbox">Crabbox runs.</span>
+          <span class="clause c-airbyte">Airbyte moves.</span>
+          <span class="clause c-evidence">Evidence decides.</span>
+        </h1>
         <p class="lead">
           The harness can be <strong>Claude Code, Codex, OpenCode, or another AI coding agent</strong>.
-          It writes a bounded job spec. Crabbox leases the worker. Airbyte moves rows. Evidence tells the agent what to do next.
+          It writes a bounded job spec. Crabbox leases the worker. Airbyte moves the rows.
+          Evidence tells the agent what to do next &mdash; and the loop closes.
         </p>
         <div class="hero-actions">
-          <a class="button" href="#board">Watch The Flow</a>
-          <a class="button secondary" href="#command">Copy The Job</a>
+          <a class="button" href="#stage">Watch the flow &darr;</a>
+          <a class="button secondary" href="#command">Copy the job</a>
         </div>
       </div>
 
-      <aside class="axiom" aria-label="Core invariant">
-        <span class="mini-label">the invariant</span>
-        <h2>Keep agency, execution, data, and evidence in separate lanes.</h2>
-        <p>The agent may choose a profile and a run spec. It must not become the data pipe, secret store, or artifact sanitizer.</p>
-        <div class="axiom-grid" aria-label="Boundary facts">
-          <div class="axiom-cell"><strong>0</strong><span>prod rows through the agent</span></div>
-          <div class="axiom-cell"><strong>1</strong><span>run id for every attempt</span></div>
-          <div class="axiom-cell"><strong>4</strong><span>lanes to keep separate</span></div>
-          <div class="axiom-cell"><strong>6</strong><span>failure classes with owners</span></div>
-        </div>
-      </aside>
+      <div class="loop-stage" aria-label="The execution loop">
+        <span class="mini-label">the loop</span>
+        <svg class="loop-svg" viewBox="0 0 380 330" role="img" aria-labelledby="loop-title loop-desc">
+          <title id="loop-title">The agentic data-movement loop</title>
+          <desc id="loop-desc">A goal enters the AI harness, the harness calls Crabbox, Crabbox runs an Airbyte worker, the worker returns evidence, and evidence flows back to the harness to close the loop.</desc>
+          <defs>
+            <marker id="loop-arrow" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
+              <path d="M1 1 L8 5 L1 9 Z" fill="#f3efe2"></path>
+            </marker>
+            <path id="lp1" d="M70 78 C112 70 134 66 168 66"></path>
+            <path id="lp4" d="M150 250 C120 256 96 250 78 226"></path>
+          </defs>
+
+          <!-- edges -->
+          <path class="loop-edge e1" d="M70 78 C112 70 134 66 168 66" marker-end="url(#loop-arrow)"></path>
+          <path class="loop-edge e2" d="M286 92 C312 124 314 152 300 184" marker-end="url(#loop-arrow)"></path>
+          <path class="loop-edge e3" d="M276 238 C250 256 226 258 204 256" marker-end="url(#loop-arrow)"></path>
+          <path class="loop-edge e4" d="M150 250 C120 256 96 250 78 226" marker-end="url(#loop-arrow)"></path>
+          <path class="loop-edge e5" d="M60 196 C44 156 50 116 66 92" marker-end="url(#loop-arrow)"></path>
+
+          <!-- circulating spark on the closed loop -->
+          <circle class="loop-spark" aria-hidden="true">
+            <animateMotion dur="5.2s" repeatCount="indefinite" begin="2.5s" rotate="auto"
+              path="M70 78 C112 70 134 66 168 66 L240 66 C300 80 314 130 300 184 C292 220 250 256 204 256 L150 250 C110 258 70 234 60 196 C50 150 50 116 66 92 Z"></animateMotion>
+          </circle>
+
+          <!-- nodes (outer g positions, inner g animates — keeps the translate intact) -->
+          <g transform="translate(18 50)">
+            <g class="loop-node goal n0">
+              <circle cx="30" cy="30" r="30"></circle>
+              <text class="lt" x="14" y="28">Goal</text>
+              <text class="ls" x="11" y="44">policy</text>
+            </g>
+          </g>
+          <g transform="translate(168 36)">
+            <g class="loop-node agent n1">
+              <rect width="120" height="60" rx="11"></rect>
+              <text class="lt" x="16" y="28">AI harness</text>
+              <text class="ls" x="16" y="46">writes the spec</text>
+            </g>
+          </g>
+          <g transform="translate(266 170)">
+            <g class="loop-node crabbox n2">
+              <rect width="104" height="58" rx="11"></rect>
+              <text class="lt" x="15" y="26">Crabbox</text>
+              <text class="ls" x="15" y="44">lease + run</text>
+            </g>
+          </g>
+          <g transform="translate(118 224)">
+            <g class="loop-node worker n3">
+              <rect width="118" height="60" rx="11"></rect>
+              <text class="lt" x="15" y="27">Worker</text>
+              <text class="ls" x="15" y="45">Airbyte moves</text>
+            </g>
+          </g>
+          <g transform="translate(8 168)">
+            <g class="loop-node evidence n4">
+              <rect width="108" height="58" rx="11"></rect>
+              <text class="lt" x="15" y="26">Evidence</text>
+              <text class="ls" x="15" y="44">logs + JUnit</text>
+            </g>
+          </g>
+        </svg>
+      </div>
     </div>
   </header>
 
   <main id="main">
-    <section id="board" class="board">
-      <div class="wrap">
-        <div class="lesson-shell" aria-label="Interactive execution flow">
-          <div class="lesson-head">
-            <span><strong>Flow Board</strong> / intent becomes evidence</span>
-            <span id="mode-label">step 1 / plan</span>
-          </div>
 
-          <div class="lesson-body">
+    <!-- =================== THE STAGE =================== -->
+    <section id="stage" class="stage">
+      <div class="wrap">
+        <div class="stage-intro reveal">
+          <span class="section-kicker">the flow board</span>
+          <h2>Intent becomes evidence, one boundary at a time.</h2>
+          <p>Scroll. The diagram is the lecture &mdash; each step lights its own lane while you read what happens and who owns it.</p>
+        </div>
+
+        <div class="stage-grid">
+          <!-- pinned canvas -->
+          <div class="stage-canvas">
+            <div class="canvas-head">
+              <span><strong>Flow board</strong> &middot; six boundaries</span>
+              <span class="canvas-step"><span id="canvas-step-num">1 / 6</span> &middot; <span id="canvas-step-name">plan</span></span>
+            </div>
             <div class="diagram">
-              <svg class="flow-svg" viewBox="0 0 760 610" role="img" aria-labelledby="diagram-title diagram-desc">
+              <svg class="flow-svg" viewBox="0 0 760 610" role="img" aria-labelledby="diagram-title diagram-desc" preserveAspectRatio="xMidYMid meet">
                 <title id="diagram-title">Agentic Airbyte execution flow</title>
                 <desc id="diagram-desc">Goal enters the AI harness, the harness calls Crabbox, Crabbox injects a credential profile into a worker, Airbyte moves data from source to target, and evidence returns to the harness.</desc>
                 <defs>
                   <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-                    <path d="M2 2 L10 6 L2 10 Z" fill="#f7f4e8"></path>
+                    <path d="M2 2 L10 6 L2 10 Z" fill="#f3efe2"></path>
                   </marker>
                   <path id="path-plan" d="M134 108 C178 108 204 108 246 108"></path>
                   <path id="path-lease" d="M414 108 C464 108 486 108 532 108"></path>
@@ -1632,104 +1117,136 @@ CRABBOX</span>
                   <text class="sub" x="15" y="62">policy</text>
                 </g>
                 <g class="node agent" data-node="plan lease prove repair" transform="translate(246 62)">
-                  <rect width="168" height="96" rx="8"></rect>
+                  <rect width="168" height="96" rx="10"></rect>
                   <text class="title" x="18" y="38">AI harness</text>
                   <text class="sub" x="18" y="64">writes spec</text>
                   <text class="sub" x="18" y="82">chooses next action</text>
                 </g>
                 <g class="node crabbox" data-node="lease inject prove" transform="translate(532 62)">
-                  <rect width="152" height="96" rx="8"></rect>
+                  <rect width="152" height="96" rx="10"></rect>
                   <text class="title" x="18" y="38">Crabbox</text>
                   <text class="sub" x="18" y="64">lease + run</text>
                   <text class="sub" x="18" y="82">collect artifacts</text>
                 </g>
                 <g class="node crabbox" data-node="inject" transform="translate(248 246)">
-                  <rect width="142" height="84" rx="8"></rect>
+                  <rect width="142" height="84" rx="10"></rect>
                   <text class="title" x="18" y="36">Profile</text>
                   <text class="sub" x="18" y="62">scoped env</text>
                 </g>
                 <g class="node worker" data-node="lease inject move prove" transform="translate(548 250)">
-                  <rect width="150" height="104" rx="8"></rect>
+                  <rect width="150" height="104" rx="10"></rect>
                   <text class="title" x="18" y="38">Worker</text>
                   <text class="sub" x="18" y="66">repo + env</text>
                   <text class="sub" x="18" y="84">Airbyte runs</text>
                 </g>
                 <g class="node source" data-node="move" transform="translate(70 420)">
-                  <rect width="132" height="86" rx="8"></rect>
+                  <rect width="132" height="86" rx="10"></rect>
                   <text class="title" x="18" y="34">Source</text>
                   <text class="sub" x="18" y="60">API / DB</text>
                 </g>
                 <g class="node evidence" data-node="prove repair" transform="translate(306 442)">
-                  <rect width="170" height="96" rx="8"></rect>
+                  <rect width="170" height="96" rx="10"></rect>
                   <text class="title" x="18" y="38">Evidence</text>
                   <text class="sub" x="18" y="66">logs / JUnit</text>
                   <text class="sub" x="18" y="84">metrics / config</text>
                 </g>
                 <g class="node target" data-node="move" transform="translate(596 420)">
-                  <rect width="128" height="86" rx="8"></rect>
+                  <rect width="128" height="86" rx="10"></rect>
                   <text class="title" x="18" y="34">Target</text>
                   <text class="sub" x="18" y="60">warehouse</text>
                 </g>
               </svg>
 
-              <div class="mobile-flow" aria-label="Mobile execution flow">
-                <div class="mobile-node agent"><strong>AI Harness</strong><span>Reads goal and writes a bounded spec.</span></div>
-                <div class="mobile-arrow">calls Crabbox -></div>
-                <div class="mobile-node crabbox"><strong>Crabbox</strong><span>Leases a worker and injects the named profile.</span></div>
-                <div class="mobile-arrow">runs command -></div>
-                <div class="mobile-node worker"><strong>Worker + Airbyte</strong><span>Reads source and writes target. Agent never sees rows.</span></div>
-                <div class="mobile-arrow">returns evidence -></div>
-                <div class="mobile-node evidence"><strong>Evidence</strong><span>Logs, metrics, JUnit, redacted config.</span></div>
-              </div>
-
               <div class="math-note" aria-hidden="true">
-                <span><b>control</b> = intent + command</span>
-                <span><b>credentials</b> = profile -> env</span>
-                <span><b>data</b> = source -> target</span>
-                <span><b>evidence</b> = artifacts -> decision</span>
+                <span data-note="control"><b>control</b> intent + command</span>
+                <span data-note="credential"><b>credentials</b> profile &rarr; env</span>
+                <span data-note="data"><b>data</b> source &rarr; target</span>
+                <span data-note="evidence"><b>evidence</b> artifacts &rarr; decision</span>
               </div>
             </div>
+            <div class="canvas-controls">
+              <button class="icon-button" type="button" data-prev aria-label="Previous step">&#8593;</button>
+              <button class="icon-button" type="button" data-next aria-label="Next step">&#8595;</button>
+              <span class="hint">scroll, or step through</span>
+            </div>
+          </div>
 
-            <aside class="proof-panel">
-              <div class="step-list" role="tablist" aria-label="Execution steps">
-                <button class="step-button is-active" type="button" data-step="plan"><span>1</span><strong>Plan</strong></button>
-                <button class="step-button" type="button" data-step="lease"><span>2</span><strong>Lease</strong></button>
-                <button class="step-button" type="button" data-step="inject"><span>3</span><strong>Inject</strong></button>
-                <button class="step-button" type="button" data-step="move"><span>4</span><strong>Move</strong></button>
-                <button class="step-button" type="button" data-step="prove"><span>5</span><strong>Prove</strong></button>
-                <button class="step-button" type="button" data-step="repair"><span>6</span><strong>Repair</strong></button>
+          <!-- scrolling rail -->
+          <div class="stage-rail" id="stage-rail">
+            <article class="scene is-active" data-step="plan">
+              <div class="scene-num"><b>01</b> <span>owner &middot; agent</span></div>
+              <h3>The agent compresses intent into a job spec.</h3>
+              <p class="scene-copy">It reads the goal, repo state, schemas, previous evidence, and policy. It emits a bounded run. It does not move data.</p>
+              <div class="scene-io">
+                <div class="io"><strong>Input</strong><span>goal + policy + repo state</span></div>
+                <div class="io"><strong>Output</strong><span>job JSON + Crabbox command</span></div>
               </div>
+            </article>
 
-              <div class="proof-copy" aria-live="polite">
-                <span class="mini-label" id="step-owner">owner: agent</span>
-                <h2 id="step-title">The agent compresses intent into a job spec.</h2>
-                <p id="step-copy">It reads the goal, repo state, schemas, previous evidence, and policy. It emits a bounded run. It does not move data.</p>
-                <div class="io-grid">
-                  <div class="io"><strong>Input</strong><span id="step-input">goal + policy + repo state</span></div>
-                  <div class="io"><strong>Output</strong><span id="step-output">job JSON + Crabbox command</span></div>
-                </div>
+            <article class="scene" data-step="lease">
+              <div class="scene-num"><b>02</b> <span>owner &middot; Crabbox</span></div>
+              <h3>Crabbox creates the execution boundary.</h3>
+              <p class="scene-copy">It finds or creates a ready worker, hydrates the repo, attaches cache, and starts the requested command.</p>
+              <div class="scene-io">
+                <div class="io"><strong>Input</strong><span>pool id + command + artifact rules</span></div>
+                <div class="io"><strong>Output</strong><span>worker lease + run id</span></div>
               </div>
+            </article>
 
-              <div class="proof-controls">
-                <button class="icon-button" type="button" data-prev aria-label="Previous step">&#8592;</button>
-                <button class="icon-button" type="button" data-play aria-label="Play or pause">||</button>
-                <button class="icon-button" type="button" data-next aria-label="Next step">&#8594;</button>
+            <article class="scene" data-step="inject">
+              <div class="scene-num"><b>03</b> <span>owner &middot; profile + Crabbox</span></div>
+              <h3>Credentials enter as scoped environment.</h3>
+              <p class="scene-copy">The prompt carries only a profile name. Crabbox resolves it into allowed variables inside the worker &mdash; never back into the model context.</p>
+              <div class="scene-io">
+                <div class="io"><strong>Input</strong><span>credential_profile + allow_env</span></div>
+                <div class="io"><strong>Output</strong><span>redacted env report + worker env</span></div>
               </div>
-            </aside>
+            </article>
+
+            <article class="scene" data-step="move">
+              <div class="scene-num"><b>04</b> <span>owner &middot; Airbyte</span></div>
+              <h3>Airbyte moves data where the agent cannot see it.</h3>
+              <p class="scene-copy">The connector reads the source and writes the target inside the worker. Rows never pass through the model context.</p>
+              <div class="scene-io">
+                <div class="io"><strong>Input</strong><span>source ref + target ref + connector config</span></div>
+                <div class="io"><strong>Output</strong><span>target writes + sync status</span></div>
+              </div>
+            </article>
+
+            <article class="scene" data-step="prove">
+              <div class="scene-num"><b>05</b> <span>owner &middot; Crabbox + worker</span></div>
+              <h3>The run returns evidence, not guesses.</h3>
+              <p class="scene-copy">Logs, metrics, JUnit, counts, and redacted config all come back under one run id. The decision becomes auditable.</p>
+              <div class="scene-io">
+                <div class="io"><strong>Input</strong><span>exit code + reports + artifacts</span></div>
+                <div class="io"><strong>Output</strong><span>structured evidence bundle</span></div>
+              </div>
+            </article>
+
+            <article class="scene" data-step="repair">
+              <div class="scene-num"><b>06</b> <span>owner &middot; agent</span></div>
+              <h3>The agent repairs from the failing boundary.</h3>
+              <p class="scene-copy">It chooses finish, retry, repair, or alert. The next command changes one bounded input and keeps the same audit shape. Then the loop closes.</p>
+              <div class="scene-io">
+                <div class="io"><strong>Input</strong><span>evidence + failure owner</span></div>
+                <div class="io"><strong>Output</strong><span>finish, retry, repair job, or alert</span></div>
+              </div>
+            </article>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- =================== REPLAY =================== -->
     <section id="replay" class="section">
       <div class="wrap">
-        <div class="section-heading">
+        <div class="section-heading reveal">
           <span class="section-kicker">run replay</span>
           <h2>One job, traced from request to repair.</h2>
-          <p>Click a row. The main flow jumps to the same boundary.</p>
+          <p>Click a moment. The same six boundaries, now with real timings and a real evidence bundle.</p>
         </div>
 
-        <div class="replay-lab">
+        <div class="lab-grid reveal d1">
           <div class="timeline-list" role="tablist" aria-label="Replay one data movement run">
             <button class="event-button is-active" type="button" data-run="request">
               <span>00:00</span>
@@ -1761,6 +1278,11 @@ CRABBOX</span>
             <span class="mini-label" id="run-phase">phase: request</span>
             <h3 id="run-title">Human or schedule gives intent.</h3>
             <p id="run-copy">The input is a business goal, not a connector config dump. The agent still has to choose the run shape.</p>
+            <div class="metric-strip" aria-label="Live run metrics">
+              <div class="metric"><b data-count="0" id="m-rows">0</b><span>rows moved</span></div>
+              <div class="metric"><b id="m-checks">&mdash;</b><span>checks passed</span></div>
+              <div class="metric"><b id="m-runid">&mdash;</b><span>run id</span></div>
+            </div>
             <div class="detail-grid">
               <div class="detail-line"><strong>Owner</strong><span id="run-owner">human / schedule</span></div>
               <div class="detail-line"><strong>Input</strong><span id="run-input">goal + deadline + policy</span></div>
@@ -1772,15 +1294,17 @@ CRABBOX</span>
       </div>
     </section>
 
+    <!-- =================== MENTAL MODEL =================== -->
     <section id="model" class="section">
       <div class="wrap">
-        <div class="section-heading">
+        <div class="section-heading reveal">
           <span class="section-kicker">mental model</span>
           <h2>Everything is easier when each box owns one question.</h2>
-          <p>Read the system as 4 contracts. Each box gets a narrow input, owns one decision, and emits a narrow output.</p>
+          <p>Read the system as four contracts. Each box gets a narrow input, owns one decision, and emits a narrow output.</p>
         </div>
-        <div class="model-lab">
-          <div class="equation-grid role-flow" role="tablist" aria-label="System owners">
+
+        <div class="lab-grid reveal d1">
+          <div class="equation-grid" role="tablist" aria-label="System owners">
             <button class="equation-card agent is-active" type="button" data-boundary="agent" data-index="01">
               <span class="mini-label">agent / driver</span>
               <h3>What should run next?</h3>
@@ -1830,16 +1354,16 @@ CRABBOX</span>
           </aside>
         </div>
 
-        <div class="ledger handoff-grid" aria-label="Entity handoff map">
-          <article class="ledger-card"><h3>Intent -> Spec</h3><p>Goal becomes refs, profile, retry policy, validation, artifacts.</p></article>
-          <article class="ledger-card"><h3>Spec -> Run</h3><p>Spec becomes a sandboxed command with a durable run id.</p></article>
-          <article class="ledger-card"><h3>Profile -> Env</h3><p>Profile name becomes scoped variables inside the worker only.</p></article>
-          <article class="ledger-card"><h3>Source -> Target</h3><p>Connector moves rows directly. The prompt never becomes the data plane.</p></article>
-          <article class="ledger-card"><h3>Worker -> Evidence</h3><p>Execution becomes logs, JUnit, metrics, counts, redacted config.</p></article>
-          <article class="ledger-card"><h3>Evidence -> Action</h3><p>Signals become finish, retry, repair, or alert.</p></article>
+        <div class="ledger reveal d2" aria-label="Entity handoff map">
+          <article class="ledger-card"><h3>Intent &rarr; Spec</h3><p>Goal becomes refs, profile, retry policy, validation, artifacts.</p></article>
+          <article class="ledger-card"><h3>Spec &rarr; Run</h3><p>Spec becomes a sandboxed command with a durable run id.</p></article>
+          <article class="ledger-card"><h3>Profile &rarr; Env</h3><p>Profile name becomes scoped variables inside the worker only.</p></article>
+          <article class="ledger-card"><h3>Source &rarr; Target</h3><p>Connector moves rows directly. The prompt never becomes the data plane.</p></article>
+          <article class="ledger-card"><h3>Worker &rarr; Evidence</h3><p>Execution becomes logs, JUnit, metrics, counts, redacted config.</p></article>
+          <article class="ledger-card"><h3>Evidence &rarr; Action</h3><p>Signals become finish, retry, repair, or alert.</p></article>
         </div>
 
-        <div class="compare-lab" aria-label="Wrong design versus bounded design">
+        <div class="compare-lab reveal d2" aria-label="Wrong design versus bounded design">
           <div class="design-toggle" role="tablist" aria-label="Boundary comparison">
             <button class="design-button is-active" type="button" data-design="bad">
               <span class="mini-label">bad design</span>
@@ -1866,36 +1390,37 @@ CRABBOX</span>
       </div>
     </section>
 
+    <!-- =================== COMMAND =================== -->
     <section id="command" class="section">
       <div class="wrap command-layout">
-        <div>
+        <div class="reveal">
           <div class="section-heading">
             <span class="section-kicker">runnable shape</span>
-            <h2>The runnable shape has 3 contracts.</h2>
+            <h2>The runnable shape has three contracts.</h2>
             <p>A useful agent output is not prose. It is a spec contract, an execution handoff, and an evidence contract.</p>
           </div>
           <div class="terminal-card">
             <div class="terminal-head">
-              <span>ai-agent-dispatch.sh</span>
+              <span><span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>ai-agent-dispatch.sh</span>
               <button class="copy-button" type="button" data-copy>Copy</button>
             </div>
             <pre class="terminal"><code id="command-text"><span class="comment"># Goal: sync CRM accounts into the warehouse safely.</span>
 
-crabbox pool ensure example-org/data-movement/main/provider/linux/etl \
+<span class="k">crabbox</span> pool ensure example-org/data-movement/main/provider/linux/etl \
   --min-ready 3 \
   --create -- \
   --cache-volume airbyte-etl
 
 mkdir -p .crabbox/generated
-cat > .crabbox/generated/accounts-sync.json <<'JSON'
+cat &gt; .crabbox/generated/accounts-sync.json &lt;&lt;'JSON'
 {
-  "movement": "source_to_target",
-  "source_ref": "source.crm.accounts",
-  "target_ref": "warehouse.analytics.accounts",
-  "airbyte_connection": "accounts_sync",
-  "credential_profile": "etl-warehouse",
+  "movement": <span class="s">"source_to_target"</span>,
+  "source_ref": <span class="s">"source.crm.accounts"</span>,
+  "target_ref": <span class="s">"warehouse.analytics.accounts"</span>,
+  "airbyte_connection": <span class="s">"accounts_sync"</span>,
+  "credential_profile": <span class="s">"etl-warehouse"</span>,
   "allow_env": ["AIRBYTE_*", "SOURCE_*", "TARGET_*"],
-  "idempotency_key": "accounts_sync:daily",
+  "idempotency_key": <span class="s">"accounts_sync:daily"</span>,
   "retry": {
     "max_attempts": 2,
     "when": ["rate_limit", "transient_network"]
@@ -1906,19 +1431,19 @@ cat > .crabbox/generated/accounts-sync.json <<'JSON'
 }
 JSON
 
-crabbox run --pool example-org/data-movement/main/provider/linux/etl \
+<span class="k">crabbox</span> run --pool example-org/data-movement/main/provider/linux/etl \
   --shell 'python -m workers.airbyte_sync --config .crabbox/generated/accounts-sync.json' \
   --allow-env 'AIRBYTE_*,SOURCE_*,TARGET_*' \
   --env-from-profile etl-warehouse \
   --artifact-glob 'reports/**,metrics.json,redacted-config.json' \
   --junit reports/
 
-crabbox results &lt;run-id&gt; --json
-crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></pre>
+<span class="k">crabbox</span> results &lt;run-id&gt; --json
+<span class="k">crabbox</span> artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></pre>
           </div>
         </div>
 
-        <aside class="rule-grid spec-anatomy" aria-label="Command rules">
+        <aside class="rule-grid reveal d1" aria-label="Command rules">
           <div class="spec-map" aria-label="Job spec anatomy">
             <span class="mini-label">job spec anatomy</span>
             <div class="spec-pipe">
@@ -1952,21 +1477,22 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
       </div>
     </section>
 
+    <!-- =================== FAILURE MAP =================== -->
     <section id="failure" class="section">
       <div class="wrap">
-        <div class="section-heading">
+        <div class="section-heading reveal">
           <span class="section-kicker">failure map</span>
           <h2>First find the owner. Then read the signal.</h2>
           <p>Failures are not mysteries. They are boundary breaks. Each class tells you where to look first and what you are allowed to change.</p>
         </div>
-        <div class="failure-lab">
-          <div class="failure-grid triage-grid" role="tablist" aria-label="Failure classes">
-            <button class="failure-card is-active" type="button" data-failure="plan"><h3>F1 Plan</h3><p><span class="failure-meta">before lease</span><strong>Owner:</strong> agent. <strong>Signal:</strong> spec diff. Fix refs, profile, validation, or retry policy.</p></button>
-            <button class="failure-card" type="button" data-failure="capacity"><h3>F2 Capacity</h3><p><span class="failure-meta">before command</span><strong>Owner:</strong> Crabbox. <strong>Signal:</strong> pool and lease status. Fix pool, image, cache, or hydration.</p></button>
-            <button class="failure-card" type="button" data-failure="credentials"><h3>F3 Credentials</h3><p><span class="failure-meta">before sync</span><strong>Owner:</strong> profile. <strong>Signal:</strong> redacted env report. Fix profile mapping or allowed env.</p></button>
-            <button class="failure-card" type="button" data-failure="connector"><h3>F4 Connector</h3><p><span class="failure-meta">during sync</span><strong>Owner:</strong> Airbyte/source. <strong>Signal:</strong> connector log. Fix auth scope, schema, API limit, or cursor.</p></button>
-            <button class="failure-card" type="button" data-failure="partial"><h3>F5 Partial Write</h3><p><span class="failure-meta">after write</span><strong>Owner:</strong> worker/target. <strong>Signal:</strong> target counts. Check idempotency before retry.</p></button>
-            <button class="failure-card" type="button" data-failure="validation"><h3>F6 Validation</h3><p><span class="failure-meta">after proof</span><strong>Owner:</strong> next plan. <strong>Signal:</strong> JUnit and metrics. Emit a repair job or alert.</p></button>
+        <div class="lab-grid reveal d1">
+          <div class="failure-grid" role="tablist" aria-label="Failure classes">
+            <button class="failure-card is-active" type="button" data-failure="plan"><h3>F1 &middot; Plan</h3><p><span class="failure-meta">before lease</span><strong>Owner:</strong> agent. <strong>Signal:</strong> spec diff. Fix refs, profile, validation, or retry policy.</p></button>
+            <button class="failure-card" type="button" data-failure="capacity"><h3>F2 &middot; Capacity</h3><p><span class="failure-meta">before command</span><strong>Owner:</strong> Crabbox. <strong>Signal:</strong> pool and lease status. Fix pool, image, cache, or hydration.</p></button>
+            <button class="failure-card" type="button" data-failure="credentials"><h3>F3 &middot; Credentials</h3><p><span class="failure-meta">before sync</span><strong>Owner:</strong> profile. <strong>Signal:</strong> redacted env report. Fix profile mapping or allowed env.</p></button>
+            <button class="failure-card" type="button" data-failure="connector"><h3>F4 &middot; Connector</h3><p><span class="failure-meta">during sync</span><strong>Owner:</strong> Airbyte/source. <strong>Signal:</strong> connector log. Fix auth scope, schema, API limit, or cursor.</p></button>
+            <button class="failure-card" type="button" data-failure="partial"><h3>F5 &middot; Partial Write</h3><p><span class="failure-meta">after write</span><strong>Owner:</strong> worker/target. <strong>Signal:</strong> target counts. Check idempotency before retry.</p></button>
+            <button class="failure-card" type="button" data-failure="validation"><h3>F6 &middot; Validation</h3><p><span class="failure-meta">after proof</span><strong>Owner:</strong> next plan. <strong>Signal:</strong> JUnit and metrics. Emit a repair job or alert.</p></button>
           </div>
 
           <aside class="detail-panel" aria-live="polite">
@@ -1992,12 +1518,13 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
 
     <section class="final-band">
       <div class="wrap">
-        <div class="final-card">
+        <div class="final-card reveal">
           <div>
             <h2>The loop is simple because the boundaries are hard.</h2>
             <p>Agent plans. Crabbox runs. Airbyte moves. Evidence returns. Repeat only when the evidence says what changed.</p>
+            <p class="closer"><b>0</b> prod rows through the agent &middot; <b>1</b> run id per attempt &middot; <b>4</b> lanes kept apart &middot; <b>6</b> failure classes with owners.</p>
           </div>
-          <a class="button" href="#board">Replay</a>
+          <a class="button" href="#stage">Replay the flow</a>
         </div>
       </div>
     </section>
@@ -2005,485 +1532,266 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
 
   <footer>
     <div class="wrap footer-inner">
-      <span>Agentic Airbyte: visual execution model for bounded ETL runs.</span>
+      <span>Agentic Airbyte &mdash; a visual execution model for bounded ETL runs.</span>
       <div class="footer-links">
         <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="#top">Top</a>
+        <a href="#top">Top &uarr;</a>
       </div>
     </div>
   </footer>
 
   <script>
-    const steps = {
-      plan: {
-        mode: "step 1 / plan",
-        owner: "owner: agent",
-        title: "The agent compresses intent into a job spec.",
-        copy: "It reads the goal, repo state, schemas, previous evidence, and policy. It emits a bounded run. It does not move data.",
-        input: "goal + policy + repo state",
-        output: "job JSON + Crabbox command",
-      },
-      lease: {
-        mode: "step 2 / lease",
-        owner: "owner: Crabbox",
-        title: "Crabbox creates the execution boundary.",
-        copy: "It finds or creates a ready worker, hydrates the repo, attaches cache, and starts the requested command.",
-        input: "pool id + command + artifact rules",
-        output: "worker lease + run id",
-      },
-      inject: {
-        mode: "step 3 / inject",
-        owner: "owner: profile + Crabbox",
-        title: "Credentials enter as scoped environment.",
-        copy: "The prompt carries only a profile name. Crabbox resolves it into allowed variables inside the worker.",
-        input: "credential_profile + allow_env",
-        output: "redacted env report + worker env",
-      },
-      move: {
-        mode: "step 4 / move",
-        owner: "owner: Airbyte",
-        title: "Airbyte moves data where the agent cannot see it.",
-        copy: "The connector reads the source and writes the target in the worker. Rows do not pass through the model context.",
-        input: "source ref + target ref + connector config",
-        output: "target writes + sync status",
-      },
-      prove: {
-        mode: "step 5 / prove",
-        owner: "owner: Crabbox + worker",
-        title: "The run returns evidence, not guesses.",
-        copy: "Logs, metrics, JUnit, counts, and redacted config come back under the run id.",
-        input: "exit code + reports + artifacts",
-        output: "structured evidence bundle",
-      },
-      repair: {
-        mode: "step 6 / repair",
-        owner: "owner: agent",
-        title: "The agent repairs from the failing boundary.",
-        copy: "It chooses finish, retry, repair, or alert. The next command changes one bounded input and keeps the same audit shape.",
-        input: "evidence + failure owner",
-        output: "finish, retry, repair job, or alert",
-      },
+    "use strict";
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // ---------------- diagram wiring ----------------
+    const lanes = [...document.querySelectorAll(".lane[data-flow]")];
+    const packets = [...document.querySelectorAll(".packet[data-flow]")];
+    const nodes = [...document.querySelectorAll(".node[data-node]")];
+    const notes = [...document.querySelectorAll(".math-note span[data-note]")];
+    const scenes = [...document.querySelectorAll(".scene[data-step]")];
+    const stepOrder = scenes.map((s) => s.dataset.step);
+
+    // which math-note lane lights for each step
+    const stepNote = {
+      plan: "control", lease: "control", inject: "credential",
+      move: "data", prove: "evidence", repair: "evidence",
     };
 
-    const runReplay = {
-      request: {
-        step: "plan",
-        phase: "phase: request",
-        title: "Human or schedule gives intent.",
-        copy: "The input is a business goal, not a connector config dump. The agent still has to choose the run shape.",
-        owner: "human / schedule",
-        input: "goal + deadline + policy",
-        output: "bounded intent for the harness",
-        evidence: "none yet",
-      },
-      spec: {
-        step: "plan",
-        phase: "phase: spec",
-        title: "The agent writes the smallest useful job.",
-        copy: "The spec names references and rules. It does not carry raw secrets, copied rows, or a prompt transcript.",
-        owner: "AI harness",
-        input: "goal + repo state + schemas",
-        output: "accounts-sync.json + Crabbox command",
-        evidence: "spec diff",
-      },
-      lease: {
-        step: "lease",
-        phase: "phase: lease",
-        title: "Crabbox turns the spec into a run.",
-        copy: "The pool provides an execution boundary with a hydrated repo, cache, and artifact capture.",
-        owner: "Crabbox",
-        input: "pool id + command + artifact globs",
-        output: "run id cbx_7f31 + worker lease",
-        evidence: "pool status + run status",
-      },
-      sync: {
-        step: "move",
-        phase: "phase: sync",
-        title: "Airbyte moves rows inside the worker.",
-        copy: "The connector reads the source and writes the target. The agent sees neither rows nor source credentials.",
-        owner: "Airbyte + worker",
-        input: "connector config + scoped env",
-        output: "24,918 target rows + sync status",
-        evidence: "connector log + target count",
-      },
-      validate: {
-        step: "prove",
-        phase: "phase: validate",
-        title: "The worker returns a structured evidence bundle.",
-        copy: "Reports, metrics, JUnit, and redacted config are attached to the run id so the next decision is auditable.",
-        owner: "worker + Crabbox",
-        input: "exit code + reports + metrics",
-        output: "evidence/cbx_7f31",
-        evidence: "JUnit, metrics.json, redacted-config.json",
-      },
-      decision: {
-        step: "repair",
-        phase: "phase: decision",
-        title: "The agent repairs one failing boundary.",
-        copy: "Freshness failed while counts and schema passed. The next job changes only the cursor window and reruns validation.",
-        owner: "AI harness",
-        input: "evidence + failure owner",
-        output: "repair job with adjusted freshness window",
-        evidence: "freshness failure + passing row count",
-      },
-    };
-
-    const boundaries = {
-      agent: {
-        step: "plan",
-        owner: "owner: agent",
-        title: "Question: what should run next?",
-        copy: "The agent reads intent, repo state, and prior evidence. Its output is a bounded spec, not a data movement process.",
-        can: "choose refs, profile, validation, retry, next action",
-        cannot: "carry rows, store secrets, sanitize artifacts",
-      },
-      crabbox: {
-        step: "lease",
-        owner: "owner: Crabbox",
-        title: "Question: where can it run safely?",
-        copy: "Crabbox owns the sandbox boundary: lease, repo hydration, cache, scoped env injection, command execution, and artifact return.",
-        can: "lease workers, attach cache, run commands, collect artifacts",
-        cannot: "decide business intent, move rows, hide failed evidence",
-      },
-      airbyte: {
-        step: "move",
-        owner: "owner: Airbyte",
-        title: "Question: how do rows move?",
-        copy: "Airbyte is the data movement boundary. It reads source systems and writes targets from inside the worker.",
-        can: "read source, write target, emit connector status",
-        cannot: "choose business goal, leak rows into prompts, skip idempotency",
-      },
-      evidence: {
-        step: "prove",
-        owner: "owner: evidence",
-        title: "Question: what happened?",
-        copy: "Evidence is the decision boundary. The agent can only repair what logs, counts, JUnit, metrics, and redacted config prove.",
-        can: "finish, retry, repair, or alert from signals",
-        cannot: "guess from incomplete context, ignore owner, change many inputs at once",
-      },
-    };
-
-    const designs = {
-      bad: {
-        step: "repair",
-        tone: "is-bad",
-        label: "red flags",
-        title: "The model context becomes the data plane.",
-        copy: "The agent sees too much, owns too much, and cannot prove what happened. Debugging depends on an unstructured transcript.",
-        failure: "secret leakage, copied rows, non-repeatable retries",
-        fix: "move data movement back into a worker with scoped credentials and artifacts",
-      },
-      good: {
-        step: "lease",
-        tone: "is-good",
-        label: "bounded design",
-        title: "The model chooses a run; the system executes it.",
-        copy: "The agent controls intent and repair. Crabbox controls execution. Airbyte controls movement. Evidence controls the next decision.",
-        failure: "each failure has an owner and a signal",
-        fix: "change one bounded input, rerun, compare evidence",
-      },
-    };
-
-    const rules = {
-      spec: {
-        step: "plan",
-        label: "command focus",
-        title: "Contract 1: the spec names things.",
-        copy: "It names source, target, profile, validation, retry, redaction, and artifact paths. It does not contain secret values or row payloads.",
-        watch: "raw secrets, copied rows, prompt transcripts",
-      },
-      driver: {
-        step: "lease",
-        label: "driver focus",
-        title: "Contract 2: the handoff is executable.",
-        copy: "Crabbox receives a pool id, shell command, profile name, and artifact contract. It returns a run id and a bounded evidence bundle.",
-        watch: "unbounded shell, missing run id, missing artifact capture",
-      },
-      repair: {
-        step: "repair",
-        label: "repair focus",
-        title: "Contract 3: repair preserves the proof shape.",
-        copy: "The next command changes one input tied to the failing owner. It keeps validation, redaction, and artifact capture intact.",
-        watch: "changing many inputs, retrying partial writes without idempotency",
-      },
-    };
-
-    const failures = {
-      plan: {
-        step: "plan",
-        owner: "owner: agent",
-        eqOwner: "agent",
-        title: "The plan is wrong before execution starts.",
-        copy: "The job points at the wrong source, target, profile, validation, or retry rule. Fix the spec and rerun.",
-        signal: "spec diff",
-        repair: "change refs, profile, validation, or retry policy",
-        action: "repair spec",
-      },
-      capacity: {
-        step: "lease",
-        owner: "owner: Crabbox",
-        eqOwner: "Crabbox",
-        title: "The run cannot get a healthy execution boundary.",
-        copy: "The pool, image, cache, or repo hydration failed before the data plane started.",
-        signal: "pool status + lease log",
-        repair: "fix pool capacity, image, cache, or hydration",
-        action: "repair pool",
-      },
-      credentials: {
-        step: "inject",
-        owner: "owner: profile",
-        eqOwner: "profile",
-        title: "The worker did not receive the credentials it needs.",
-        copy: "The profile name is valid only if it resolves to the allowed environment variables inside the worker.",
-        signal: "redacted env report",
-        repair: "fix profile mapping or allow_env",
-        action: "repair env",
-      },
-      connector: {
-        step: "move",
-        owner: "owner: Airbyte/source",
-        eqOwner: "Airbyte",
-        title: "The connector failed at the source or movement boundary.",
-        copy: "The API, schema, auth scope, cursor, or rate limit failed while Airbyte was moving data.",
-        signal: "connector log",
-        repair: "fix auth scope, schema, API limit, or cursor",
-        action: "repair connector",
-      },
-      partial: {
-        step: "move",
-        owner: "owner: worker/target",
-        eqOwner: "target",
-        title: "The target saw a partial or uncertain write.",
-        copy: "Retry only after checking idempotency, target counts, and connector commit state.",
-        signal: "target counts + sync state",
-        repair: "verify idempotency before retry",
-        action: "guard retry",
-      },
-      validation: {
-        step: "prove",
-        owner: "owner: next plan",
-        eqOwner: "evidence",
-        title: "The run executed, but proof failed.",
-        copy: "Counts, freshness, schema, or tests failed. The agent should emit a repair job or alert.",
-        signal: "JUnit + metrics",
-        repair: "compile a repair job from failing checks",
-        action: "repair or alert",
-      },
-    };
-
-    const stepKeys = Object.keys(steps);
-    let currentStep = 0;
-    let playing = true;
-    let timer;
-
-    const buttons = [...document.querySelectorAll("[data-step]")];
-    const lanes = [...document.querySelectorAll("[data-flow]")];
-    const nodes = [...document.querySelectorAll("[data-node]")];
-    const modeLabel = document.querySelector("#mode-label");
-    const ownerLabel = document.querySelector("#step-owner");
-    const title = document.querySelector("#step-title");
-    const copy = document.querySelector("#step-copy");
-    const input = document.querySelector("#step-input");
-    const output = document.querySelector("#step-output");
-    const playButton = document.querySelector("[data-play]");
-    const runButtons = [...document.querySelectorAll("[data-run]")];
-    const boundaryButtons = [...document.querySelectorAll("[data-boundary]")];
-    const designButtons = [...document.querySelectorAll("[data-design]")];
-    const ruleButtons = [...document.querySelectorAll("[data-rule]")];
-    const failureButtons = [...document.querySelectorAll("[data-failure]")];
+    const canvasStepNum = document.querySelector("#canvas-step-num");
+    const canvasStepName = document.querySelector("#canvas-step-name");
+    let activeStep = "plan";
 
     function setStep(key) {
-      currentStep = stepKeys.indexOf(key);
-      const data = steps[key];
-      modeLabel.textContent = data.mode;
-      ownerLabel.textContent = data.owner;
-      title.textContent = data.title;
-      copy.textContent = data.copy;
-      input.textContent = data.input;
-      output.textContent = data.output;
+      if (!stepOrder.includes(key)) return;
+      activeStep = key;
+      const idx = stepOrder.indexOf(key);
 
-      buttons.forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.step === key);
+      lanes.forEach((l) => l.classList.toggle("active", l.dataset.flow === key));
+      packets.forEach((p) => p.classList.toggle("active", p.dataset.flow === key));
+      nodes.forEach((n) => n.classList.toggle("active", n.dataset.node.split(" ").includes(key)));
+      notes.forEach((n) => {
+        const lit = n.dataset.note === stepNote[key];
+        n.classList.toggle("lit", lit);
+        n.classList.toggle(n.dataset.note, true);
       });
+      scenes.forEach((s) => s.classList.toggle("is-active", s.dataset.step === key));
 
-      lanes.forEach((lane) => {
-        lane.classList.toggle("active", lane.dataset.flow === key);
-      });
-
-      nodes.forEach((node) => {
-        node.classList.toggle("active", node.dataset.node.split(" ").includes(key));
-      });
+      canvasStepNum.textContent = (idx + 1) + " / 6";
+      canvasStepName.textContent = key;
     }
 
-    function advance(step) {
-      const next = (currentStep + step + stepKeys.length) % stepKeys.length;
-      setStep(stepKeys[next]);
+    // ---------------- scroll-driven scenes ----------------
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setStep(e.target.dataset.step);
+        });
+      }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+      scenes.forEach((s) => io.observe(s));
     }
 
-    function pauseFlow() {
-      playing = false;
-      playButton.textContent = ">";
-      clearInterval(timer);
-    }
-
-    function start() {
-      clearInterval(timer);
-      if (!playing) {
-        return;
+    // step controls scroll to the matching scene (so scroll observer stays in sync)
+    function goToStep(delta) {
+      const idx = stepOrder.indexOf(activeStep);
+      const next = Math.min(stepOrder.length - 1, Math.max(0, idx + delta));
+      const target = scenes[next];
+      if (target) {
+        target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+        setStep(stepOrder[next]);
       }
-      timer = setInterval(() => advance(1), 3600);
+    }
+    document.querySelector("[data-prev]").addEventListener("click", () => goToStep(-1));
+    document.querySelector("[data-next]").addEventListener("click", () => goToStep(1));
+
+    setStep("plan");
+
+    // ---------------- replay ----------------
+    const runReplay = {
+      request: { phase: "phase: request", title: "Human or schedule gives intent.", copy: "The input is a business goal, not a connector config dump. The agent still has to choose the run shape.", owner: "human / schedule", input: "goal + deadline + policy", output: "bounded intent for the harness", evidence: "none yet", rows: 0, checks: "0 / 3", runid: "—" },
+      spec: { phase: "phase: spec", title: "The agent writes the smallest useful job.", copy: "The spec names references and rules. It does not carry raw secrets, copied rows, or a prompt transcript.", owner: "AI harness", input: "goal + repo state + schemas", output: "accounts-sync.json + Crabbox command", evidence: "spec diff", rows: 0, checks: "0 / 3", runid: "—" },
+      lease: { phase: "phase: lease", title: "Crabbox turns the spec into a run.", copy: "The pool provides an execution boundary with a hydrated repo, cache, and artifact capture.", owner: "Crabbox", input: "pool id + command + artifact globs", output: "run id cbx_7f31 + worker lease", evidence: "pool status + run status", rows: 0, checks: "0 / 3", runid: "cbx_7f31" },
+      sync: { phase: "phase: sync", title: "Airbyte moves rows inside the worker.", copy: "The connector reads the source and writes the target. The agent sees neither rows nor source credentials.", owner: "Airbyte + worker", input: "connector config + scoped env", output: "24,918 target rows + sync status", evidence: "connector log + target count", rows: 24918, checks: "1 / 3", runid: "cbx_7f31" },
+      validate: { phase: "phase: validate", title: "The worker returns a structured evidence bundle.", copy: "Reports, metrics, JUnit, and redacted config are attached to the run id so the next decision is auditable.", owner: "worker + Crabbox", input: "exit code + reports + metrics", output: "evidence/cbx_7f31", evidence: "JUnit, metrics.json, redacted-config.json", rows: 24918, checks: "2 / 3", runid: "cbx_7f31" },
+      decision: { phase: "phase: decision", title: "The agent repairs one failing boundary.", copy: "Freshness failed while counts and schema passed. The next job changes only the cursor window and reruns validation.", owner: "AI harness", input: "evidence + failure owner", output: "repair job with adjusted freshness window", evidence: "freshness failure + passing row count", rows: 24918, checks: "2 / 3", runid: "cbx_7f31" },
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const runButtons = [...document.querySelectorAll("[data-run]")];
+    const mRows = $("m-rows");
+    let countRAF = null;
+
+    function animateCount(el, to) {
+      if (countRAF) cancelAnimationFrame(countRAF);
+      const from = parseInt((el.textContent || "0").replace(/[^0-9]/g, ""), 10) || 0;
+      if (reduceMotion || from === to) { el.textContent = to.toLocaleString(); return; }
+      const dur = 850, t0 = performance.now();
+      const tick = (now) => {
+        const p = Math.min(1, (now - t0) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(from + (to - from) * eased).toLocaleString();
+        if (p < 1) countRAF = requestAnimationFrame(tick);
+      };
+      countRAF = requestAnimationFrame(tick);
     }
 
     function setRun(key) {
-      const data = runReplay[key];
-      document.querySelector("#run-phase").textContent = data.phase;
-      document.querySelector("#run-title").textContent = data.title;
-      document.querySelector("#run-copy").textContent = data.copy;
-      document.querySelector("#run-owner").textContent = data.owner;
-      document.querySelector("#run-input").textContent = data.input;
-      document.querySelector("#run-output").textContent = data.output;
-      document.querySelector("#run-evidence").textContent = data.evidence;
-      runButtons.forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.run === key);
-      });
-      pauseFlow();
-      setStep(data.step);
+      const d = runReplay[key];
+      $("run-phase").textContent = d.phase;
+      $("run-title").textContent = d.title;
+      $("run-copy").textContent = d.copy;
+      $("run-owner").textContent = d.owner;
+      $("run-input").textContent = d.input;
+      $("run-output").textContent = d.output;
+      $("run-evidence").textContent = d.evidence;
+      $("m-checks").textContent = d.checks;
+      $("m-runid").textContent = d.runid;
+      animateCount(mRows, d.rows);
+      runButtons.forEach((b) => b.classList.toggle("is-active", b.dataset.run === key));
     }
+    runButtons.forEach((b) => b.addEventListener("click", () => setRun(b.dataset.run)));
 
+    // ---------------- mental model ----------------
+    const boundaries = {
+      agent: { owner: "owner: agent", title: "Question: what should run next?", copy: "The agent reads intent, repo state, and prior evidence. Its output is a bounded spec, not a data movement process.", can: "choose refs, profile, validation, retry, next action", cannot: "carry rows, store secrets, sanitize artifacts" },
+      crabbox: { owner: "owner: Crabbox", title: "Question: where can it run safely?", copy: "Crabbox owns the sandbox boundary: lease, repo hydration, cache, scoped env injection, command execution, and artifact return.", can: "lease workers, attach cache, run commands, collect artifacts", cannot: "decide business intent, move rows, hide failed evidence" },
+      airbyte: { owner: "owner: Airbyte", title: "Question: how do rows move?", copy: "Airbyte is the data movement boundary. It reads source systems and writes targets from inside the worker.", can: "read source, write target, emit connector status", cannot: "choose business goal, leak rows into prompts, skip idempotency" },
+      evidence: { owner: "owner: evidence", title: "Question: what happened?", copy: "Evidence is the decision boundary. The agent can only repair what logs, counts, JUnit, metrics, and redacted config prove.", can: "finish, retry, repair, or alert from signals", cannot: "guess from incomplete context, ignore owner, change many inputs at once" },
+    };
+    const boundaryButtons = [...document.querySelectorAll("[data-boundary]")];
     function setBoundary(key) {
-      const data = boundaries[key];
-      document.querySelector("#boundary-owner").textContent = data.owner;
-      document.querySelector("#boundary-title").textContent = data.title;
-      document.querySelector("#boundary-copy").textContent = data.copy;
-      document.querySelector("#boundary-can").textContent = data.can;
-      document.querySelector("#boundary-cannot").textContent = data.cannot;
-      boundaryButtons.forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.boundary === key);
-      });
-      pauseFlow();
-      setStep(data.step);
+      const d = boundaries[key];
+      $("boundary-owner").textContent = d.owner;
+      $("boundary-title").textContent = d.title;
+      $("boundary-copy").textContent = d.copy;
+      $("boundary-can").textContent = d.can;
+      $("boundary-cannot").textContent = d.cannot;
+      boundaryButtons.forEach((b) => b.classList.toggle("is-active", b.dataset.boundary === key));
     }
+    boundaryButtons.forEach((b) => b.addEventListener("click", () => setBoundary(b.dataset.boundary)));
 
+    const designs = {
+      bad: { tone: "is-bad", label: "red flags", title: "The model context becomes the data plane.", copy: "The agent sees too much, owns too much, and cannot prove what happened. Debugging depends on an unstructured transcript.", failure: "secret leakage, copied rows, non-repeatable retries", fix: "move data movement back into a worker with scoped credentials and artifacts" },
+      good: { tone: "is-good", label: "bounded design", title: "The model chooses a run; the system executes it.", copy: "The agent controls intent and repair. Crabbox controls execution. Airbyte controls movement. Evidence controls the next decision.", failure: "each failure has an owner and a signal", fix: "change one bounded input, rerun, compare evidence" },
+    };
+    const designButtons = [...document.querySelectorAll("[data-design]")];
     function setDesign(key) {
-      const data = designs[key];
-      const panel = document.querySelector("#design-panel");
-      panel.classList.toggle("is-bad", data.tone === "is-bad");
-      panel.classList.toggle("is-good", data.tone === "is-good");
-      document.querySelector("#design-label").textContent = data.label;
-      document.querySelector("#design-title").textContent = data.title;
-      document.querySelector("#design-copy").textContent = data.copy;
-      document.querySelector("#design-failure").textContent = data.failure;
-      document.querySelector("#design-fix").textContent = data.fix;
-      designButtons.forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.design === key);
-      });
-      pauseFlow();
-      setStep(data.step);
+      const d = designs[key];
+      const panel = $("design-panel");
+      panel.classList.toggle("is-bad", d.tone === "is-bad");
+      panel.classList.toggle("is-good", d.tone === "is-good");
+      $("design-label").textContent = d.label;
+      $("design-title").textContent = d.title;
+      $("design-copy").textContent = d.copy;
+      $("design-failure").textContent = d.failure;
+      $("design-fix").textContent = d.fix;
+      designButtons.forEach((b) => b.classList.toggle("is-active", b.dataset.design === key));
     }
+    designButtons.forEach((b) => b.addEventListener("click", () => setDesign(b.dataset.design)));
 
+    // ---------------- command rules ----------------
+    const rules = {
+      spec: { label: "command focus", title: "Contract 1: the spec names things.", copy: "It names source, target, profile, validation, retry, redaction, and artifact paths. It does not contain secret values or row payloads.", step: "plan", watch: "raw secrets, copied rows, prompt transcripts" },
+      driver: { label: "driver focus", title: "Contract 2: the handoff is executable.", copy: "Crabbox receives a pool id, shell command, profile name, and artifact contract. It returns a run id and a bounded evidence bundle.", step: "lease", watch: "unbounded shell, missing run id, missing artifact capture" },
+      repair: { label: "repair focus", title: "Contract 3: repair preserves the proof shape.", copy: "The next command changes one input tied to the failing owner. It keeps validation, redaction, and artifact capture intact.", step: "repair", watch: "changing many inputs, retrying partial writes without idempotency" },
+    };
+    const ruleButtons = [...document.querySelectorAll("[data-rule]")];
     function setRule(key) {
-      const data = rules[key];
-      document.querySelector("#rule-label").textContent = data.label;
-      document.querySelector("#rule-title").textContent = data.title;
-      document.querySelector("#rule-copy").textContent = data.copy;
-      document.querySelector("#rule-step").textContent = data.step;
-      document.querySelector("#rule-watch").textContent = data.watch;
-      ruleButtons.forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.rule === key);
-      });
-      pauseFlow();
-      setStep(data.step);
+      const d = rules[key];
+      $("rule-label").textContent = d.label;
+      $("rule-title").textContent = d.title;
+      $("rule-copy").textContent = d.copy;
+      $("rule-step").textContent = d.step;
+      $("rule-watch").textContent = d.watch;
+      ruleButtons.forEach((b) => b.classList.toggle("is-active", b.dataset.rule === key));
     }
+    ruleButtons.forEach((b) => b.addEventListener("click", () => setRule(b.dataset.rule)));
 
+    // ---------------- failure map ----------------
+    const failures = {
+      plan: { owner: "owner: agent", eqOwner: "agent", title: "The plan is wrong before execution starts.", copy: "The job points at the wrong source, target, profile, validation, or retry rule. Fix the spec and rerun.", signal: "spec diff", repair: "change refs, profile, validation, or retry policy", action: "repair spec", step: "plan" },
+      capacity: { owner: "owner: Crabbox", eqOwner: "Crabbox", title: "The run cannot get a healthy execution boundary.", copy: "The pool, image, cache, or repo hydration failed before the data plane started.", signal: "pool status + lease log", repair: "fix pool capacity, image, cache, or hydration", action: "repair pool", step: "lease" },
+      credentials: { owner: "owner: profile", eqOwner: "profile", title: "The worker did not receive the credentials it needs.", copy: "The profile name is valid only if it resolves to the allowed environment variables inside the worker.", signal: "redacted env report", repair: "fix profile mapping or allow_env", action: "repair env", step: "inject" },
+      connector: { owner: "owner: Airbyte/source", eqOwner: "Airbyte", title: "The connector failed at the source or movement boundary.", copy: "The API, schema, auth scope, cursor, or rate limit failed while Airbyte was moving data.", signal: "connector log", repair: "fix auth scope, schema, API limit, or cursor", action: "repair connector", step: "move" },
+      partial: { owner: "owner: worker/target", eqOwner: "target", title: "The target saw a partial or uncertain write.", copy: "Retry only after checking idempotency, target counts, and connector commit state.", signal: "target counts + sync state", repair: "verify idempotency before retry", action: "guard retry", step: "move" },
+      validation: { owner: "owner: next plan", eqOwner: "evidence", title: "The run executed, but proof failed.", copy: "Counts, freshness, schema, or tests failed. The agent should emit a repair job or alert.", signal: "JUnit + metrics", repair: "compile a repair job from failing checks", action: "repair or alert", step: "prove" },
+    };
+    const failureButtons = [...document.querySelectorAll("[data-failure]")];
     function setFailure(key) {
-      const data = failures[key];
-      document.querySelector("#failure-owner").textContent = data.owner;
-      document.querySelector("#failure-title").textContent = data.title;
-      document.querySelector("#failure-copy").textContent = data.copy;
-      document.querySelector("#failure-eq-owner").textContent = data.eqOwner;
-      document.querySelector("#failure-eq-signal").textContent = data.signal;
-      document.querySelector("#failure-eq-action").textContent = data.action;
-      document.querySelector("#failure-signal").textContent = data.signal;
-      document.querySelector("#failure-repair").textContent = data.repair;
-      document.querySelector("#failure-step").textContent = data.step;
-      failureButtons.forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.failure === key);
-      });
-      pauseFlow();
-      setStep(data.step);
+      const d = failures[key];
+      $("failure-owner").textContent = d.owner;
+      $("failure-title").textContent = d.title;
+      $("failure-copy").textContent = d.copy;
+      $("failure-eq-owner").textContent = d.eqOwner;
+      $("failure-eq-signal").textContent = d.signal;
+      $("failure-eq-action").textContent = d.action;
+      $("failure-signal").textContent = d.signal;
+      $("failure-repair").textContent = d.repair;
+      $("failure-step").textContent = d.step;
+      failureButtons.forEach((b) => b.classList.toggle("is-active", b.dataset.failure === key));
     }
+    failureButtons.forEach((b) => b.addEventListener("click", () => setFailure(b.dataset.failure)));
 
-    buttons.forEach((button) => {
-      button.addEventListener("click", () => {
-        pauseFlow();
-        setStep(button.dataset.step);
-        start();
-      });
-    });
-
-    document.querySelector("[data-prev]").addEventListener("click", () => {
-      pauseFlow();
-      advance(-1);
-      start();
-    });
-
-    document.querySelector("[data-next]").addEventListener("click", () => {
-      pauseFlow();
-      advance(1);
-      start();
-    });
-
-    playButton.addEventListener("click", () => {
-      playing = !playing;
-      playButton.textContent = playing ? "||" : ">";
-      start();
-    });
-
-    runButtons.forEach((button) => {
-      button.addEventListener("click", () => setRun(button.dataset.run));
-    });
-
-    boundaryButtons.forEach((button) => {
-      button.addEventListener("click", () => setBoundary(button.dataset.boundary));
-    });
-
-    designButtons.forEach((button) => {
-      button.addEventListener("click", () => setDesign(button.dataset.design));
-    });
-
-    ruleButtons.forEach((button) => {
-      button.addEventListener("click", () => setRule(button.dataset.rule));
-    });
-
-    failureButtons.forEach((button) => {
-      button.addEventListener("click", () => setFailure(button.dataset.failure));
-    });
-
+    // ---------------- copy button ----------------
     const copyButton = document.querySelector("[data-copy]");
     const commandText = document.querySelector("#command-text");
-
     copyButton.addEventListener("click", async () => {
-      const text = commandText.textContent;
       try {
-        await navigator.clipboard.writeText(text);
+        await navigator.clipboard.writeText(commandText.textContent);
         copyButton.textContent = "Copied";
-        setTimeout(() => {
-          copyButton.textContent = "Copy";
-        }, 1400);
-      } catch {
-        copyButton.textContent = "Select";
-      }
+        setTimeout(() => { copyButton.textContent = "Copy"; }, 1400);
+      } catch { copyButton.textContent = "Select all"; }
     });
 
-    setStep("plan");
+    // ---------------- scroll reveals + progress thread ----------------
+    const revealEls = [...document.querySelectorAll(".reveal")];
+    if ("IntersectionObserver" in window && !reduceMotion) {
+      const ro = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add("in"); ro.unobserve(e.target); }
+        });
+      }, { rootMargin: "0px 0px -12% 0px", threshold: 0.12 });
+      revealEls.forEach((el) => ro.observe(el));
+      const revealAll = () => revealEls.forEach((el) => { el.classList.add("in"); ro.unobserve(el); });
+      // Safety net: never leave content invisible. Reveal anything already on
+      // screen, even if the observer misses the initial intersection.
+      const revealOnscreen = () => {
+        revealEls.forEach((el) => {
+          if (el.classList.contains("in")) return;
+          const r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight * 0.95 && r.bottom > 0) { el.classList.add("in"); ro.unobserve(el); }
+        });
+      };
+      // A deep link (e.g. #model) jumps mid-page before the observer settles —
+      // correctness beats the entrance animation there, so reveal everything.
+      if (location.hash && document.querySelector(location.hash)) revealAll();
+      window.addEventListener("load", revealOnscreen);
+      window.addEventListener("hashchange", revealAll);
+      [120, 400, 900].forEach((t) => setTimeout(revealOnscreen, t));
+      revealOnscreen();
+    } else {
+      revealEls.forEach((el) => el.classList.add("in"));
+    }
+
+    const thread = $("scroll-thread");
+    let ticking = false;
+    function updateThread() {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      const p = h > 0 ? window.scrollY / h : 0;
+      thread.style.setProperty("--p", p.toFixed(4));
+      ticking = false;
+    }
+    window.addEventListener("scroll", () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(updateThread); }
+    }, { passive: true });
+    updateThread();
+
+    // init defaults
     setRun("request");
     setBoundary("agent");
     setDesign("bad");
     setRule("spec");
     setFailure("plan");
-    playing = true;
-    playButton.textContent = "||";
-    start();
   </script>
 </body>
 </html>
