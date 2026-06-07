@@ -1776,45 +1776,45 @@ CRABBOX</span>
       <div class="wrap">
         <div class="section-heading">
           <span class="section-kicker">mental model</span>
-          <h2>Everything is easier when each box has one job.</h2>
-          <p>Do not ask the agent to be clever with secrets or rows. Ask it to choose the next bounded experiment.</p>
+          <h2>Everything is easier when each box owns one question.</h2>
+          <p>Read the system as 4 contracts. Each box gets a narrow input, owns one decision, and emits a narrow output.</p>
         </div>
         <div class="model-lab">
           <div class="equation-grid role-flow" role="tablist" aria-label="System owners">
             <button class="equation-card agent is-active" type="button" data-boundary="agent" data-index="01">
               <span class="mini-label">agent / driver</span>
-              <h3>Chooses The Run</h3>
-              <p>Turns intent and evidence into the next bounded job spec.</p>
+              <h3>What should run next?</h3>
+              <p>Turns intent and previous evidence into the next bounded job spec.</p>
               <div class="role-io">
-                <span><b>In</b> goal, repo, evidence</span>
-                <span><b>Out</b> job spec, next action</span>
+                <span><b>Reads</b> goal, repo, evidence</span>
+                <span><b>Writes</b> job spec, next action</span>
               </div>
             </button>
             <button class="equation-card crabbox" type="button" data-boundary="crabbox" data-index="02">
               <span class="mini-label">crabbox / runner</span>
-              <h3>Creates The Run</h3>
-              <p>Leases the sandbox, hydrates code, injects env, captures outputs.</p>
+              <h3>Where can it run safely?</h3>
+              <p>Leases the sandbox, hydrates code, injects scoped env, captures outputs.</p>
               <div class="role-io">
-                <span><b>In</b> command, pool, profile</span>
-                <span><b>Out</b> run id, artifacts</span>
+                <span><b>Reads</b> pool, command, profile</span>
+                <span><b>Writes</b> run id, artifacts</span>
               </div>
             </button>
             <button class="equation-card airbyte" type="button" data-boundary="airbyte" data-index="03">
               <span class="mini-label">airbyte / mover</span>
-              <h3>Moves The Rows</h3>
-              <p>Runs the connector in the worker. The model never sees data.</p>
+              <h3>How do rows move?</h3>
+              <p>Runs the connector in the worker. Source and target never enter model context.</p>
               <div class="role-io">
-                <span><b>In</b> source, target, env</span>
-                <span><b>Out</b> writes, sync status</span>
+                <span><b>Reads</b> source, target, env</span>
+                <span><b>Writes</b> target rows, sync status</span>
               </div>
             </button>
             <button class="equation-card evidence" type="button" data-boundary="evidence" data-index="04">
               <span class="mini-label">evidence / judge</span>
-              <h3>Decides The Next Step</h3>
+              <h3>What happened?</h3>
               <p>Converts logs and checks into finish, retry, repair, or alert.</p>
               <div class="role-io">
-                <span><b>In</b> logs, JUnit, metrics</span>
-                <span><b>Out</b> decision, repair input</span>
+                <span><b>Reads</b> logs, JUnit, metrics</span>
+                <span><b>Writes</b> decision, repair input</span>
               </div>
             </button>
           </div>
@@ -1831,12 +1831,12 @@ CRABBOX</span>
         </div>
 
         <div class="ledger handoff-grid" aria-label="Entity handoff map">
-          <article class="ledger-card"><h3>Intent -> Spec</h3><p>Human or schedule gives goal. Harness emits refs, profile, retry, validation.</p></article>
-          <article class="ledger-card"><h3>Spec -> Run</h3><p>Crabbox turns the spec into a sandboxed command and a run id.</p></article>
-          <article class="ledger-card"><h3>Profile -> Env</h3><p>Profile store resolves scoped variables inside the worker only.</p></article>
-          <article class="ledger-card"><h3>Source -> Target</h3><p>Airbyte reads source and writes target. Rows stay out of the prompt.</p></article>
-          <article class="ledger-card"><h3>Worker -> Evidence</h3><p>Worker emits logs, JUnit, metrics, counts, redacted config.</p></article>
-          <article class="ledger-card"><h3>Evidence -> Action</h3><p>Agent chooses finish, retry, repair, or alert from signals.</p></article>
+          <article class="ledger-card"><h3>Intent -> Spec</h3><p>Goal becomes refs, profile, retry policy, validation, artifacts.</p></article>
+          <article class="ledger-card"><h3>Spec -> Run</h3><p>Spec becomes a sandboxed command with a durable run id.</p></article>
+          <article class="ledger-card"><h3>Profile -> Env</h3><p>Profile name becomes scoped variables inside the worker only.</p></article>
+          <article class="ledger-card"><h3>Source -> Target</h3><p>Connector moves rows directly. The prompt never becomes the data plane.</p></article>
+          <article class="ledger-card"><h3>Worker -> Evidence</h3><p>Execution becomes logs, JUnit, metrics, counts, redacted config.</p></article>
+          <article class="ledger-card"><h3>Evidence -> Action</h3><p>Signals become finish, retry, repair, or alert.</p></article>
         </div>
 
         <div class="compare-lab" aria-label="Wrong design versus bounded design">
@@ -1871,7 +1871,8 @@ CRABBOX</span>
         <div>
           <div class="section-heading">
             <span class="section-kicker">runnable shape</span>
-            <h2>The agent emits a bounded job, not a transcript.</h2>
+            <h2>The runnable shape has 3 contracts.</h2>
+            <p>A useful agent output is not prose. It is a spec contract, an execution handoff, and an evidence contract.</p>
           </div>
           <div class="terminal-card">
             <div class="terminal-head">
@@ -1927,16 +1928,16 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
             </div>
           </div>
           <button class="rule-card is-active" type="button" data-rule="spec">
-            <h3>Spec Boundary <span>plan</span></h3>
-            <p><strong>Allowed:</strong> refs, profile name, allowlists, validation, retry, artifact globs. <strong>Not allowed:</strong> raw secrets, copied rows, prompt transcript.</p>
+            <h3>Spec Contract <span>plan</span></h3>
+            <p><strong>Agent writes:</strong> refs, profile name, allowlists, validation, retry, artifact globs. <strong>Agent never writes:</strong> raw secrets or copied rows.</p>
           </button>
           <button class="rule-card" type="button" data-rule="driver">
             <h3>Execution Handoff <span>lease</span></h3>
-            <p>The AI harness drives the loop. Crabbox owns execution. Airbyte owns movement. Evidence owns the next decision.</p>
+            <p><strong>Crabbox receives:</strong> pool id, command, env profile, artifact paths. It returns a run id and evidence bundle.</p>
           </button>
           <button class="rule-card" type="button" data-rule="repair">
             <h3>Repair Contract <span>repair</span></h3>
-            <p>Start from run id, phase log, connector log, counts, JUnit, and redacted config. Change one bounded input. Rerun.</p>
+            <p><strong>Next run changes:</strong> one bounded input tied to the failing owner. Validation and artifact capture stay on.</p>
           </button>
           <div class="detail-panel" aria-live="polite">
             <span class="mini-label" id="rule-label">command focus</span>
@@ -1955,8 +1956,8 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
       <div class="wrap">
         <div class="section-heading">
           <span class="section-kicker">failure map</span>
-          <h2>Debug by owner, then by signal.</h2>
-          <p>The agent should not hallucinate fixes. It should read the failing boundary and choose the smallest repair.</p>
+          <h2>First find the owner. Then read the signal.</h2>
+          <p>Failures are not mysteries. They are boundary breaks. Each class tells you where to look first and what you are allowed to change.</p>
         </div>
         <div class="failure-lab">
           <div class="failure-grid triage-grid" role="tablist" aria-label="Failure classes">
@@ -2131,32 +2132,32 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
       agent: {
         step: "plan",
         owner: "owner: agent",
-        title: "The agent is the driver, not the pipe.",
-        copy: "It can inspect repo state and evidence, then write the next bounded job. It should never carry production rows or raw secrets.",
+        title: "Question: what should run next?",
+        copy: "The agent reads intent, repo state, and prior evidence. Its output is a bounded spec, not a data movement process.",
         can: "choose refs, profile, validation, retry, next action",
-        cannot: "move rows, store secrets, sanitize artifacts",
+        cannot: "carry rows, store secrets, sanitize artifacts",
       },
       crabbox: {
         step: "lease",
         owner: "owner: Crabbox",
-        title: "Crabbox owns the execution boundary.",
-        copy: "It leases a worker, hydrates the repo, injects scoped env, runs the command, and returns artifacts under a run id.",
+        title: "Question: where can it run safely?",
+        copy: "Crabbox owns the sandbox boundary: lease, repo hydration, cache, scoped env injection, command execution, and artifact return.",
         can: "lease workers, attach cache, run commands, collect artifacts",
-        cannot: "decide business intent, edit data, hide failed evidence",
+        cannot: "decide business intent, move rows, hide failed evidence",
       },
       airbyte: {
         step: "move",
         owner: "owner: Airbyte",
-        title: "Airbyte owns source-to-target movement.",
-        copy: "It is the data plane. It reads source systems and writes targets from inside the worker.",
+        title: "Question: how do rows move?",
+        copy: "Airbyte is the data movement boundary. It reads source systems and writes targets from inside the worker.",
         can: "read source, write target, emit connector status",
         cannot: "choose business goal, leak rows into prompts, skip idempotency",
       },
       evidence: {
         step: "prove",
         owner: "owner: evidence",
-        title: "Evidence owns the next decision.",
-        copy: "The agent can only repair what the run proves: logs, counts, JUnit, metrics, and redacted config.",
+        title: "Question: what happened?",
+        copy: "Evidence is the decision boundary. The agent can only repair what logs, counts, JUnit, metrics, and redacted config prove.",
         can: "finish, retry, repair, or alert from signals",
         cannot: "guess from incomplete context, ignore owner, change many inputs at once",
       },
@@ -2187,22 +2188,22 @@ crabbox artifacts download &lt;run-id&gt; --out evidence/&lt;run-id&gt;</code></
       spec: {
         step: "plan",
         label: "command focus",
-        title: "The spec contains references, not sensitive payloads.",
-        copy: "The useful artifact is the bounded JSON shape. It names source, target, profile, validation, retry, redaction, and artifact paths.",
+        title: "Contract 1: the spec names things.",
+        copy: "It names source, target, profile, validation, retry, redaction, and artifact paths. It does not contain secret values or row payloads.",
         watch: "raw secrets, copied rows, prompt transcripts",
       },
       driver: {
         step: "lease",
         label: "driver focus",
-        title: "The agent drives intent; Crabbox drives execution.",
-        copy: "The command is the handoff point. After that, the run is owned by the worker and the artifacts it returns.",
+        title: "Contract 2: the handoff is executable.",
+        copy: "Crabbox receives a pool id, shell command, profile name, and artifact contract. It returns a run id and a bounded evidence bundle.",
         watch: "unbounded shell, missing run id, missing artifact capture",
       },
       repair: {
         step: "repair",
         label: "repair focus",
-        title: "Repair is a new bounded job, not a chat answer.",
-        copy: "The next command should change one input that maps to the failing owner and keep validation intact.",
+        title: "Contract 3: repair preserves the proof shape.",
+        copy: "The next command changes one input tied to the failing owner. It keeps validation, redaction, and artifact capture intact.",
         watch: "changing many inputs, retrying partial writes without idempotency",
       },
     };
