@@ -48,16 +48,14 @@
     body {
       min-width: 320px; margin: 0; overflow-x: hidden;
       background:
-        radial-gradient(1200px 700px at 78% -8%, rgb(36 214 189 / 0.16), transparent 60%),
-        radial-gradient(1100px 800px at 0% 12%, rgb(143 122 255 / 0.10), transparent 55%),
-        radial-gradient(900px 900px at 50% 120%, rgb(255 209 102 / 0.06), transparent 60%),
         linear-gradient(rgb(255 255 255 / 0.022) 1px, transparent 1px),
         linear-gradient(90deg, rgb(255 255 255 / 0.022) 1px, transparent 1px),
+        linear-gradient(135deg, rgb(90 162 255 / 0.08), transparent 34%, rgb(36 214 189 / 0.06) 76%, transparent),
         var(--bg);
-      background-size: auto, auto, auto, 36px 36px, 36px 36px, auto;
-      background-attachment: fixed, fixed, fixed, scroll, scroll, fixed;
+      background-size: 36px 36px, 36px 36px, auto, auto;
+      background-attachment: scroll, scroll, fixed, fixed;
       color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5;
-      letter-spacing: -0.005em; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
+      letter-spacing: 0; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
     }
     body::after {
       content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none;
@@ -65,16 +63,22 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
     a { color: inherit; text-decoration: none; }
-    button { font: inherit; }
+    button { font: inherit; touch-action: manipulation; }
     code, pre { font-family: var(--mono); }
     a:focus-visible, button:focus-visible { outline: 2px solid var(--evidence); outline-offset: 4px; }
     .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+    .skip-link {
+      position: absolute; left: 16px; top: -80px; z-index: 300;
+      border: 1px solid var(--line-strong); border-radius: var(--radius);
+      background: var(--paper); color: #06070c; padding: 10px 12px; font-weight: 800;
+    }
+    .skip-link:focus { top: 14px; }
 
     /* nav */
     .site-nav { position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--line);
       background: rgb(7 8 13 / 0.72); backdrop-filter: blur(18px) saturate(140%); }
     .nav-inner { max-width: var(--max); margin: 0 auto; padding: 13px 24px; display: flex; align-items: center; gap: 18px; }
-    .brand { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: -0.02em; }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: 0; }
     .brand-mark { display: grid; grid-template-columns: repeat(2, 9px); grid-template-rows: repeat(2, 9px); gap: 3px; }
     .brand-mark span { width: 9px; height: 9px; border-radius: 2.5px; animation: pulse 3.4s var(--ease) infinite; }
     .brand-mark span:nth-child(1) { background: var(--agent); }
@@ -97,7 +101,7 @@
     .eyebrow { display: inline-flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 12px;
       text-transform: uppercase; letter-spacing: 0.22em; color: var(--airbyte); margin-bottom: 18px; }
     .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--airbyte); }
-    h1.title { font-size: clamp(34px, 6vw, 62px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 900; margin: 0 0 18px; }
+    h1.title { font-size: clamp(34px, 6vw, 62px); line-height: 1.02; letter-spacing: 0; font-weight: 900; margin: 0 0 18px; }
     h1.title .grad { background: linear-gradient(110deg, var(--source), var(--airbyte) 55%, var(--target));
       -webkit-background-clip: text; background-clip: text; color: transparent; }
     .lead { font-family: var(--serif); font-size: clamp(17px, 2.1vw, 21px); color: #d9d5c6; max-width: 760px; line-height: 1.55; }
@@ -112,7 +116,7 @@
     /* stat band */
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 42px 0 8px; }
     .stat { border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(180deg, var(--panel-2), var(--panel)); padding: 20px 18px; }
-    .stat .n { font-size: clamp(26px, 4vw, 38px); font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
+    .stat .n { font-size: clamp(26px, 4vw, 38px); font-weight: 900; letter-spacing: 0; line-height: 1; }
     .stat .l { font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-top: 9px; }
     .stat.s1 .n { color: var(--source); } .stat.s2 .n { color: var(--airbyte); }
     .stat.s3 .n { color: var(--target); } .stat.s4 .n { color: var(--evidence); }
@@ -121,7 +125,7 @@
     section { position: relative; z-index: 2; padding: 46px 0; border-top: 1px solid var(--line); }
     .sec-head { margin-bottom: 26px; }
     .sec-kicker { font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted-2); }
-    h2 { font-size: clamp(24px, 3.4vw, 34px); font-weight: 800; letter-spacing: -0.02em; margin: 8px 0 10px; }
+    h2 { font-size: clamp(24px, 3.4vw, 34px); font-weight: 800; letter-spacing: 0; margin: 8px 0 10px; }
     .sec-sub { color: var(--muted); max-width: 760px; font-size: 15.5px; }
 
     /* pipeline diagram */
@@ -185,12 +189,20 @@
     .bar-row .lab { font-family: var(--mono); font-size: 13px; color: var(--ink); }
     .bar-track { height: 16px; border-radius: 6px; background: rgb(255 255 255 / 0.04); overflow: hidden; }
     .bar-fill { height: 100%; width: 0; border-radius: 6px; transition: width 1.1s var(--ease); }
+    .bar-fill.source { background: var(--source); }
+    .bar-fill.target { background: var(--target); }
+    .bar-fill.airbyte { background: var(--airbyte); }
+    .bar-fill.evidence { background: var(--evidence); }
+    .bar-fill.crabbox { background: var(--crabbox); }
     .bar-row .val { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
 
     /* terminal */
     .term { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #06070c; }
     .term .bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--panel); }
     .term .bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+    .term .bar i.red { background: #ff5f57; }
+    .term .bar i.yellow { background: #febc2e; }
+    .term .bar i.green { background: #28c840; }
     .term .bar .t { margin-left: 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
     .term pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-size: 12.5px; line-height: 1.65; color: #cfd8e3; }
     .term .ph { color: var(--crabbox); }
@@ -208,6 +220,15 @@
     .copy { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
     .note { font-size: 13.5px; color: var(--muted); }
     .note a { color: var(--airbyte); border-bottom: 1px dotted rgb(36 214 189 / 0.5); }
+    .tiny-unit { font-size: .5em; }
+    .region-name { color: var(--airbyte); }
+    .chart-title { margin-bottom: 14px; }
+    .compact-card { padding: 6px; }
+    .follow-head { margin-top: 30px; margin-bottom: 16px; }
+    .phase-title { font-size: 20px; }
+    .note-tight { margin-top: 12px; }
+    .note-roomy { margin-top: 14px; }
+    .term-offset { margin-top: 10px; }
 
     footer { position: relative; z-index: 2; border-top: 1px solid var(--line); padding: 30px 0 60px; }
     .footer-inner { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; color: var(--muted); font-size: 14px; }
@@ -235,6 +256,8 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
   <nav class="site-nav" aria-label="Primary navigation">
     <div class="nav-inner">
       <a class="brand" href="index.html" aria-label="Agentic Airbyte home">
@@ -259,9 +282,10 @@
       <p class="lead">
         The one-pager explains the vision. This page is the <strong>receipt</strong>. We seeded a real
         <strong>ClickHouse</strong> source with 50,000 web-analytics events, dispatched an
-        <strong>Airbyte-contract worker</strong> into a <strong>live islo sandbox</strong> the crabbox way, moved
+        <strong>Airbyte-contract worker</strong> into a <strong>live islo sandbox</strong>, moved
         every row into a <strong>DuckDB</strong> warehouse, and verified the result four independent ways &mdash;
-        down to a <strong>byte-exact SHA-256</strong> of the moved data.
+        down to a <strong>byte-exact SHA-256</strong> of the moved data. Crabbox is the dispatcher boundary;
+        islo is the sandbox provider used for this executed run.
       </p>
       <div class="verdict"><span class="dot"></span> SYNC SUCCEEDED &middot; 50,000 / 50,000 rows &middot; 4 / 4 parity checks passed &middot; exit 0</div>
       <div class="hero-actions">
@@ -271,15 +295,15 @@
       </div>
 
       <div class="stats" id="stats">
-        <div class="stat s1 reveal"><div class="n" data-count="50000">0</div><div class="l">rows moved end-to-end</div></div>
-        <div class="stat s2 reveal"><div class="n" data-count="150700" data-suffix="">0</div><div class="l">rows/sec in the sandbox</div></div>
+        <div class="stat s1 reveal"><div class="n">50,000</div><div class="l">rows moved end-to-end</div></div>
+        <div class="stat s2 reveal"><div class="n">150,700</div><div class="l">rows/sec in the sandbox</div></div>
         <div class="stat s3 reveal"><div class="n">4 / 4</div><div class="l">parity checks passed</div></div>
-        <div class="stat s4 reveal"><div class="n">0.33<span style="font-size:.5em">s</span></div><div class="l">sync wall-time</div></div>
+        <div class="stat s4 reveal"><div class="n">0.33<span class="tiny-unit">s</span></div><div class="l">sync wall-time</div></div>
       </div>
     </div>
   </header>
 
-  <main>
+  <main id="main">
     <!-- PIPELINE -->
     <section id="pipeline">
       <div class="wrap">
@@ -289,7 +313,8 @@
           <p class="sec-sub">
             A standard pipe: an OLAP system of record on the left, an analytics warehouse on the right, and the
             Airbyte source&rarr;destination record contract in the middle. The whole thing executes
-            <em>inside</em> an islo sandbox &mdash; the harness never touches the data.
+            <em>inside</em> an islo sandbox &mdash; the harness never touches the data. In the generalized shape,
+            Crabbox can target other providers behind the same run contract.
           </p>
         </div>
 
@@ -313,7 +338,7 @@
           </div>
         </div>
         <div class="pipe-wrap-note">
-          <b>&#9695;</b> all of the above runs as one governed job <b>inside a live islo sandbox</b> &mdash; leased, hydrated from the repo, torn down after. The harness only reads the evidence below.
+          <b>&#9695;</b> all of the above runs as one governed job: Crabbox dispatches the run contract, islo provides the sandbox, the repo worker moves the data, and the harness only reads the evidence below.
         </div>
       </div>
     </section>
@@ -385,24 +410,24 @@
 
         <div class="grid two">
           <div class="card reveal">
-            <h3 style="margin-bottom:14px">Top countries by revenue <span class="k">— SELECT … GROUP BY country (on DuckDB)</span></h3>
+            <h3 class="chart-title">Top countries by revenue <span class="k">— SELECT … GROUP BY country (on DuckDB)</span></h3>
             <div class="bars" id="country-bars">
-              <div class="bar-row"><span class="lab">🇧🇷 BR</span><div class="bar-track"><div class="bar-fill" style="background:var(--target)" data-pct="100"></div></div><span class="val">$66,444</span></div>
-              <div class="bar-row"><span class="lab">🇺🇸 US</span><div class="bar-track"><div class="bar-fill" style="background:var(--target)" data-pct="99.4"></div></div><span class="val">$66,072</span></div>
-              <div class="bar-row"><span class="lab">🇫🇷 FR</span><div class="bar-track"><div class="bar-fill" style="background:var(--target)" data-pct="96.2"></div></div><span class="val">$63,935</span></div>
-              <div class="bar-row"><span class="lab">🇦🇺 AU</span><div class="bar-track"><div class="bar-fill" style="background:var(--target)" data-pct="93.9"></div></div><span class="val">$62,368</span></div>
-              <div class="bar-row"><span class="lab">🇮🇱 IL</span><div class="bar-track"><div class="bar-fill" style="background:var(--target)" data-pct="91.8"></div></div><span class="val">$60,967</span></div>
+              <div class="bar-row"><span class="lab">🇧🇷 BR</span><div class="bar-track"><div class="bar-fill target" data-pct="100"></div></div><span class="val">$66,444</span></div>
+              <div class="bar-row"><span class="lab">🇺🇸 US</span><div class="bar-track"><div class="bar-fill target" data-pct="99.4"></div></div><span class="val">$66,072</span></div>
+              <div class="bar-row"><span class="lab">🇫🇷 FR</span><div class="bar-track"><div class="bar-fill target" data-pct="96.2"></div></div><span class="val">$63,935</span></div>
+              <div class="bar-row"><span class="lab">🇦🇺 AU</span><div class="bar-track"><div class="bar-fill target" data-pct="93.9"></div></div><span class="val">$62,368</span></div>
+              <div class="bar-row"><span class="lab">🇮🇱 IL</span><div class="bar-track"><div class="bar-fill target" data-pct="91.8"></div></div><span class="val">$60,967</span></div>
             </div>
           </div>
 
           <div class="card reveal">
-            <h3 style="margin-bottom:14px">Conversion funnel <span class="k">— count(*) by event_type (on DuckDB)</span></h3>
+            <h3 class="chart-title">Conversion funnel <span class="k">— count(*) by event_type (on DuckDB)</span></h3>
             <div class="bars" id="funnel-bars">
-              <div class="bar-row"><span class="lab">page_view</span><div class="bar-track"><div class="bar-fill" style="background:var(--source)" data-pct="100"></div></div><span class="val">29,958</span></div>
-              <div class="bar-row"><span class="lab">search</span><div class="bar-track"><div class="bar-fill" style="background:var(--airbyte)" data-pct="25.4"></div></div><span class="val">7,598</span></div>
-              <div class="bar-row"><span class="lab">add_to_cart</span><div class="bar-track"><div class="bar-fill" style="background:var(--airbyte)" data-pct="20.1"></div></div><span class="val">6,014</span></div>
-              <div class="bar-row"><span class="lab">checkout</span><div class="bar-track"><div class="bar-fill" style="background:var(--evidence)" data-pct="13.1"></div></div><span class="val">3,928</span></div>
-              <div class="bar-row"><span class="lab">purchase</span><div class="bar-track"><div class="bar-fill" style="background:var(--crabbox)" data-pct="8.4"></div></div><span class="val">2,502</span></div>
+              <div class="bar-row"><span class="lab">page_view</span><div class="bar-track"><div class="bar-fill source" data-pct="100"></div></div><span class="val">29,958</span></div>
+              <div class="bar-row"><span class="lab">search</span><div class="bar-track"><div class="bar-fill airbyte" data-pct="25.4"></div></div><span class="val">7,598</span></div>
+              <div class="bar-row"><span class="lab">add_to_cart</span><div class="bar-track"><div class="bar-fill airbyte" data-pct="20.1"></div></div><span class="val">6,014</span></div>
+              <div class="bar-row"><span class="lab">checkout</span><div class="bar-track"><div class="bar-fill evidence" data-pct="13.1"></div></div><span class="val">3,928</span></div>
+              <div class="bar-row"><span class="lab">purchase</span><div class="bar-track"><div class="bar-fill crabbox" data-pct="8.4"></div></div><span class="val">2,502</span></div>
             </div>
           </div>
         </div>
@@ -417,7 +442,7 @@
           <h2>The schema crossed the type boundary intact</h2>
           <p class="sec-sub">The worker reads the source catalog and maps each ClickHouse type to a DuckDB type before loading &mdash; decimals stay decimals, datetimes stay timestamps.</p>
         </div>
-        <div class="card reveal" style="padding:6px 6px">
+        <div class="card reveal compact-card">
           <table class="schema">
             <thead><tr><th>column</th><th>ClickHouse (source)</th><th>DuckDB (destination)</th></tr></thead>
             <tbody>
@@ -445,11 +470,11 @@
           <h2>Where it ran &mdash; full provenance</h2>
           <p class="sec-sub">
             This wasn't your laptop. The job ran in a fresh, repo-defined islo microVM in the
-            <span style="color:var(--airbyte)">Canada</span> compute region, then was torn down. Every field below is captured from the live box.
+            <span class="region-name">Canada</span> compute region, then was torn down. Every field below is captured from the live box.
           </p>
         </div>
         <div class="grid two">
-          <div class="card reveal" style="padding:6px 6px">
+          <div class="card reveal compact-card">
             <table class="prov">
               <tr><td>sandbox id</td><td class="hl">019ea238-1f81-7950-80a9-1b80a5e0b556</td></tr>
               <tr><td>sandbox name</td><td>airbyte-etl</td></tr>
@@ -457,10 +482,10 @@
               <tr><td>kernel</td><td>Linux 6.16.9+ &middot; x86_64</td></tr>
               <tr><td>vCPU / memory</td><td>4 vCPU &middot; 3930 MB</td></tr>
               <tr><td>compute region</td><td class="hl">ca.compute.islo.dev (Canada)</td></tr>
-              <tr><td>created by</td><td>yossi@islo.dev</td></tr>
+              <tr><td>public owner</td><td>redacted</td></tr>
             </table>
           </div>
-          <div class="card reveal" style="padding:6px 6px">
+          <div class="card reveal compact-card">
             <table class="prov">
               <tr><td>source engine</td><td>ClickHouse <span class="hl">26.6.1.472</span></td></tr>
               <tr><td>destination engine</td><td>DuckDB <span class="hl">1.5.3</span></td></tr>
@@ -473,8 +498,8 @@
           </div>
         </div>
 
-        <div class="sec-head reveal" style="margin-top:30px;margin-bottom:16px">
-          <h2 style="font-size:20px">Eight phases, emitted for the harness</h2>
+        <div class="sec-head reveal follow-head">
+          <h2 class="phase-title">Eight phases, emitted for the harness</h2>
           <p class="sec-sub">Each <code>::CRABBOX_PHASE::</code> marker lets the orchestrator attach timing and evidence to a named step &mdash; exactly what a reflection loop reasons over.</p>
         </div>
         <div class="phases reveal">
@@ -498,7 +523,7 @@
           <h2>The actual run, from the sandbox</h2>
         </div>
         <div class="term reveal">
-          <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="t">airbyte-etl &middot; /workspace/agentic-airbyte/poc &middot; islo</span></div>
+          <div class="bar"><i class="red"></i><i class="yellow"></i><i class="green"></i><span class="t">airbyte-etl &middot; /workspace/agentic-airbyte/poc &middot; islo</span></div>
 <pre><span class="ph">::CRABBOX_PHASE::bootstrap</span>
 <span class="dim">[e2e]</span> installing clickhouse static binary
 <span class="ph">::CRABBOX_PHASE::boot_clickhouse</span>
@@ -519,7 +544,7 @@
 {"type":"LOG","log":{"level":"INFO","message":"sync <span class="ok">SUCCEEDED</span>: moved 50000 rows in 0.549s (<span class="y">150700.2 rows/s</span>); checks_passed=<span class="ok">True</span>"}}
 <span class="dim">EXIT=0</span></pre>
         </div>
-        <p class="note" style="margin-top:12px">
+        <p class="note note-tight">
           Full artifacts in the repo:
           <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/evidence/metrics.sandbox.json" target="_blank" rel="noreferrer">metrics.sandbox.json</a> &middot;
           <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/evidence/e2e_sandbox.log" target="_blank" rel="noreferrer">e2e_sandbox.log</a>
@@ -539,8 +564,8 @@
         <div class="grid two">
           <div class="card reveal">
             <h3>The islo way — persistent box</h3>
-            <div class="term" style="margin-top:10px">
-              <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="t">your machine</span></div>
+            <div class="term term-offset">
+              <div class="bar"><i class="red"></i><i class="yellow"></i><i class="green"></i><span class="t">your machine</span></div>
 <pre><span class="dim"># lease a box, hydrate from the repo, run the proof</span>
 <span class="cmd">islo use</span> airbyte-etl \
   --config poc/islo.yaml \
@@ -551,8 +576,8 @@
 
           <div class="card reveal">
             <h3>The crabbox way — ephemeral worker</h3>
-            <div class="term" style="margin-top:10px">
-              <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="t">your harness</span></div>
+            <div class="term term-offset">
+              <div class="bar"><i class="red"></i><i class="yellow"></i><i class="green"></i><span class="t">your harness</span></div>
 <pre><span class="dim"># dispatch as a governed run with evidence capture</span>
 <span class="cmd">crabbox run</span> --pool org/data-movement/main/... \
   --shell <span class="y">'bash poc/run_e2e.sh'</span> \
@@ -561,7 +586,7 @@
             </div>
           </div>
         </div>
-        <p class="note" style="margin-top:14px">
+        <p class="note note-roomy">
           Source: <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/run_e2e.sh" target="_blank" rel="noreferrer">run_e2e.sh</a> &middot;
           <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/worker/etl.py" target="_blank" rel="noreferrer">worker/etl.py</a> &middot;
           <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/worker/seed.py" target="_blank" rel="noreferrer">worker/seed.py</a> &middot;
@@ -584,31 +609,11 @@
 
   <script>
     "use strict";
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
     // reveal on scroll
     const io = new IntersectionObserver((es) => {
       es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
     }, { rootMargin: "0px 0px -10% 0px", threshold: 0.05 });
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-
-    // count-up stats
-    function countUp(el) {
-      const target = +el.dataset.count;
-      if (reduce) { el.textContent = target.toLocaleString(); return; }
-      const dur = 1100, t0 = performance.now();
-      function tick(now) {
-        const p = Math.min(1, (now - t0) / dur);
-        const eased = 1 - Math.pow(1 - p, 3);
-        el.textContent = Math.round(target * eased).toLocaleString();
-        if (p < 1) requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-    }
-    const statObs = new IntersectionObserver((es) => {
-      es.forEach((e) => { if (e.isIntersecting) { countUp(e.target); statObs.unobserve(e.target); } });
-    }, { threshold: 0.6 });
-    document.querySelectorAll("[data-count]").forEach((el) => statObs.observe(el));
 
     // animate bars
     const barObs = new IntersectionObserver((es) => {
