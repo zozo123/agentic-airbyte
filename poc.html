@@ -500,8 +500,8 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
             <div class="top"><h3>4 &middot; Content SHA-256</h3><span class="badge-ok">PASS</span></div>
             <div class="k">Byte-exact: hash of every (event_id, type, revenue) tuple, sorted. The strongest check.</div>
             <div class="kv">
-              <span class="lab">source</span><span class="val">a82239cc…c5c73ebcb</span>
-              <span class="lab">destination</span><span class="val match">a82239cc…c5c73ebcb</span>
+              <span class="lab">source</span><span class="val">a82239cc…a5c73ebcb</span>
+              <span class="lab">destination</span><span class="val match">a82239cc…a5c73ebcb</span>
               <span class="lab">full</span><span class="val match">a82239cc73c96e68528e61f885d0b073ea60fb68e4332aec8d586c2a5c73ebcb</span>
             </div>
           </div>
@@ -610,7 +610,7 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
 
         <div class="sec-head reveal follow-head">
           <h2 class="phase-title">The whole run, phase by phase</h2>
-          <p class="sec-sub">Eight <code>::CRABBOX_PHASE::</code> markers split the job into named steps the orchestrator can time, attach evidence to, and reason over. This is the end-to-end, start to finish.</p>
+          <p class="sec-sub">Nine <code>::CRABBOX_PHASE::</code> markers split the job into named steps the orchestrator can time, attach evidence to, and reason over. This is the end-to-end, start to finish.</p>
         </div>
 
         <div class="reveal">
@@ -650,9 +650,18 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
             </div>
           </div>
 
+          <div class="tl-step prep">
+            <div class="tl-dot">5</div>
+            <div class="tl-body">
+              <h4>write_setup <code>::CRABBOX_PHASE::write_setup</code></h4>
+              <p>Create the typed destination table in DuckDB from the mapped catalog &mdash; drop and recreate, since the sync mode is full_refresh_overwrite.</p>
+              <div class="emit">emits &rarr; <b>raw.events ready to receive typed rows</b></div>
+            </div>
+          </div>
+
           <div class="tl-stage-label">Move &middot; the actual transfer</div>
           <div class="tl-step move">
-            <div class="tl-dot">5</div>
+            <div class="tl-dot">6</div>
             <div class="tl-body">
               <h4>sync <code>::CRABBOX_PHASE::sync</code></h4>
               <p>Stream the rows out as JSONEachRow RECORD batches and bulk-load them into the destination warehouse.</p>
@@ -662,7 +671,7 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
 
           <div class="tl-stage-label">Prove &amp; report &middot; evidence for the harness</div>
           <div class="tl-step prove">
-            <div class="tl-dot">6</div>
+            <div class="tl-dot">7</div>
             <div class="tl-body">
               <h4>verify <code>::CRABBOX_PHASE::verify</code></h4>
               <p>Compare source and destination four ways, including a byte-exact SHA-256. The worker exits non-zero unless all four agree.</p>
@@ -670,7 +679,7 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
             </div>
           </div>
           <div class="tl-step prove">
-            <div class="tl-dot">7</div>
+            <div class="tl-dot">8</div>
             <div class="tl-body">
               <h4>analytics <code>::CRABBOX_PHASE::analytics</code></h4>
               <p>Query the destination directly (top countries, funnel) to prove the moved data is usable, not just present.</p>
@@ -678,7 +687,7 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
             </div>
           </div>
           <div class="tl-step prove">
-            <div class="tl-dot">8</div>
+            <div class="tl-dot">9</div>
             <div class="tl-body">
               <h4>emit <code>::CRABBOX_PHASE::emit</code></h4>
               <p>Write <code>metrics.json</code> plus a final STATE message &mdash; the structured evidence a reflection loop ingests to decide the next move.</p>
@@ -707,6 +716,7 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
 <span class="ph">::CRABBOX_PHASE::discover</span>
 {"type":"LOG","log":{"level":"INFO","message":"discovered stream 'events'"}}
 {"type":"LOG","log":{"level":"INFO","message":"source has 50000 records, total_revenue=611815.02"}}
+<span class="ph">::CRABBOX_PHASE::write_setup</span>
 <span class="ph">::CRABBOX_PHASE::sync</span>
 {"type":"LOG","log":{"level":"INFO","message":"synced 5000/50000 records"}}
 <span class="dim">          … 10 batches …</span>

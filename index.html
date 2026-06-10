@@ -15,6 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
+  <script>document.documentElement.classList.add("js");</script>
   <style>
     :root {
       color-scheme: light;
@@ -23,7 +24,7 @@
       --paper-3: #faf7ee;
       --ink: #1c1812;
       --ink-soft: #5c543f;
-      --ink-faint: #8d8468;
+      --ink-faint: #6e6750;
       --rule: #d6cbab;
       --rule-strong: #1c1812;
       --verm: #c33d1c;
@@ -103,6 +104,7 @@
       z-index: 100;
       border-bottom: 1.5px solid var(--rule-strong);
       background: rgb(243 238 225 / 0.92);
+      -webkit-backdrop-filter: blur(10px) saturate(120%);
       backdrop-filter: blur(10px) saturate(120%);
     }
     .masthead-inner {
@@ -237,10 +239,10 @@
     .section { padding: 96px 0 30px; scroll-margin-top: 70px; }
     .section-head { max-width: 820px; margin-bottom: 44px; }
 
-    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.75s var(--ease), transform 0.75s var(--ease); }
-    .reveal.in { opacity: 1; transform: none; }
-    .reveal.d1 { transition-delay: 0.1s; }
-    .reveal.d2 { transition-delay: 0.2s; }
+    html.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.75s var(--ease), transform 0.75s var(--ease); }
+    html.js .reveal.in { opacity: 1; transform: none; }
+    html.js .reveal.d1 { transition-delay: 0.1s; }
+    html.js .reveal.d2 { transition-delay: 0.2s; }
 
     /* ============ hero ============ */
     .hero { padding: 72px 0 40px; }
@@ -311,7 +313,7 @@
       cursor: pointer;
       transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease), box-shadow 160ms var(--ease);
     }
-    .btn:hover { background: var(--verm); border-color: var(--verm); color: var(--paper-3); transform: translateY(-2px); box-shadow: 0 8px 22px rgb(195 61 28 / 0.25); }
+    .btn:hover { background: var(--verm); border-color: var(--verm); color: var(--paper-3); transform: translateY(-2px); box-shadow: 4px 4px 0 rgb(28 24 18 / 0.16); }
     .btn.ghost { background: transparent; color: var(--ink); }
     .btn.ghost:hover { background: transparent; color: var(--verm); border-color: var(--verm); box-shadow: none; }
 
@@ -368,23 +370,28 @@
       font-size: 11.5px;
       letter-spacing: 0.04em;
     }
-    .receipt-rows { display: grid; gap: 0; border-top: 1.5px dashed var(--rule); }
+    .receipt-rows { display: grid; gap: 0; border-top: 1.5px dashed var(--rule); padding: 4px 0; }
     .receipt-row {
       display: flex;
-      justify-content: space-between;
       align-items: baseline;
-      gap: 14px;
-      padding: 9px 0;
-      border-bottom: 1px dotted var(--rule);
+      gap: 8px;
+      padding: 7px 0;
       font-size: 13px;
     }
     .receipt-row span { color: var(--ink-soft); }
+    .receipt-row i {
+      flex: 1;
+      min-width: 14px;
+      border-bottom: 1.5px dotted var(--rule);
+      transform: translateY(-3px);
+    }
     .receipt-row b {
       font-weight: 600;
       font-variant-numeric: tabular-nums;
       white-space: nowrap;
     }
     .receipt-row b.ok { color: var(--green); }
+    .receipt-row b.zero { color: var(--verm); }
     .receipt-sha {
       padding: 12px 0 4px;
       border-bottom: 1.5px dashed var(--rule);
@@ -423,8 +430,8 @@
 
     .stamp {
       position: absolute;
-      right: 18px;
-      top: 100px;
+      right: -14px;
+      top: 96px;
       z-index: 3;
       display: grid;
       place-items: center;
@@ -444,7 +451,8 @@
       mix-blend-mode: multiply;
       opacity: 0.92;
       pointer-events: none;
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.38' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.86 0.14'/%3E%3CfeComposite operator='over' in2='SourceGraphic'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23fff' filter='url(%23r)'/%3E%3C/svg%3E");
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.38' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.72 0.28'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.38' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.72 0.28'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
     }
     .stamp small { font-size: 9.5px; letter-spacing: 0.22em; }
     .reveal-stamp .stamp {
@@ -465,6 +473,30 @@
       margin-top: 64px;
       border-top: 1.5px solid var(--rule-strong);
       border-bottom: 1px solid var(--rule);
+    }
+    .cast-kicker {
+      margin: 0;
+      padding: 14px 0 2px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+    .exhibit {
+      display: inline-block;
+      margin: 0 0 12px;
+      padding: 4px 9px;
+      border: 1px solid var(--rule);
+      background: var(--paper-3);
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
     }
     .cast-grid {
       display: grid;
@@ -493,7 +525,7 @@
       font-weight: 600;
       letter-spacing: -0.01em;
     }
-    .cast-cell p { margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 1.5; }
+    .cast-cell p { margin: 0; color: var(--ink-soft); font-size: 13.5px; line-height: 1.5; }
 
     /* ============ §01 loop / scrollytelling ============ */
     .loop-grid {
@@ -697,7 +729,7 @@
       margin-bottom: 4px;
       color: var(--ink-faint);
       font-family: var(--mono);
-      font-size: 9.5px;
+      font-size: 10.5px;
       font-weight: 600;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -773,7 +805,7 @@
       font-weight: 600;
       letter-spacing: -0.01em;
     }
-    .ev-block > p { margin: 0 0 16px; color: var(--ink-soft); font-size: 14px; max-width: 520px; }
+    .ev-block > p { margin: 0 0 16px; color: var(--ink-soft); font-size: 13.5px; max-width: 520px; }
 
     table.ledger {
       width: 100%;
@@ -809,18 +841,20 @@
 
     .phase-strip {
       display: grid;
-      grid-template-columns: repeat(8, minmax(0, 1fr));
-      margin-top: 56px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       border: 1.5px solid var(--rule-strong);
       background: var(--paper-3);
     }
     .phase {
       position: relative;
-      padding: 16px 13px 18px;
+      padding: 16px 15px 18px;
       border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
       min-width: 0;
     }
-    .phase:last-child { border-right: 0; }
+    .phase:nth-child(3n) { border-right: 0; }
+    .phase:nth-child(n+7) { border-bottom: 0; }
+    .phase.star i { color: var(--verm); }
     .phase i {
       display: block;
       margin-bottom: 8px;
@@ -904,7 +938,7 @@
 
     .honest {
       margin-top: 56px;
-      max-width: 860px;
+      max-width: 680px;
       border-left: 3px solid var(--verm);
       padding: 4px 0 4px 22px;
     }
@@ -958,7 +992,7 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
-    .contract p { margin: 0 0 10px; max-width: 520px; color: var(--ink-soft); font-size: 14.5px; line-height: 1.55; }
+    .contract p { margin: 0 0 10px; max-width: 520px; color: var(--ink-soft); font-size: 15px; line-height: 1.55; }
     .contract p strong { color: var(--ink); }
     .contract .watch {
       display: block;
@@ -967,10 +1001,10 @@
       font-size: 11.5px;
       letter-spacing: 0.02em;
     }
-    .contract .watch::before { content: "⚠ watch for: "; font-weight: 600; }
+    .contract .watch::before { content: "nb · watch for — "; font-weight: 600; }
 
     /* ============ §04 failure map ============ */
-    .triage-wrap { border: 1.5px solid var(--rule-strong); background: var(--paper-3); box-shadow: 6px 6px 0 rgb(28 24 18 / 0.08); overflow-x: auto; }
+    .triage-wrap { border: 1.5px solid var(--rule-strong); border-left: 4px double var(--verm); background: var(--paper-3); box-shadow: 6px 6px 0 rgb(28 24 18 / 0.08); overflow-x: auto; }
     table.triage {
       width: 100%;
       min-width: 760px;
@@ -1092,10 +1126,18 @@
     .colophon a { color: rgb(236 228 208 / 0.85); text-decoration: none; border-bottom: 1px solid rgb(236 228 208 / 0.3); padding-bottom: 1px; }
     .colophon a:hover { color: #e8b64c; border-bottom-color: #e8b64c; }
 
+    /* ============ print ============ */
+    @media print {
+      .reveal, html.js .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .film, .film pre, .film-bar { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .masthead, .board-controls, .copy-btn { display: none; }
+      .board { position: static; }
+    }
+
     /* ============ reduced motion ============ */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .reveal { opacity: 1; transform: none; transition: none; }
+      .reveal, html.js .reveal { opacity: 1; transform: none; transition: none; }
       .lane.active { animation: none; stroke-dasharray: none; }
       .packet { display: none; }
       .reveal-stamp .stamp { opacity: 0.92; transform: rotate(-8deg) scale(1); animation: none; }
@@ -1111,12 +1153,10 @@
       .cast-cell:nth-child(2n) { border-right: 0; padding-left: 18px !important; }
       .cast-cell:nth-child(5) { border-bottom: 0; border-right: 0; }
       .loop-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
-      .board { top: 64px; }
+      .board { position: static; }
+      .board-controls .hint { display: none; }
       .step { min-height: 48vh; }
       .evidence-cols, .contract-grid, .run-grid { grid-template-columns: minmax(0, 1fr); }
-      .phase-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .phase:nth-child(4) { border-right: 0; }
-      .phase:nth-child(-n+4) { border-bottom: 1px solid var(--rule); }
     }
     @media (max-width: 640px) {
       .mast-links { display: none; }
@@ -1125,9 +1165,9 @@
       .checks-grid { grid-template-columns: minmax(0, 1fr); }
       .check { border-right: 0 !important; border-bottom: 1px solid var(--rule) !important; }
       .check:last-child { border-bottom: 0 !important; }
-      .phase-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .phase:nth-child(2n) { border-right: 0; }
-      .phase:nth-child(-n+6) { border-bottom: 1px solid var(--rule); }
+      .phase-strip { grid-template-columns: minmax(0, 1fr); }
+      .phase { border-right: 0 !important; border-bottom: 1px solid var(--rule) !important; }
+      .phase:last-child { border-bottom: 0 !important; }
       .cast-grid { grid-template-columns: 1fr; }
       .cast-cell { border-right: 0 !important; padding-left: 0 !important; }
       .cast-cell:last-child { border-bottom: 0; }
@@ -1136,8 +1176,10 @@
       table.ledger th { padding: 7px 9px; }
       table.ledger td { padding: 7px 9px; font-size: 10.5px; word-break: break-word; }
       .section { padding-top: 72px; }
-      .stamp { right: 8px; top: 86px; font-size: 12px; padding: 10px 13px 11px; }
+      .stamp { right: -6px; top: 86px; font-size: 12px; padding: 10px 13px 11px; }
       .receipt { padding: 20px 18px 28px; }
+      .receipt-row { flex-wrap: wrap; }
+      .receipt-row b { white-space: normal; text-align: right; }
     }
   </style>
 </head>
@@ -1178,13 +1220,14 @@
             <span class="clause decides">Evidence <em>decides.</em></span>
           </h1>
           <p class="hero-lede">
-            An execution model for agents that own data movement — and the receipt to prove it.
-            <strong>50,000 rows</strong> moved from ClickHouse to DuckDB inside a leased sandbox,
-            four parity checks, one byte-exact checksum. The architecture below is what generalizes it.
+            An execution model for agents that own data movement — with no rows and no secrets
+            ever entering the prompt. As proof: the agent wrote a job spec, <strong>Crabbox</strong> (the run
+            dispatcher) leased an isolated <strong>islo</strong> sandbox, and an Airbyte-contract worker moved
+            <strong>50,000 rows</strong> from ClickHouse to DuckDB — four parity checks, one byte-exact checksum.
+            The architecture below is what generalizes it.
           </p>
           <div class="hero-actions">
             <a class="btn" href="#loop">Read the loop &darr;</a>
-            <a class="btn ghost" href="#evidence">Inspect the evidence</a>
             <a class="btn ghost" href="poc.html">Full proof appendix &rarr;</a>
           </div>
         </div>
@@ -1198,12 +1241,12 @@
           <p class="receipt-title">ClickHouse &rarr; DuckDB</p>
           <p class="receipt-sub">sandbox 019ea238-1f81-7950 · python:3.12 · full_refresh_overwrite</p>
           <div class="receipt-rows">
-            <div class="receipt-row"><span>rows moved</span><b>50,000</b></div>
-            <div class="receipt-row"><span>revenue parity</span><b class="ok">$611,815.02 = $611,815.02</b></div>
-            <div class="receipt-row"><span>parity checks</span><b class="ok">4 / 4 PASS</b></div>
-            <div class="receipt-row"><span>wall time</span><b>0.549 s</b></div>
-            <div class="receipt-row"><span>throughput</span><b>150,700 rows/s</b></div>
-            <div class="receipt-row"><span>rows through the model</span><b>0</b></div>
+            <div class="receipt-row"><span>rows moved</span><i></i><b>50,000</b></div>
+            <div class="receipt-row"><span>revenue parity</span><i></i><b class="ok">$611,815.02 = $611,815.02</b></div>
+            <div class="receipt-row"><span>parity checks</span><i></i><b class="ok">4 / 4 PASS</b></div>
+            <div class="receipt-row"><span>wall time</span><i></i><b>0.549 s</b></div>
+            <div class="receipt-row"><span>throughput</span><i></i><b>150,700 rows/s</b></div>
+            <div class="receipt-row"><span>rows through the model</span><i></i><b class="zero">0</b></div>
           </div>
           <div class="receipt-sha">
             <span>content sha-256 · source = destination</span>
@@ -1216,7 +1259,8 @@
         </aside>
       </div>
 
-      <div class="cast reveal d1" aria-label="Who runs what">
+      <div class="cast reveal d1" role="group" aria-label="Who runs what">
+        <h2 class="cast-kicker">The cast — who runs what</h2>
         <div class="cast-grid">
           <div class="cast-cell">
             <span class="role">driver</span>
@@ -1262,7 +1306,7 @@
           <div class="board reveal">
             <div class="board-head">
               <span>Flow board · six boundaries</span>
-              <span class="step-readout"><span id="step-num">1 / 6</span> · <span id="step-name">plan</span></span>
+              <span class="step-readout" aria-live="polite"><span id="step-num">1 / 6</span> · <span id="step-name">plan</span></span>
             </div>
             <div class="board-svg-wrap">
               <svg class="flow-svg" viewBox="0 0 760 600" role="img" aria-labelledby="flow-title flow-desc" preserveAspectRatio="xMidYMid meet">
@@ -1270,7 +1314,7 @@
                 <desc id="flow-desc">Goal enters the agent, the agent calls Crabbox, Crabbox injects a credential profile into a worker, Airbyte moves data from source to target, evidence returns to the agent, and the agent repairs.</desc>
                 <defs>
                   <marker id="arr" markerWidth="11" markerHeight="11" refX="9" refY="5.5" orient="auto">
-                    <path d="M1.5 1.5 L9 5.5 L1.5 9.5 Z" fill="#1c1812"></path>
+                    <path d="M1.5 1.5 L9 5.5 L1.5 9.5 Z" fill="context-stroke"></path>
                   </marker>
                   <path id="p-plan" d="M134 104 C178 104 204 104 244 104"></path>
                   <path id="p-lease" d="M414 104 C464 104 486 104 530 104"></path>
@@ -1425,6 +1469,7 @@
           <p class="lede">“It ran” is not proof. After the move, the worker compares source and destination — and <strong>exits non-zero unless all four checks pass</strong>. This is the actual output of the run on the receipt.</p>
         </div>
 
+        <div class="reveal"><span class="exhibit">exhibit a · four parity checks</span></div>
         <div class="checks-grid reveal">
           <article class="check">
             <div class="check-top"><h3>1 · Row count</h3><span class="pass">PASS</span></div>
@@ -1465,6 +1510,7 @@
 
         <div class="evidence-cols">
           <div class="ev-block reveal">
+            <span class="exhibit">exhibit b · schema map</span>
             <h3>The schema crossed intact.</h3>
             <p>The worker reads the source catalog and maps each ClickHouse type to a DuckDB type before a single row moves — decimals stay decimals, datetimes stay timestamps.</p>
             <table class="ledger">
@@ -1485,6 +1531,7 @@
           </div>
 
           <div class="ev-block reveal d1">
+            <span class="exhibit">exhibit c · provenance</span>
             <h3>Where it ran — full provenance.</h3>
             <p>Not a laptop. A fresh, repo-defined islo microVM, captured live and then torn down.</p>
             <table class="ledger">
@@ -1505,21 +1552,24 @@
         </div>
 
         <div class="reveal">
-          <div class="phase-strip" aria-label="The run, phase by phase">
+          <span class="exhibit">exhibit d · the run, phase by phase</span>
+          <div class="phase-strip" role="group" aria-label="The run, phase by phase">
             <div class="phase"><i>1</i><b>bootstrap</b><span>ClickHouse binary + Python venv into the fresh box</span></div>
             <div class="phase"><i>2</i><b>boot_clickhouse</b><span>local server up, answering on HTTP</span></div>
             <div class="phase"><i>3</i><b>seed</b><span>50,000 deterministic events — the system of record</span></div>
             <div class="phase"><i>4</i><b>discover</b><span>source catalog read, types mapped</span></div>
-            <div class="phase"><i>5</i><b>sync</b><span>RECORD batches out, bulk-load in — 0.332 s</span></div>
-            <div class="phase"><i>6</i><b>verify</b><span>four parity checks; non-zero exit unless all pass</span></div>
-            <div class="phase"><i>7</i><b>analytics</b><span>queries on the destination prove it's usable</span></div>
-            <div class="phase"><i>8</i><b>emit</b><span>metrics.json + STATE — evidence for the loop</span></div>
+            <div class="phase"><i>5</i><b>write_setup</b><span>typed destination table created from the mapped catalog</span></div>
+            <div class="phase star"><i>6</i><b>sync</b><span>RECORD batches out, bulk-load in — 0.332 s</span></div>
+            <div class="phase"><i>7</i><b>verify</b><span>four parity checks; non-zero exit unless all pass</span></div>
+            <div class="phase"><i>8</i><b>analytics</b><span>queries on the destination prove it's usable</span></div>
+            <div class="phase"><i>9</i><b>emit</b><span>metrics.json + STATE — evidence for the loop</span></div>
           </div>
-          <p class="phase-strip-caption">Eight <code>::CRABBOX_PHASE::</code> markers split the job into steps the orchestrator can time, attach evidence to, and reason over.</p>
+          <p class="phase-strip-caption">Nine <code>::CRABBOX_PHASE::</code> markers split the job into steps the orchestrator can time, attach evidence to, and reason over.</p>
         </div>
 
         <div class="evidence-cols">
           <div class="ev-block reveal" style="grid-column: 1 / -1;">
+            <span class="exhibit">exhibit e · raw log</span>
             <h3>The raw tail, unedited.</h3>
             <p>Straight from the sandbox. Full artifacts live in the repo.</p>
             <div class="film">
@@ -1532,6 +1582,7 @@
 <span class="dim">[seed]</span> analytics.events ready: rows=50000 total_revenue=611815.02
 <span class="ph">::CRABBOX_PHASE::discover</span>
 {"type":"LOG","log":{"level":"INFO","message":"discovered stream 'events'"}}
+<span class="ph">::CRABBOX_PHASE::write_setup</span>
 <span class="ph">::CRABBOX_PHASE::sync</span>
 {"type":"LOG","log":{"level":"INFO","message":"synced 5000/50000 records"}}
 <span class="dim">          … 10 batches …</span>
@@ -1549,7 +1600,7 @@
         <div class="honest reveal">
           <h3>What this proves — and what it doesn't.</h3>
           <p>
-            This run uses the <strong>Airbyte source&rarr;destination contract</strong> on the custom-CDK path, not a full packaged
+            This run uses the <strong>Airbyte source&rarr;destination contract</strong> on a custom-connector (Airbyte CDK) path, not a full packaged
             connector deployment — that's what lets it run self-contained in a sandbox in under a second. What it <strong>does</strong> prove
             is the part that matters for agentic data movement: a goal-driven worker can be dispatched into an isolated box, move real
             typed data end-to-end, and return evidence strong enough — a byte-exact checksum — for a harness to trust the result and decide what to do next.
@@ -1735,7 +1786,7 @@ JSON
         <h2 class="reveal">The loop is simple because <em>the boundaries are hard.</em></h2>
         <p class="mantra reveal d1">Agent plans. Crabbox runs. Airbyte moves. Evidence returns. Repeat only when the evidence says what changed.</p>
         <div class="final-tally reveal d1">
-          <span><b>0</b> prod rows through the agent</span>
+          <span><b>0</b> rows through the model</span>
           <span><b>1</b> run id per attempt</span>
           <span><b>4</b> lanes kept apart</span>
           <span><b>6</b> failure classes with owners</span>
@@ -1786,7 +1837,7 @@ JSON
       nodes.forEach((n) => n.classList.toggle("active", n.dataset.node.split(" ").includes(key)));
       legends.forEach((n) => n.classList.toggle("lit", n.dataset.legend === stepLane[key]));
       steps.forEach((s) => s.classList.toggle("is-active", s.dataset.step === key));
-      stepNum.textContent = (stepOrder.indexOf(key) + 1) + " / 6";
+      stepNum.textContent = (stepOrder.indexOf(key) + 1) + " / " + stepOrder.length;
       stepName.textContent = key;
     }
 
@@ -1805,8 +1856,10 @@ JSON
         setStep(stepOrder[next]);
       }
     }
-    document.querySelector("[data-prev]").addEventListener("click", () => goToStep(-1));
-    document.querySelector("[data-next]").addEventListener("click", () => goToStep(1));
+    const prevBtn = document.querySelector("[data-prev]");
+    const nextBtn = document.querySelector("[data-next]");
+    if (prevBtn) prevBtn.addEventListener("click", () => goToStep(-1));
+    if (nextBtn) nextBtn.addEventListener("click", () => goToStep(1));
     setStep("plan");
 
     // ---------- copy ----------
@@ -1817,7 +1870,10 @@ JSON
           await navigator.clipboard.writeText(document.getElementById("command-text").textContent);
           copyBtn.textContent = "Copied";
           setTimeout(() => { copyBtn.textContent = "Copy"; }, 1400);
-        } catch { copyBtn.textContent = "Select all"; }
+        } catch {
+          copyBtn.textContent = "Copy failed";
+          setTimeout(() => { copyBtn.textContent = "Copy"; }, 1400);
+        }
       });
     }
 
@@ -1836,7 +1892,7 @@ JSON
         });
       };
       const revealAll = () => revealEls.forEach((el) => { el.classList.add("in"); ro.unobserve(el); });
-      if (location.hash && document.querySelector(location.hash)) revealAll();
+      if (location.hash && document.getElementById(location.hash.slice(1))) revealAll();
       window.addEventListener("load", revealOnscreen);
       window.addEventListener("hashchange", revealAll);
       [120, 420, 900].forEach((t) => setTimeout(revealOnscreen, t));
@@ -1856,6 +1912,7 @@ JSON
     window.addEventListener("scroll", () => {
       if (!ticking) { ticking = true; requestAnimationFrame(updateRule); }
     }, { passive: true });
+    window.addEventListener("resize", updateRule);
     updateRule();
   </script>
 </body>
