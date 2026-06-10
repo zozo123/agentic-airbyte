@@ -1,38 +1,42 @@
-# Agent Harness for Data Movement
+# Agentic Airbyte
 
-**Tell the harness a high-level goal. It moves the data by orchestrating Crabbox remote sandboxes as ETL & rETL workers.**
+**The agent plans. Crabbox runs. Airbyte moves. Evidence decides.**
 
-The harness is the brain: it receives intent, observes state, plans, ensures worker capacity, dispatches tasks, collects rich evidence, reflects, and iterates.
+An execution model for agents that own bidirectional data movement — governed, auditable, with no rows and no secrets ever entering the prompt. Not a diagram: we ran it, and the bytes match.
 
-The actual movement happens inside **Crabbox remote sandboxes** — warm, isolated, repo-defined execution environments that act as specialized, auditable workers. Airbyte runs inside them for reliable standard pipes; custom and AI-driven logic handles the complex, reverse, on-prem, or dynamic cases.
+## The Receipt
 
-This is how agents will *actually* own bidirectional data movement: high-level goals in, safe + observable execution out.
+A real verified run — 50,000 rows, ClickHouse → DuckDB, inside a borrowed islo sandbox:
 
-## The Live Vision
+| | |
+|---|---|
+| rows moved | **50,000** (source = destination) |
+| revenue parity | **$611,815.02 = $611,815.02** |
+| parity checks | **4 / 4 PASS** |
+| content SHA-256 | `a82239cc73c96e68528e61f885d0b073ea60fb68e4332aec8d586c2a5c73ebcb` (source = destination, byte-exact) |
+| wall time | **0.549 s** · **150,700 rows/s** |
+| rows through the model | **0** |
+| exit code | **0** — the worker exits non-zero unless all four checks pass |
 
-**https://zozo123.github.io/agentic-airbyte/**
+The run emitted nine `::CRABBOX_PHASE::` markers — `bootstrap → boot_clickhouse → seed → discover → write_setup → sync → verify → analytics → emit` — so the orchestrator can time each step, attach evidence to it, and reason over it. The seed is deterministic: same bytes, every run.
 
-The one-pager above is the definitive visual explanation — architecture, flow diagrams, why sandboxes make great workers, and exactly how a harness dispatches real work.
+## The Pages
+
+- **The model (doc AA-01):** https://zozo123.github.io/agentic-airbyte/ — stamped run receipt, the execution loop, the evidence exhibits, the three contracts, the failure triage map, run-it-yourself.
+- **The proof appendix (doc AA-02):** https://zozo123.github.io/agentic-airbyte/poc.html — every phase of the real run, walked end to end.
+- **Evidence artifacts:** [`poc/evidence/`](poc/evidence/) — sandbox logs, metrics JSON, live capture.
+- **Worker source:** [`poc/worker/`](poc/worker/) — `seed.py`, `etl.py`, `config.json`, plus [`poc/run_e2e.sh`](poc/run_e2e.sh) and [`poc/islo.yaml`](poc/islo.yaml).
 
 ## Core Model
 
 - **You / Caller**: Describe outcomes ("Keep Salesforce profiles enriched and fresh from the warehouse. Respect policy X.").
-- **Agent Harness**: Your orchestrator (LangGraph, CrewAI, custom service, scheduler, etc.). It turns goals into plans and worker tasks. It never touches data or long-lived secrets directly.
-- **Crabbox**: The fleet manager. Maintains ready pools of sandboxes via `pool ensure` + prewarm + Actions hydration from *your* repo. Handles leasing, secret forwarding (profiles + strict allow-env), and audit.
-- **Sandbox Workers**: The hands. Borrowed in seconds from warm pools. Hydrated with exactly the stack you define (Airbyte, CDK, Python libs, etc.). Execute the movement. Return artifacts, metrics (via phases + JUnit), full history, and logs for the harness to reason over.
-- **Airbyte (inside workers)**: The declarative, observable engine for standard src ↔ dst. CDK + custom code for everything else.
+- **Agent Harness**: Your orchestrator (Claude Code, LangGraph, custom service, scheduler, etc.). It turns goals into job specs and bounded runs. It never touches data or long-lived secrets directly.
+- **Crabbox**: The run dispatcher. Turns a job spec into an auditable run boundary — lease, scoped env (profiles + strict allow-env), artifacts, durable run id.
+- **Sandbox Workers**: The hands. Fresh, repo-defined microVMs (this proof used islo; any provider can sit behind Crabbox). Hydrated with exactly the stack you define. Execute the movement. Return artifacts, phase timings, JUnit, full logs.
+- **Airbyte (inside workers)**: The mover. Reads the source, writes the target — inside the box, outside the model context. Rows never pass through a prompt.
+- **The Evidence**: The judge. Logs, JUnit, counts, checksums — the only thing the agent is allowed to reason from.
 
-Every data-moving action is a governed `crabbox run --pool ...` with full provenance.
-
-## Why Sandboxes as Workers Win
-
-- **Speed**: Warm pools + `--pool` borrow = seconds, not minutes. Cache volumes for deps.
-- **Safety & Isolation**: Fresh or borrowed env per task. Strict env allowlisting + profiles. Harness stays out of the blast radius.
-- **Reproducibility**: Defined in your git repo via `.github/workflows` (Actions hydration). Same on any provider — cloud, Hetzner, your Proxmox/SSH on-prem boxes.
-- **Observability for Agents**: Every run produces structured results the harness can ingest: history, events with `CRABBOX_PHASE`, artifacts, JUnit summaries, timings. Perfect for reflection loops.
-- **Flexibility**: One worker model for bulk ETL, low-latency rETL/activation, AI enrichment, regulated flows, internal networks.
-
-Different pools for different worker "personalities." The harness picks the right one.
+Every data-moving action is a governed `crabbox run --pool ...` with full provenance. Failures are boundary breaks, not mysteries: six classes (F1 plan → F6 validation), each with an owner, a signal to read, and the one bounded input the next run is allowed to change.
 
 ## Harness in Action (Real Commands)
 
@@ -62,30 +66,29 @@ crabbox results <id>
 crabbox artifacts download <id>
 ```
 
-Use `jobs:` in `crabbox.yaml` for reusable named worker flows. Use ponds when tasks need coordinated boxes.
+The agent's output is three contracts, not prose: a **spec** that names references and rules (never secret values or row payloads), a **handoff** a runner can execute (pool id, command, profile name, artifact contract), and a **repair rule** — the next run changes one bounded input tied to the failing owner, keeping every attempt comparable.
 
-## The Vision
+## Run It Yourself
 
-Traditional ETL/rETL is static pipelines maintained by humans.
+The proof reproduces with one command — lease a sandbox, hydrate from the repo, run, tear down:
 
-Raw agents with tool access are powerful but fragile on secrets, state, audit, and reproducibility.
+```bash
+islo use airbyte-etl --config poc/islo.yaml --source github://zozo123/agentic-airbyte -- bash poc/run_e2e.sh
+```
 
-**The harness + sandbox workers model** gives you both: dynamic, goal-driven intelligence *and* governed, fast, fully-auditable execution that works everywhere.
+Or dispatch it as a governed Crabbox run with `--shell 'bash poc/run_e2e.sh' --artifact-glob 'poc/reports/**' --junit poc/reports/`.
 
-Airbyte for the reliable pipes.  
-Crabbox for the real remote hands.  
-The harness for the brain that tells them what to do.
+## Honest Scope
 
-Built on actual Crabbox capabilities (ready pools, prewarm, Actions hydration, env profiles, artifacts + history, jobs, cache volumes, multi-provider including on-prem). Neutral examples. Self-host friendly.
+The proof uses the **Airbyte source→destination contract on a custom-connector (Airbyte CDK) path**, not a packaged connector deployment — that's what lets it run self-contained in a sandbox in under a second. What it does prove is the part that matters for agentic data movement: a goal-driven worker can be dispatched into an isolated box, move real typed data end-to-end, and return evidence strong enough — a byte-exact checksum — for a harness to trust the result and decide what to do next.
 
 ## Explore
 
-- Live one-pager (recommended): https://zozo123.github.io/agentic-airbyte/
+- Live model page: https://zozo123.github.io/agentic-airbyte/
+- Proof appendix: https://zozo123.github.io/agentic-airbyte/poc.html
 - Crabbox: https://github.com/openclaw/crabbox (and crabbox.sh)
 - Airbyte: https://airbyte.com
 
-This repo exists to clearly present the vision. The page is the artifact. PRs that improve clarity, diagrams, or accuracy are welcome.
-
 ---
 
-Neutral. Execution-focused. Ready for agents.
+Agent plans. Crabbox runs. Airbyte moves. Evidence returns. Repeat only when the evidence says what changed.

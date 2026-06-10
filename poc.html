@@ -3,359 +3,921 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#07080d">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307080d'/%3E%3Crect x='5' y='5' width='10' height='10' rx='2.5' fill='%238f7aff'/%3E%3Crect x='17' y='5' width='10' height='10' rx='2.5' fill='%23ff6a3d'/%3E%3Crect x='5' y='17' width='10' height='10' rx='2.5' fill='%23ffd166'/%3E%3Crect x='17' y='17' width='10' height='10' rx='2.5' fill='%2324d6bd'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#f3eee1">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f3eee1'/%3E%3Ccircle cx='16' cy='16' r='9.5' fill='none' stroke='%231c1812' stroke-width='2.4'/%3E%3Ccircle cx='16' cy='16' r='3.4' fill='%23c8401f'/%3E%3C/svg%3E">
   <meta name="description" content="A real, executed proof: 50,000 rows moved ClickHouse → DuckDB by an Airbyte-contract worker inside a live islo sandbox, dispatched the crabbox way. Every parity check passed.">
-  <meta property="og:title" content="Agentic Airbyte — Live POC">
+  <meta property="og:title" content="Agentic Airbyte — Proof Appendix">
   <meta property="og:description" content="Not a diagram. A real run: ClickHouse → DuckDB inside a live islo sandbox. 50,000 rows, 4/4 parity checks, byte-exact checksum.">
   <meta property="og:type" content="website">
-  <title>Agentic Airbyte | Live E2E Proof — ClickHouse → DuckDB in a sandbox</title>
+  <title>Agentic Airbyte — Proof Appendix · ClickHouse → DuckDB, verified</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800;900&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500;1,6..72,600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
+  <script>document.documentElement.classList.add("js");</script>
   <style>
     :root {
-      color-scheme: dark;
-      --bg: #07080d;
-      --bg-2: #090b12;
-      --panel: #0d0f17;
-      --panel-2: #12141d;
-      --paper: #f5f2e6;
-      --ink: #f3efe2;
-      --muted: #9a9789;
-      --muted-2: #6f6d63;
-      --line: #23242f;
-      --line-strong: #f3efe2;
-      --agent: #8f7aff;
-      --crabbox: #ff6a3d;
-      --airbyte: #24d6bd;
-      --source: #5aa2ff;
-      --target: #a6df62;
-      --evidence: #ffd166;
-      --danger: #ff4d6d;
-      --ok: #43d17a;
-      --max: 1180px;
-      --radius: 10px;
-      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-      --sans: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
-      --serif: "Newsreader", Georgia, "Times New Roman", serif;
+      color-scheme: light;
+      --paper: #f3eee1;
+      --paper-2: #ece4d0;
+      --paper-3: #faf7ee;
+      --ink: #1c1812;
+      --ink-soft: #5c543f;
+      --ink-faint: #6e6750;
+      --rule: #d6cbab;
+      --rule-strong: #1c1812;
+      --verm: #c33d1c;
+      --verm-deep: #9d3015;
+      --blue: #28479c;
+      --green: #2c6b40;
+      --film: #161209;
+      --film-2: #1f1a0e;
+      --film-ink: #ece4d0;
+      --film-dim: #9b9070;
+      --max: 1140px;
+      --serif: "Fraunces", Georgia, "Times New Roman", serif;
+      --sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
+
     * { box-sizing: border-box; }
+
     html { scroll-behavior: smooth; }
+
     body {
-      min-width: 320px; margin: 0; overflow-x: hidden;
-      background:
-        linear-gradient(rgb(255 255 255 / 0.022) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(255 255 255 / 0.022) 1px, transparent 1px),
-        linear-gradient(135deg, rgb(90 162 255 / 0.08), transparent 34%, rgb(36 214 189 / 0.06) 76%, transparent),
-        var(--bg);
-      background-size: 36px 36px, 36px 36px, auto, auto;
-      background-attachment: scroll, scroll, fixed, fixed;
-      color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5;
-      letter-spacing: 0; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
+      min-width: 320px;
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16.5px;
+      line-height: 1.55;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
     }
-    body::after {
-      content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none;
-      opacity: 0.04; mix-blend-mode: overlay;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+    /* paper fiber */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.5;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.46 0 0 0 0 0.42 0 0 0 0 0.33 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
-    a { color: inherit; text-decoration: none; }
+
+    ::selection { background: rgb(195 61 28 / 0.18); }
+
+    a { color: inherit; }
+    a:hover { color: var(--verm); }
     button { font: inherit; touch-action: manipulation; }
-    code, pre { font-family: var(--mono); }
-    a:focus-visible, button:focus-visible { outline: 2px solid var(--evidence); outline-offset: 4px; }
-    .wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+    code { font-family: var(--mono); }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--verm);
+      outline-offset: 3px;
+    }
+
     .skip-link {
-      position: absolute; left: 16px; top: -80px; z-index: 300;
-      border: 1px solid var(--line-strong); border-radius: var(--radius);
-      background: var(--paper); color: #06070c; padding: 10px 12px; font-weight: 800;
+      position: absolute;
+      left: 16px; top: -90px;
+      z-index: 400;
+      border: 1.5px solid var(--ink);
+      background: var(--paper-3);
+      color: var(--ink);
+      padding: 10px 14px;
+      font-weight: 600;
     }
     .skip-link:focus { top: 14px; }
 
-    /* nav */
-    .site-nav { position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--line);
-      background: rgb(7 8 13 / 0.72); backdrop-filter: blur(18px) saturate(140%); }
-    .nav-inner { max-width: var(--max); margin: 0 auto; padding: 13px 24px; display: flex; align-items: center; gap: 18px; }
-    .brand { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: -0.02em; }
-    .brand-mark { display: grid; grid-template-columns: repeat(2, 9px); grid-template-rows: repeat(2, 9px); gap: 3px; }
-    .brand-mark span { width: 9px; height: 9px; border-radius: 2.5px; animation: pulse 3.4s var(--ease) infinite; }
-    .brand-mark span:nth-child(1) { background: var(--agent); }
-    .brand-mark span:nth-child(2) { background: var(--crabbox); animation-delay: .35s; }
-    .brand-mark span:nth-child(3) { background: var(--evidence); animation-delay: 1.05s; }
-    .brand-mark span:nth-child(4) { background: var(--airbyte); animation-delay: .7s; }
-    @keyframes pulse { 0%,100%{opacity:.45;transform:scale(.86)} 50%{opacity:1;transform:scale(1)} }
-    .nav-links { display: flex; gap: 20px; margin-left: auto; font-size: 14.5px; color: var(--muted); }
-    .nav-links a { transition: color 160ms var(--ease); }
-    .nav-links a:hover { color: var(--ink); }
-    .button { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-strong);
-      background: var(--paper); color: #06070c; font-weight: 800; padding: 10px 16px; border-radius: var(--radius);
-      transition: transform 160ms var(--ease), box-shadow 160ms var(--ease); white-space: nowrap; }
-    .button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgb(0 0 0 / 0.4); }
-    .button.secondary { background: transparent; color: var(--ink); border-color: var(--line); }
-    .button.ghost { background: transparent; color: var(--ink); border-color: var(--line); font-weight: 600; }
+    .wrap { width: min(var(--max), calc(100% - 44px)); margin: 0 auto; position: relative; z-index: 2; }
 
-    /* hero */
-    .hero { position: relative; z-index: 2; padding: 74px 0 30px; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 12px;
-      text-transform: uppercase; letter-spacing: 0.22em; color: var(--airbyte); margin-bottom: 18px; }
-    .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--airbyte); }
-    h1.title { font-size: clamp(34px, 6vw, 62px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 900; margin: 0 0 18px; }
-    h1.title .grad { background: linear-gradient(110deg, var(--source), var(--airbyte) 55%, var(--target));
-      -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .lead { font-family: var(--serif); font-size: clamp(17px, 2.1vw, 21px); color: #d9d5c6; max-width: 760px; line-height: 1.55; }
-    .lead strong { color: var(--ink); font-weight: 600; }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
-    .verdict { display: inline-flex; align-items: center; gap: 10px; margin-top: 26px; padding: 9px 15px;
-      border: 1px solid rgb(67 209 122 / 0.5); border-radius: 999px; background: rgb(67 209 122 / 0.08);
-      font-family: var(--mono); font-size: 13px; color: #b7f3cf; }
-    .verdict .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgb(67 209 122 / .6); animation: ring 2.4s infinite; }
-    @keyframes ring { 0%{box-shadow:0 0 0 0 rgb(67 209 122/.55)} 70%{box-shadow:0 0 0 12px rgb(67 209 122/0)} 100%{box-shadow:0 0 0 0 rgb(67 209 122/0)} }
-
-    /* stat band */
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 42px 0 8px; }
-    .stat { border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(180deg, var(--panel-2), var(--panel)); padding: 20px 18px; }
-    .stat .n { font-size: clamp(26px, 4vw, 38px); font-weight: 900; letter-spacing: 0; line-height: 1; }
-    .stat .l { font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-top: 9px; }
-    .stat.s1 .n { color: var(--source); } .stat.s2 .n { color: var(--airbyte); }
-    .stat.s3 .n { color: var(--target); } .stat.s4 .n { color: var(--evidence); }
-
-    /* sections */
-    section { position: relative; z-index: 2; padding: 46px 0; border-top: 1px solid var(--line); }
-    .sec-head { margin-bottom: 26px; }
-    .sec-kicker { font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted-2); }
-    h2 { font-size: clamp(24px, 3.4vw, 34px); font-weight: 800; letter-spacing: -0.02em; margin: 8px 0 10px; }
-    .sec-sub { color: var(--muted); max-width: 760px; font-size: 15.5px; }
-
-    /* pipeline diagram */
-    .pipe { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 0; margin: 8px 0 6px;
-      border: 1px solid var(--line); border-radius: 14px; background: linear-gradient(180deg, var(--panel-2), var(--panel)); padding: 22px; }
-    .node { border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: rgb(255 255 255 / 0.012); }
-    .node .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-    .node .name { font-weight: 800; font-size: 18px; margin: 7px 0 4px; }
-    .node .meta { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-    .node.src { border-color: rgb(90 162 255 / 0.5); box-shadow: inset 0 0 0 1px rgb(90 162 255 / 0.06); }
-    .node.src .name { color: var(--source); }
-    .node.eng { border-color: rgb(36 214 189 / 0.5); }
-    .node.eng .name { color: var(--airbyte); }
-    .node.dst { border-color: rgb(166 223 98 / 0.5); }
-    .node.dst .name { color: var(--target); }
-    .arrow { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 14px; min-width: 92px; }
-    .arrow .line { width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--airbyte), transparent); position: relative; overflow: hidden; }
-    .arrow .line::after { content: ""; position: absolute; top: -2px; left: -30%; width: 30%; height: 6px; border-radius: 4px;
-      background: var(--airbyte); filter: blur(2px); animation: flow 2.4s linear infinite; }
-    @keyframes flow { to { left: 130%; } }
-    .arrow .cap { font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-top: 8px; text-transform: uppercase; letter-spacing: 0.1em; }
-    .pipe-wrap-note { font-family: var(--mono); font-size: 12px; color: var(--crabbox); margin-top: 14px; display: flex; align-items: center; gap: 8px; }
-    .pipe-wrap-note b { color: var(--crabbox); }
-
-    /* generic cards grid */
-    .grid { display: grid; gap: 14px; }
-    .grid.two { grid-template-columns: 1fr 1fr; }
-    .grid.three { grid-template-columns: repeat(3, 1fr); }
-    .card { border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(180deg, var(--panel-2), var(--panel)); padding: 18px; }
-    .card h3 { margin: 0 0 6px; font-size: 16px; font-weight: 800; }
-    .card .k { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-
-    /* check cards */
-    .check { display: flex; flex-direction: column; gap: 10px; }
-    .check .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .badge-ok { font-family: var(--mono); font-size: 11px; font-weight: 700; color: #06120b; background: var(--ok);
-      padding: 3px 9px; border-radius: 999px; letter-spacing: 0.04em; }
-    .kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-family: var(--mono); font-size: 12.5px; }
-    .kv .lab { color: var(--muted-2); }
-    .kv .val { color: var(--ink); word-break: break-all; }
-    .kv .val.match { color: var(--target); }
-
-    /* provenance table */
-    table.prov { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
-    table.prov td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-    table.prov tr td:first-child { color: var(--muted); white-space: nowrap; width: 200px; }
-    table.prov tr:last-child td { border-bottom: none; }
-    table.prov .hl { color: var(--airbyte); }
-
-    /* schema map */
-    .schema { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
-    .schema th { text-align: left; padding: 10px 12px; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--line); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.1em; }
-    .schema td { padding: 8px 12px; border-bottom: 1px solid var(--line); }
-    .schema .src-t { color: var(--source); }
-    .schema .dst-t { color: var(--target); }
-    .schema tr:last-child td { border-bottom: none; }
-
-    /* bars */
-    .bars { display: flex; flex-direction: column; gap: 12px; }
-    .bar-row { display: grid; grid-template-columns: 120px 1fr auto; align-items: center; gap: 12px; }
-    .bar-row .lab { font-family: var(--mono); font-size: 13px; color: var(--ink); }
-    .bar-track { height: 16px; border-radius: 6px; background: rgb(255 255 255 / 0.04); overflow: hidden; }
-    .bar-fill { height: 100%; width: 0; border-radius: 6px; transition: width 1.1s var(--ease); }
-    .bar-fill.source { background: var(--source); }
-    .bar-fill.target { background: var(--target); }
-    .bar-fill.airbyte { background: var(--airbyte); }
-    .bar-fill.evidence { background: var(--evidence); }
-    .bar-fill.crabbox { background: var(--crabbox); }
-    .bar-row .val { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
-
-    /* terminal */
-    .term { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #06070c; }
-    .term .bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--panel); }
-    .term .bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
-    .term .bar i.red { background: #ff5f57; }
-    .term .bar i.yellow { background: #febc2e; }
-    .term .bar i.green { background: #28c840; }
-    .term .bar .t { margin-left: 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
-    .term pre { margin: 0; padding: 16px 18px; overflow-x: auto; font-size: 12.5px; line-height: 1.65; color: #cfd8e3; }
-    .term .ph { color: var(--crabbox); }
-    .term .ok { color: var(--ok); }
-    .term .dim { color: var(--muted-2); }
-    .term .y { color: var(--evidence); }
-    .term .cmd { color: var(--airbyte); }
-
-    /* phase timeline */
-    .phases { display: flex; flex-wrap: wrap; gap: 8px; }
-    .phase { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 13px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
-    .phase b { color: var(--ink); font-weight: 600; }
-    .phase .num { color: var(--crabbox); }
-
-    .copy { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
-    .note { font-size: 13.5px; color: var(--muted); }
-    .note a { color: var(--airbyte); border-bottom: 1px dotted rgb(36 214 189 / 0.5); }
-    .tiny-unit { font-size: .5em; }
-    .region-name { color: var(--airbyte); }
-    .chart-title { margin-bottom: 14px; }
-    .compact-card { padding: 6px; }
-    .follow-head { margin-top: 30px; margin-bottom: 16px; }
-    .phase-title { font-size: 20px; }
-    .note-tight { margin-top: 12px; }
-    .note-roomy { margin-top: 14px; }
-    .term-offset { margin-top: 10px; }
-
-    /* reading-progress bar */
-    .progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 200;
-      background: linear-gradient(90deg, var(--source), var(--airbyte) 50%, var(--target));
-      box-shadow: 0 0 14px rgb(36 214 189 / 0.55); transition: width 90ms linear; }
-
-    /* hero chapters strip — the tutorial spine */
-    .chapters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; }
-    .chapters a { display: inline-flex; align-items: baseline; gap: 8px; border: 1px solid var(--line);
-      border-radius: 999px; padding: 8px 14px; font-family: var(--mono); font-size: 12px; color: var(--muted);
-      transition: border-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease); }
-    .chapters a:hover { color: var(--ink); border-color: var(--line-strong); transform: translateY(-2px); }
-    .chapters a b { color: var(--airbyte); font-weight: 700; }
-
-    /* chapter number on each section kicker */
-    .chap { color: var(--evidence); font-weight: 700; }
-    .chap::after { content: ""; display: inline-block; width: 16px; height: 1px; background: var(--muted-2);
-      margin: 0 8px 3px 8px; vertical-align: middle; }
-
-    /* phase walkthrough — the e2e, taught step by step */
-    .tl-stage-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--muted-2); margin: 22px 0 12px; display: flex; align-items: center; gap: 10px; }
-    .tl-stage-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-    .tl-step { display: grid; grid-template-columns: 42px 1fr; gap: 16px; position: relative; padding-bottom: 18px; }
-    .tl-step::before { content: ""; position: absolute; left: 20px; top: 40px; bottom: -2px; width: 2px; background: var(--line); }
-    .tl-step:last-child::before { display: none; }
-    .tl-dot { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
-      font-family: var(--mono); font-weight: 700; font-size: 15px; border: 1px solid var(--line);
-      background: var(--panel); color: var(--ink); z-index: 1; }
-    .tl-step.setup .tl-dot { border-color: rgb(143 122 255 / .55); color: var(--agent); box-shadow: inset 0 0 0 1px rgb(143 122 255 / .08); }
-    .tl-step.prep  .tl-dot { border-color: rgb(90 162 255 / .55); color: var(--source); box-shadow: inset 0 0 0 1px rgb(90 162 255 / .08); }
-    .tl-step.move  .tl-dot { border-color: rgb(36 214 189 / .6); color: var(--airbyte); box-shadow: inset 0 0 0 1px rgb(36 214 189 / .1); }
-    .tl-step.prove .tl-dot { border-color: rgb(255 209 102 / .55); color: var(--evidence); box-shadow: inset 0 0 0 1px rgb(255 209 102 / .08); }
-    .tl-body h4 { margin: 9px 0 4px; font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
-    .tl-body h4 code { font-size: 12.5px; color: var(--crabbox); background: rgb(255 106 61 / .09); padding: 1px 7px; border-radius: 5px; font-weight: 500; }
-    .tl-body p { margin: 0; font-size: 14.5px; color: var(--muted); line-height: 1.5; }
-    .tl-body .emit { font-family: var(--mono); font-size: 11.5px; color: var(--muted-2); margin-top: 6px; }
-    .tl-body .emit b { color: var(--target); font-weight: 600; }
-
-    /* annotated code (reuses .term shell) */
-    .term .kw { color: var(--agent); }
-    .term .st { color: #e6b96b; }
-    .term .nu { color: var(--target); }
-    .term .fn { color: var(--source); }
-    .term .cm { color: var(--muted-2); font-style: italic; }
-    .code-cap { font-family: var(--mono); font-size: 11.5px; color: var(--muted); margin: 10px 2px 0; }
-    .code-cap a { color: var(--airbyte); border-bottom: 1px dotted rgb(36 214 189 / 0.5); }
-
-    /* honesty callout */
-    .honest { border: 1px solid rgb(255 209 102 / 0.3); border-radius: var(--radius);
-      background: rgb(255 209 102 / 0.045); padding: 16px 18px; margin-top: 20px; }
-    .honest h4 { margin: 0 0 6px; font-size: 12.5px; color: var(--evidence); font-family: var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
-    .honest p { margin: 0; font-size: 14px; color: #d9d5c6; line-height: 1.55; }
-
-    footer { position: relative; z-index: 2; border-top: 1px solid var(--line); padding: 30px 0 60px; }
-    .footer-inner { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; color: var(--muted); font-size: 14px; }
-    .footer-links { display: flex; gap: 18px; }
-    .footer-links a { color: var(--muted); } .footer-links a:hover { color: var(--ink); }
-
-    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
-    .reveal.in { opacity: 1; transform: none; }
-
-    @media (max-width: 860px) {
-      .stats { grid-template-columns: repeat(2, 1fr); }
-      .pipe { grid-template-columns: 1fr; gap: 12px; }
-      .arrow { flex-direction: row; min-width: 0; padding: 4px 0; }
-      .arrow .line { width: 60px; }
-      .grid.two, .grid.three { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
-      table.prov tr td:first-child { width: 130px; }
-      .bar-row { grid-template-columns: 86px 1fr auto; }
+    /* ============ masthead ============ */
+    .masthead {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1.5px solid var(--rule-strong);
+      background: rgb(243 238 225 / 0.92);
+      -webkit-backdrop-filter: blur(10px) saturate(120%);
+      backdrop-filter: blur(10px) saturate(120%);
     }
+    .masthead-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 58px;
+      width: min(var(--max), calc(100% - 44px));
+      margin: 0 auto;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .brand:hover { color: var(--ink); }
+    .brand-seal {
+      flex: 0 0 auto;
+      width: 26px; height: 26px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+    .brand-seal::after {
+      content: "";
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--verm);
+    }
+    .brand small {
+      display: block;
+      color: var(--ink-faint);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+    }
+    .mast-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .mast-links a { text-decoration: none; border-bottom: 1.5px solid transparent; padding-bottom: 2px; }
+    .mast-links a:hover { color: var(--verm); border-bottom-color: var(--verm); }
+    .mast-cta {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 16px;
+      border: 1.5px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
+    }
+    .mast-cta:hover { background: var(--verm); border-color: var(--verm); color: var(--paper-3); transform: translateY(-1px); }
+    .progress-rule {
+      position: absolute;
+      left: 0; bottom: -1.5px;
+      height: 1.5px; width: 100%;
+      transform: scaleX(var(--p, 0));
+      transform-origin: 0 50%;
+      background: var(--verm);
+      will-change: transform;
+    }
+
+    /* ============ shared type ============ */
+    .kicker {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .kicker .sec-no {
+      color: var(--verm);
+      font-size: 13px;
+    }
+    .kicker::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+      transform: translateY(-3px);
+    }
+
+    h2 {
+      margin: 18px 0 14px;
+      font-family: var(--serif);
+      font-optical-sizing: auto;
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 560;
+      line-height: 1.04;
+      letter-spacing: -0.012em;
+      text-wrap: balance;
+    }
+    .lede {
+      max-width: 680px;
+      margin: 0;
+      color: var(--ink-soft);
+      font-family: var(--serif);
+      font-size: clamp(17.5px, 1.8vw, 20px);
+      font-style: italic;
+      font-weight: 430;
+      line-height: 1.5;
+      text-wrap: pretty;
+    }
+    .lede strong, .lede em { color: var(--ink); font-style: normal; font-weight: 600; }
+
+    .section { padding: 88px 0 26px; scroll-margin-top: 70px; }
+    .section-head { max-width: 820px; margin-bottom: 38px; }
+
+    html.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.75s var(--ease), transform 0.75s var(--ease); }
+    html.js .reveal.in { opacity: 1; transform: none; }
+    html.js .reveal.d1 { transition-delay: 0.1s; }
+    html.js .reveal.d2 { transition-delay: 0.2s; }
+
+    .exhibit {
+      display: inline-block;
+      margin: 0 0 12px;
+      padding: 4px 9px;
+      border: 1px solid var(--rule);
+      background: var(--paper-3);
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    /* ============ hero (appendix — smaller than the cover) ============ */
+    .hero { padding: 56px 0 22px; }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 26px;
+      margin-bottom: 28px;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .hero-meta b { color: var(--verm); font-weight: 600; }
+    h1 {
+      margin: 0 0 22px;
+      max-width: 820px;
+      font-family: var(--serif);
+      font-optical-sizing: auto;
+      font-size: clamp(36px, 5.2vw, 64px);
+      font-weight: 540;
+      line-height: 1.02;
+      letter-spacing: -0.016em;
+      text-wrap: balance;
+    }
+    h1 em { font-style: italic; font-weight: 500; color: var(--verm); }
+    .hero-lede {
+      max-width: 720px;
+      margin: 0 0 26px;
+      color: var(--ink-soft);
+      font-family: var(--serif);
+      font-size: clamp(17.5px, 1.9vw, 20.5px);
+      font-weight: 430;
+      line-height: 1.52;
+      text-wrap: pretty;
+    }
+    .hero-lede strong { color: var(--ink); font-weight: 620; }
+
+    .verdict {
+      display: inline-block;
+      max-width: 100%;
+      margin: 0 0 26px;
+      padding: 7px 14px 8px;
+      border: 1.5px solid var(--green);
+      border-radius: 3px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transform: rotate(-0.8deg);
+    }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 46px;
+      padding: 0 20px;
+      border: 1.5px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease), box-shadow 160ms var(--ease);
+    }
+    .btn:hover { background: var(--verm); border-color: var(--verm); color: var(--paper-3); transform: translateY(-2px); box-shadow: 4px 4px 0 rgb(28 24 18 / 0.16); }
+    .btn.ghost { background: transparent; color: var(--ink); }
+    .btn.ghost:hover { background: transparent; color: var(--verm); border-color: var(--verm); box-shadow: none; }
+
+    /* tally band */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin: 44px 0 8px;
+      border: 1.5px solid var(--rule-strong);
+      background: var(--paper-3);
+      box-shadow: 6px 6px 0 rgb(28 24 18 / 0.08);
+    }
+    .stat {
+      min-width: 0;
+      padding: 20px 18px 22px;
+      border-right: 1px solid var(--rule);
+    }
+    .stat:last-child { border-right: 0; }
+    .stat .n {
+      font-family: var(--serif);
+      font-size: clamp(28px, 3.6vw, 42px);
+      font-weight: 560;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat.s-pass .n { color: var(--green); }
+    .stat .n .tiny-unit { font-size: 0.5em; font-weight: 500; }
+    .stat .l {
+      margin-top: 9px;
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    /* chapter index */
+    .chapters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 26px;
+    }
+    .chapters a {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 7px 12px;
+      border: 1px solid var(--rule);
+      background: var(--paper-3);
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 160ms var(--ease), border-color 160ms var(--ease), transform 160ms var(--ease);
+    }
+    .chapters a b { color: var(--verm); font-weight: 600; }
+    .chapters a:hover { color: var(--ink); border-color: var(--ink); transform: translateY(-1px); }
+
+    /* ============ §01 pipeline ============ */
+    .pipe {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: stretch;
+      gap: 0;
+      padding: 22px;
+      border: 1.5px solid var(--rule-strong);
+      background:
+        linear-gradient(rgb(28 24 18 / 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(28 24 18 / 0.045) 1px, transparent 1px),
+        var(--paper-3);
+      background-size: 28px 28px, 28px 28px, auto;
+      box-shadow: 6px 6px 0 rgb(28 24 18 / 0.08);
+    }
+    .pnode {
+      min-width: 0;
+      padding: 16px 16px 18px;
+      border: 1.5px solid var(--ink);
+      background: var(--paper-3);
+    }
+    .pnode .tag {
+      display: block;
+      margin-bottom: 8px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    .pnode .name {
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 0 0 6px;
+    }
+    .pnode .meta {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+    }
+    .pnode.src { border-left: 4px solid var(--blue); }
+    .pnode.src .tag { color: var(--blue); }
+    .pnode.eng { border-left: 4px solid var(--verm); }
+    .pnode.eng .tag { color: var(--verm); }
+    .pnode.dst { border-left: 4px solid var(--green); }
+    .pnode.dst .tag { color: var(--green); }
+    .arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 96px;
+      padding: 0 14px;
+    }
+    .arrow .line {
+      position: relative;
+      width: 100%;
+      height: 0;
+      border-top: 2px dashed var(--ink);
+      opacity: 0.85;
+    }
+    .arrow .line::after {
+      content: "";
+      position: absolute;
+      right: -2px; top: -6px;
+      border-left: 8px solid var(--ink);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+    }
+    html.js .arrow .line { animation: pipe-dash 1.4s linear infinite; border-top-style: solid; border: 0; height: 2px; background-image: linear-gradient(90deg, var(--ink) 60%, transparent 0); background-size: 12px 2px; }
+    @keyframes pipe-dash { to { background-position-x: 12px; } }
+    .arrow .cap {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      text-align: center;
+    }
+    .pipe-note {
+      margin: 14px 2px 0;
+      color: var(--verm-deep);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      letter-spacing: 0.02em;
+      line-height: 1.6;
+    }
+    .pipe-note::before { content: "nb · "; font-weight: 600; }
+
+    /* ============ film inset (terminal / code) ============ */
+    .film {
+      border: 1.5px solid var(--rule-strong);
+      background: var(--film);
+      color: var(--film-ink);
+      box-shadow: 6px 6px 0 rgb(28 24 18 / 0.12);
+      overflow: hidden;
+    }
+    .film-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 15px;
+      border-bottom: 1px solid rgb(236 228 208 / 0.14);
+      background: var(--film-2);
+      color: var(--film-dim);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .film pre {
+      margin: 0;
+      padding: 18px 20px;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.75;
+      white-space: pre;
+    }
+    .film .dim { color: var(--film-dim); }
+    .film .ph { color: #d9a13c; }
+    .film .ok { color: #79c98a; }
+    .film .cmd { color: #8fb4e8; }
+    .film .str { color: #d9a13c; }
+    .film .y { color: #d9a13c; }
+    .film .cm { color: var(--film-dim); font-style: italic; }
+    .film .kw { color: #8fb4e8; }
+    .film .st { color: #d9a13c; }
+    .film .nu { color: #79c98a; }
+    .film .fn { color: var(--film-ink); font-weight: 600; }
+    .code-cap {
+      margin: 12px 2px 0;
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      letter-spacing: 0.02em;
+    }
+    .code-cap a { text-underline-offset: 3px; }
+
+    /* ============ honest ============ */
+    .honest {
+      margin-top: 48px;
+      max-width: 680px;
+      border-left: 3px solid var(--verm);
+      padding: 4px 0 4px 22px;
+    }
+    .honest h3 {
+      margin: 0 0 8px;
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 600;
+    }
+    .honest p { margin: 0; color: var(--ink-soft); font-size: 15px; line-height: 1.6; }
+    .honest strong { color: var(--ink); }
+
+    /* ============ §03 checks ============ */
+    .checks-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0;
+      border: 1.5px solid var(--rule-strong);
+      background: var(--paper-3);
+      box-shadow: 6px 6px 0 rgb(28 24 18 / 0.08);
+    }
+    .check {
+      padding: 22px 24px 24px;
+      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      min-width: 0;
+    }
+    .check:nth-child(2n) { border-right: 0; }
+    .check:nth-child(n+3) { border-bottom: 0; }
+    .check-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .check-top h3 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .pass {
+      flex: 0 0 auto;
+      padding: 3px 9px 4px;
+      border: 1.5px solid var(--green);
+      border-radius: 3px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      transform: rotate(-2deg);
+    }
+    .check > p { margin: 0 0 14px; color: var(--ink-soft); font-size: 13.5px; line-height: 1.5; }
+    .check-kv {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 5px 16px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+    }
+    .check-kv .lab { color: var(--ink-faint); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; align-self: baseline; }
+    .check-kv .val { font-weight: 600; font-variant-numeric: tabular-nums; word-break: break-all; }
+    .check-kv .val.match { color: var(--green); }
+
+    /* ============ §04 charts ============ */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(20px, 2.6vw, 32px);
+    }
+    .chart {
+      min-width: 0;
+      border: 1.5px solid var(--rule-strong);
+      background: var(--paper-3);
+      box-shadow: 6px 6px 0 rgb(28 24 18 / 0.08);
+      padding: 20px 22px 24px;
+    }
+    .chart h3 {
+      margin: 0 0 4px;
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .chart .q {
+      display: block;
+      margin: 0 0 18px;
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+    }
+    .bars { display: flex; flex-direction: column; gap: 12px; }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+    }
+    .bar-row .lab { font-family: var(--mono); font-size: 12.5px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-track {
+      height: 15px;
+      border: 1px solid var(--rule);
+      background: rgb(28 24 18 / 0.05);
+      overflow: hidden;
+    }
+    .bar-fill { height: 100%; width: 0; background: var(--ink); transition: width 1.1s var(--ease); }
+    .bar-fill.lead { background: var(--verm); }
+    .bar-row .val { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+    /* ============ ledger tables ============ */
+    table.ledger {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1.5px solid var(--rule-strong);
+      background: var(--paper-3);
+      font-size: 13px;
+    }
+    table.ledger th {
+      padding: 9px 13px;
+      border-bottom: 1.5px solid var(--rule-strong);
+      background: rgb(28 24 18 / 0.04);
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-align: left;
+    }
+    table.ledger td {
+      padding: 8px 13px;
+      border-bottom: 1px solid var(--rule);
+      font-family: var(--mono);
+      font-size: 12.5px;
+      vertical-align: top;
+    }
+    table.ledger tr:last-child td { border-bottom: 0; }
+    table.ledger td:first-child { color: var(--ink); font-weight: 500; }
+    td.t-src { color: var(--blue); }
+    td.t-dst { color: var(--green); }
+    td.hl, table.ledger .hl { color: var(--verm); font-weight: 600; word-break: break-all; }
+
+    .prov-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(20px, 2.6vw, 32px);
+      align-items: start;
+    }
+    .prov-grid table.ledger td:first-child { color: var(--ink-faint); white-space: nowrap; }
+
+    /* ============ §05 phase timeline ============ */
+    .tl { margin-top: 8px; max-width: 860px; }
+    .tl-stage-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 26px 0 14px;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .tl-stage-label::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+    .tl-step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 16px;
+      padding-bottom: 20px;
+    }
+    .tl-step::before {
+      content: "";
+      position: absolute;
+      left: 20px; top: 44px; bottom: -2px;
+      width: 1.5px;
+      background: var(--rule);
+    }
+    .tl-step:last-child::before { display: none; }
+    .tl-dot {
+      z-index: 1;
+      width: 42px; height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1.5px solid var(--ink);
+      background: var(--paper-3);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 19px;
+      font-weight: 600;
+    }
+    .tl-step.move .tl-dot { border-color: var(--verm); color: var(--verm); }
+    .tl-body h4 {
+      margin: 8px 0 5px;
+      font-family: var(--serif);
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .tl-body h4 code {
+      margin-left: 8px;
+      padding: 1px 7px;
+      border: 1px solid var(--rule);
+      background: var(--paper-3);
+      color: var(--verm-deep);
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .tl-body p { margin: 0; max-width: 620px; color: var(--ink-soft); font-size: 14.5px; line-height: 1.55; }
+    .tl-body .emit {
+      margin-top: 7px;
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      letter-spacing: 0.02em;
+    }
+    .tl-body .emit b { color: var(--green); font-weight: 600; }
+    .tl-caption {
+      margin: 18px 2px 0;
+      color: var(--ink-faint);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ============ §06 run it ============ */
+    .run-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(20px, 2.6vw, 32px);
+    }
+    .run-card { min-width: 0; }
+    .run-card h3 {
+      margin: 0 0 4px;
+      font-family: var(--serif);
+      font-size: 21px;
+      font-weight: 600;
+    }
+    .run-card > p { margin: 0 0 14px; color: var(--ink-soft); font-size: 13.5px; }
+
+    .src-links {
+      margin-top: 26px;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      line-height: 1.9;
+    }
+    .src-links a { text-underline-offset: 3px; }
+
+    /* ============ footer ============ */
+    footer.colophon {
+      margin-top: 110px;
+      background: var(--ink);
+      color: rgb(236 228 208 / 0.6);
+      border-top: 1.5px solid var(--rule-strong);
+      padding: 26px 0 34px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      letter-spacing: 0.04em;
+    }
+    .colophon-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; }
+    .colophon a { color: rgb(236 228 208 / 0.85); text-decoration: none; border-bottom: 1px solid rgb(236 228 208 / 0.3); padding-bottom: 1px; }
+    .colophon a:hover { color: #e8b64c; border-bottom-color: #e8b64c; }
+
+    /* ============ print ============ */
+    @media print {
+      .reveal, html.js .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .film, .film pre, .film-bar { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .masthead { display: none; }
+    }
+
+    /* ============ reduced motion ============ */
     @media (prefers-reduced-motion: reduce) {
-      .reveal { opacity: 1; transform: none; transition: none; }
-      .arrow .line::after, .brand-mark span, .verdict .dot { animation: none; }
+      html { scroll-behavior: auto; }
+      .reveal, html.js .reveal { opacity: 1; transform: none; transition: none; }
+      html.js .arrow .line { animation: none; }
       .bar-fill { transition: none; }
+      .btn, .mast-cta, .chapters a { transition: none; }
+    }
+
+    /* ============ responsive ============ */
+    @media (max-width: 1020px) {
+      .charts-grid, .prov-grid, .run-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 760px) {
+      .pipe { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 16px; }
+      .arrow { flex-direction: row; min-width: 0; padding: 2px 0; gap: 12px; }
+      .arrow .line { width: 64px; flex: 0 0 auto; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stat { border-bottom: 1px solid var(--rule); }
+      .stat:nth-child(2n) { border-right: 0; }
+      .stat:nth-child(n+3) { border-bottom: 0; }
+    }
+    @media (max-width: 640px) {
+      .mast-links { display: none; }
+      .hero { padding-top: 40px; }
+      .hero-actions { display: grid; width: 100%; }
+      .section { padding-top: 64px; }
+      .checks-grid { grid-template-columns: minmax(0, 1fr); }
+      .check { border-right: 0 !important; border-bottom: 1px solid var(--rule) !important; }
+      .check:last-child { border-bottom: 0 !important; }
+      .bar-row { grid-template-columns: 86px minmax(0, 1fr) auto; gap: 8px; }
+      .chart { padding: 16px 14px 20px; }
+      table.ledger th { padding: 7px 9px; }
+      table.ledger td { padding: 7px 9px; font-size: 10.5px; word-break: break-word; }
+      .prov-grid table.ledger td:first-child { white-space: normal; }
+      .tl-body h4 code { display: inline-block; margin-left: 0; margin-top: 4px; white-space: normal; word-break: break-all; }
+      .verdict { font-size: 10.5px; letter-spacing: 0.06em; transform: none; }
     }
   </style>
 </head>
-<body id="top">
+<body>
   <a class="skip-link" href="#main">Skip to main content</a>
-  <div class="progress" id="progress" aria-hidden="true"></div>
 
-  <nav class="site-nav" aria-label="Primary navigation">
-    <div class="nav-inner">
-      <a class="brand" href="index.html" aria-label="Agentic Airbyte home">
-        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
-        <span>agentic&middot;airbyte</span>
+  <nav class="masthead" aria-label="Primary">
+    <div class="masthead-inner">
+      <a class="brand" href="#top">
+        <span class="brand-seal" aria-hidden="true"></span>
+        <span>Agentic&nbsp;Airbyte<small>doc&nbsp;AA-02 · proof appendix</small></span>
       </a>
-      <div class="nav-links">
-        <a href="index.html#stage">The model</a>
+      <div class="mast-links">
         <a href="#pipeline">Pipeline</a>
+        <a href="#anatomy">Engine</a>
         <a href="#checks">Proof</a>
         <a href="#sandbox">Sandbox</a>
         <a href="#run">Reproduce</a>
       </div>
-      <a class="button" href="#checks">See the proof</a>
+      <a class="mast-cta" href="index.html">&larr; The model · AA-01</a>
     </div>
+    <div class="progress-rule" id="progress-rule" aria-hidden="true"></div>
   </nav>
 
-  <header class="hero">
+  <header id="top" class="hero">
     <div class="wrap">
-      <span class="eyebrow">live proof of concept &middot; actually executed</span>
-      <h1 class="title">The loop isn't a diagram.<br><span class="grad">We ran it. The bytes match.</span></h1>
-      <p class="lead">
-        The one-pager explains the vision. This page is the <strong>receipt</strong>. We seeded a real
+      <div class="hero-meta reveal in">
+        <span>Document <b>AA-02</b></span>
+        <span>Appendix to — <a href="index.html">doc AA-01, the execution model</a></span>
+        <span>Status — <b>actually executed</b></span>
+      </div>
+      <h1>The loop isn't a diagram. <em>We ran it. The bytes match.</em></h1>
+      <p class="hero-lede">
+        The <a href="index.html">one-pager</a> explains the vision. This page is the <strong>receipt</strong>. We seeded a real
         <strong>ClickHouse</strong> source with 50,000 web-analytics events, dispatched an
         <strong>Airbyte-contract worker</strong> into a <strong>live islo sandbox</strong>, moved
         every row into a <strong>DuckDB</strong> warehouse, and verified the result four independent ways &mdash;
         down to a <strong>byte-exact SHA-256</strong> of the moved data. Crabbox is the dispatcher boundary;
         islo is the sandbox provider used for this executed run.
       </p>
-      <div class="verdict"><span class="dot"></span> SYNC SUCCEEDED &middot; 50,000 / 50,000 rows &middot; 4 / 4 parity checks passed &middot; exit 0</div>
+      <p class="verdict">Sync succeeded · 50,000 / 50,000 rows · 4 / 4 parity checks passed · exit 0</p>
       <div class="hero-actions">
-        <a class="button" href="#checks">Inspect the parity checks &darr;</a>
-        <a class="button secondary" href="https://github.com/zozo123/agentic-airbyte/tree/main/poc" target="_blank" rel="noreferrer">Read the worker code</a>
-        <a class="button ghost" href="index.html">&larr; Back to the vision</a>
+        <a class="btn" href="#checks">Inspect the parity checks &darr;</a>
+        <a class="btn ghost" href="https://github.com/zozo123/agentic-airbyte/tree/main/poc" target="_blank" rel="noreferrer">Read the worker code</a>
+        <a class="btn ghost" href="index.html">&larr; Back to the model</a>
       </div>
 
-      <div class="stats" id="stats">
-        <div class="stat s1 reveal"><div class="n" data-count="50000">0</div><div class="l">rows moved end-to-end</div></div>
-        <div class="stat s2 reveal"><div class="n" data-count="150700">0</div><div class="l">rows/sec in the sandbox</div></div>
-        <div class="stat s3 reveal"><div class="n">4 / 4</div><div class="l">parity checks passed</div></div>
-        <div class="stat s4 reveal"><div class="n">0.33<span class="tiny-unit">s</span></div><div class="l">sync wall-time</div></div>
+      <div class="stats reveal" id="stats">
+        <div class="stat"><div class="n" data-count="50000">0</div><div class="l">rows moved end-to-end</div></div>
+        <div class="stat"><div class="n" data-count="150700">0</div><div class="l">rows/sec in the sandbox</div></div>
+        <div class="stat s-pass"><div class="n">4 / 4</div><div class="l">parity checks passed</div></div>
+        <div class="stat"><div class="n">0.33<span class="tiny-unit">s</span></div><div class="l">sync wall-time</div></div>
       </div>
 
-      <nav class="chapters reveal" aria-label="Tutorial chapters">
+      <nav class="chapters reveal d1" aria-label="Appendix chapters">
         <a href="#pipeline"><b>01</b> The pipe</a>
         <a href="#anatomy"><b>02</b> The engine</a>
         <a href="#checks"><b>03</b> The proof</a>
@@ -367,13 +929,13 @@
   </header>
 
   <main id="main">
-    <!-- PIPELINE -->
-    <section id="pipeline">
+    <!-- ============ §01 PIPELINE ============ -->
+    <section id="pipeline" class="section">
       <div class="wrap">
-        <div class="sec-head reveal">
-          <div class="sec-kicker"><span class="chap">01</span>what actually moved</div>
-          <h2>ClickHouse &rarr; worker &rarr; DuckDB, inside a borrowed box</h2>
-          <p class="sec-sub">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="sec-no">§01</span> what actually moved</div>
+          <h2>ClickHouse &rarr; worker &rarr; DuckDB, inside a borrowed box.</h2>
+          <p class="lede">
             A standard pipe: an OLAP system of record on the left, an analytics warehouse on the right, and the
             Airbyte source&rarr;destination record contract in the middle. The whole thing executes
             <em>inside</em> an islo sandbox &mdash; the harness never touches the data. In the generalized shape,
@@ -381,45 +943,46 @@
           </p>
         </div>
 
-        <div class="pipe reveal">
-          <div class="node src">
-            <div class="tag">source &middot; system of record</div>
-            <div class="name">ClickHouse</div>
-            <div class="meta">analytics.events<br>50,000 rows &middot; MergeTree<br>v26.6.1</div>
+        <div class="reveal"><span class="exhibit">exhibit a · the pipe</span></div>
+        <div class="pipe reveal" role="group" aria-label="Pipeline: ClickHouse to worker to DuckDB">
+          <div class="pnode src">
+            <span class="tag">source · system of record</span>
+            <p class="name">ClickHouse</p>
+            <div class="meta">analytics.events<br>50,000 rows · MergeTree<br>v26.6.1</div>
           </div>
-          <div class="arrow"><div class="line"></div><div class="cap">extract &middot; JSONEachRow</div></div>
-          <div class="node eng">
-            <div class="tag">engine &middot; airbyte contract</div>
-            <div class="name">etl.py worker</div>
-            <div class="meta">discover &middot; read<br>RECORD streams &middot; 10 batches<br>~9.0 MB read</div>
+          <div class="arrow" aria-hidden="true"><div class="line"></div><div class="cap">extract · JSONEachRow</div></div>
+          <div class="pnode eng">
+            <span class="tag">engine · airbyte contract</span>
+            <p class="name">etl.py worker</p>
+            <div class="meta">discover · read<br>RECORD streams · 10 batches<br>~9.0 MB read</div>
           </div>
-          <div class="arrow"><div class="line"></div><div class="cap">load &middot; vectorized</div></div>
-          <div class="node dst">
-            <div class="tag">destination &middot; warehouse</div>
-            <div class="name">DuckDB</div>
-            <div class="meta">raw.events<br>50,000 rows &middot; typed<br>v1.5.3</div>
+          <div class="arrow" aria-hidden="true"><div class="line"></div><div class="cap">load · vectorized</div></div>
+          <div class="pnode dst">
+            <span class="tag">destination · warehouse</span>
+            <p class="name">DuckDB</p>
+            <div class="meta">raw.events<br>50,000 rows · typed<br>v1.5.3</div>
           </div>
         </div>
-        <div class="pipe-wrap-note">
-          <b>&#9695;</b> all of the above runs as one governed job: Crabbox dispatches the run contract, islo provides the sandbox, the repo worker moves the data, and the harness only reads the evidence below.
-        </div>
+        <p class="pipe-note">all of the above runs as one governed job: Crabbox dispatches the run contract, islo provides the sandbox, the repo worker moves the data, and the harness only reads the evidence below.</p>
       </div>
     </section>
 
-    <!-- ANATOMY OF THE ENGINE -->
-    <section id="anatomy">
+    <!-- ============ §02 ANATOMY OF THE ENGINE ============ -->
+    <section id="anatomy" class="section">
       <div class="wrap">
-        <div class="sec-head reveal">
-          <div class="sec-kicker"><span class="chap">02</span>how a row actually crosses</div>
-          <h2>The engine, in four moves</h2>
-          <p class="sec-sub">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="sec-no">§02</span> how a row actually crosses</div>
+          <h2>The engine, in four moves.</h2>
+          <p class="lede">
             The worker follows the same contract Airbyte uses &mdash; <strong>discover, read, write, verify</strong> &mdash;
             on the lightweight custom-CDK path so the whole thing runs self-contained in a borrowed box. Here it is, condensed from the real file.
           </p>
         </div>
 
-        <div class="term reveal">
-          <div class="bar"><i class="red"></i><i class="yellow"></i><i class="green"></i><span class="t">worker/etl.py &middot; the source&rarr;destination contract</span></div>
+        <div class="reveal">
+          <span class="exhibit">exhibit b · condensed source</span>
+          <div class="film">
+            <div class="film-bar"><span>worker/etl.py · the source&rarr;destination contract</span><span>python 3.12</span></div>
 <pre><span class="cm"># 1 · DISCOVER — ask the source for its schema, map types for the destination</span>
 cols <span class="kw">=</span> <span class="fn">describe</span>(<span class="st">f"{db}.{stream}"</span>)            <span class="cm"># ClickHouse DESCRIBE → catalog</span>
 ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">join</span>(<span class="fn">map_type</span>(c) <span class="kw">for</span> c <span class="kw">in</span> cols)  <span class="cm"># CH type → DuckDB type (typed, not stringly)</span>
@@ -436,16 +999,17 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
 <span class="kw">assert</span> src_revenue <span class="kw">==</span> dst_revenue                     <span class="cm"># decimal aggregate</span>
 <span class="kw">assert</span> src_tally   <span class="kw">==</span> dst_tally                       <span class="cm"># per-type group-by</span>
 <span class="kw">assert</span> <span class="fn">sha256</span>(src_rows) <span class="kw">==</span> <span class="fn">sha256</span>(dst_rows)          <span class="ok"># ← byte-exact</span></pre>
+          </div>
+          <p class="code-cap">Condensed for reading &mdash; the real, runnable source is
+            <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/worker/etl.py" target="_blank" rel="noreferrer">worker/etl.py</a>.</p>
         </div>
-        <p class="code-cap">Condensed for reading &mdash; the real, runnable source is
-          <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/worker/etl.py" target="_blank" rel="noreferrer">worker/etl.py</a>.</p>
 
         <div class="honest reveal">
-          <h4>What this proves &mdash; and what it doesn't</h4>
+          <h3>What this proves &mdash; and what it doesn't.</h3>
           <p>
             This run uses the <strong>Airbyte source&rarr;destination contract</strong> on the custom-CDK path, not a full
             packaged connector deployment &mdash; that's what lets it run self-contained in a sandbox in under a second.
-            What it <em>does</em> prove is the part that matters for agentic data movement: a goal-driven worker can be
+            What it <strong>does</strong> prove is the part that matters for agentic data movement: a goal-driven worker can be
             dispatched into an isolated box, move real typed data end-to-end, and return evidence strong enough
             (a byte-exact checksum) for a harness to trust the result and decide what to do next.
           </p>
@@ -453,168 +1017,176 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
       </div>
     </section>
 
-    <!-- PROOF / CHECKS -->
-    <section id="checks">
+    <!-- ============ §03 PROOF / CHECKS ============ -->
+    <section id="checks" class="section">
       <div class="wrap">
-        <div class="sec-head reveal">
-          <div class="sec-kicker"><span class="chap">03</span>the receipt &middot; 4 independent parity checks</div>
-          <h2>How we know every row arrived intact</h2>
-          <p class="sec-sub">
-            "It ran" isn't proof. These four checks compare the source and the destination after the move.
+        <div class="section-head reveal">
+          <div class="kicker"><span class="sec-no">§03</span> the receipt · 4 independent parity checks</div>
+          <h2>How we know every row arrived intact.</h2>
+          <p class="lede">
+            &ldquo;It ran&rdquo; isn't proof. These four checks compare the source and the destination after the move.
             The worker exits non-zero unless <em>all</em> of them pass. Here is the real output of this run.
           </p>
         </div>
 
-        <div class="grid two">
-          <div class="card check reveal">
-            <div class="top"><h3>1 &middot; Row count</h3><span class="badge-ok">PASS</span></div>
-            <div class="k">Every record made it across &mdash; no drops, no dupes.</div>
-            <div class="kv">
+        <div class="reveal"><span class="exhibit">exhibit c · four parity checks</span></div>
+        <div class="checks-grid reveal">
+          <article class="check">
+            <div class="check-top"><h3>1 · Row count</h3><span class="pass">PASS</span></div>
+            <p>Every record made it across &mdash; no drops, no dupes.</p>
+            <div class="check-kv">
               <span class="lab">source</span><span class="val">50,000</span>
               <span class="lab">destination</span><span class="val match">50,000</span>
             </div>
-          </div>
-
-          <div class="card check reveal">
-            <div class="top"><h3>2 &middot; Revenue sum</h3><span class="badge-ok">PASS</span></div>
-            <div class="k">Decimal aggregate is preserved exactly across the type boundary.</div>
-            <div class="kv">
+          </article>
+          <article class="check">
+            <div class="check-top"><h3>2 · Revenue sum</h3><span class="pass">PASS</span></div>
+            <p>Decimal aggregate is preserved exactly across the type boundary.</p>
+            <div class="check-kv">
               <span class="lab">source</span><span class="val">$611,815.02</span>
               <span class="lab">destination</span><span class="val match">$611,815.02</span>
             </div>
-          </div>
-
-          <div class="card check reveal">
-            <div class="top"><h3>3 &middot; Per-event-type tally</h3><span class="badge-ok">PASS</span></div>
-            <div class="k">Group-by counts agree for all five event types.</div>
-            <div class="kv">
+          </article>
+          <article class="check">
+            <div class="check-top"><h3>3 · Per-event-type tally</h3><span class="pass">PASS</span></div>
+            <p>Group-by counts agree for all five event types.</p>
+            <div class="check-kv">
               <span class="lab">page_view</span><span class="val match">29,958 = 29,958</span>
               <span class="lab">search</span><span class="val match">7,598 = 7,598</span>
               <span class="lab">add_to_cart</span><span class="val match">6,014 = 6,014</span>
               <span class="lab">checkout</span><span class="val match">3,928 = 3,928</span>
               <span class="lab">purchase</span><span class="val match">2,502 = 2,502</span>
             </div>
-          </div>
-
-          <div class="card check reveal">
-            <div class="top"><h3>4 &middot; Content SHA-256</h3><span class="badge-ok">PASS</span></div>
-            <div class="k">Byte-exact: hash of every (event_id, type, revenue) tuple, sorted. The strongest check.</div>
-            <div class="kv">
+          </article>
+          <article class="check">
+            <div class="check-top"><h3>4 · Content SHA-256</h3><span class="pass">PASS</span></div>
+            <p>Byte-exact: hash of every (event_id, type, revenue) tuple, sorted. The strongest check.</p>
+            <div class="check-kv">
               <span class="lab">source</span><span class="val">a82239cc…a5c73ebcb</span>
               <span class="lab">destination</span><span class="val match">a82239cc…a5c73ebcb</span>
               <span class="lab">full</span><span class="val match">a82239cc73c96e68528e61f885d0b073ea60fb68e4332aec8d586c2a5c73ebcb</span>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- ANALYTICS ON DESTINATION -->
-    <section id="analytics">
+    <!-- ============ §04 ANALYTICS ON DESTINATION ============ -->
+    <section id="analytics" class="section">
       <div class="wrap">
-        <div class="sec-head reveal">
-          <div class="sec-kicker"><span class="chap">04</span>proof the data is live, not just present</div>
-          <h2>Queries run on the destination warehouse</h2>
-          <p class="sec-sub">After the load, the worker queries DuckDB directly &mdash; if these return sensible business answers, the moved data is genuinely usable, not just byte-counted.</p>
+        <div class="section-head reveal">
+          <div class="kicker"><span class="sec-no">§04</span> proof the data is live, not just present</div>
+          <h2>Queries run on the destination warehouse.</h2>
+          <p class="lede">After the load, the worker queries DuckDB directly &mdash; if these return sensible business answers, the moved data is genuinely usable, not just byte-counted.</p>
         </div>
 
-        <div class="grid two">
-          <div class="card reveal">
-            <h3 class="chart-title">Top countries by revenue <span class="k">— SELECT … GROUP BY country (on DuckDB)</span></h3>
+        <div class="charts-grid">
+          <div class="chart reveal">
+            <h3>Top countries by revenue</h3>
+            <span class="q">SELECT … GROUP BY country (on DuckDB)</span>
             <div class="bars" id="country-bars">
-              <div class="bar-row"><span class="lab">🇧🇷 BR</span><div class="bar-track"><div class="bar-fill target" data-pct="100"></div></div><span class="val">$66,444</span></div>
-              <div class="bar-row"><span class="lab">🇺🇸 US</span><div class="bar-track"><div class="bar-fill target" data-pct="99.4"></div></div><span class="val">$66,072</span></div>
-              <div class="bar-row"><span class="lab">🇫🇷 FR</span><div class="bar-track"><div class="bar-fill target" data-pct="96.2"></div></div><span class="val">$63,935</span></div>
-              <div class="bar-row"><span class="lab">🇦🇺 AU</span><div class="bar-track"><div class="bar-fill target" data-pct="93.9"></div></div><span class="val">$62,368</span></div>
-              <div class="bar-row"><span class="lab">🇮🇱 IL</span><div class="bar-track"><div class="bar-fill target" data-pct="91.8"></div></div><span class="val">$60,967</span></div>
+              <div class="bar-row"><span class="lab">🇧🇷 BR</span><div class="bar-track"><div class="bar-fill lead" data-pct="100"></div></div><span class="val">$66,444</span></div>
+              <div class="bar-row"><span class="lab">🇺🇸 US</span><div class="bar-track"><div class="bar-fill" data-pct="99.4"></div></div><span class="val">$66,072</span></div>
+              <div class="bar-row"><span class="lab">🇫🇷 FR</span><div class="bar-track"><div class="bar-fill" data-pct="96.2"></div></div><span class="val">$63,935</span></div>
+              <div class="bar-row"><span class="lab">🇦🇺 AU</span><div class="bar-track"><div class="bar-fill" data-pct="93.9"></div></div><span class="val">$62,368</span></div>
+              <div class="bar-row"><span class="lab">🇮🇱 IL</span><div class="bar-track"><div class="bar-fill" data-pct="91.8"></div></div><span class="val">$60,967</span></div>
             </div>
           </div>
 
-          <div class="card reveal">
-            <h3 class="chart-title">Conversion funnel <span class="k">— count(*) by event_type (on DuckDB)</span></h3>
+          <div class="chart reveal d1">
+            <h3>Conversion funnel</h3>
+            <span class="q">count(*) by event_type (on DuckDB)</span>
             <div class="bars" id="funnel-bars">
-              <div class="bar-row"><span class="lab">page_view</span><div class="bar-track"><div class="bar-fill source" data-pct="100"></div></div><span class="val">29,958</span></div>
-              <div class="bar-row"><span class="lab">search</span><div class="bar-track"><div class="bar-fill airbyte" data-pct="25.4"></div></div><span class="val">7,598</span></div>
-              <div class="bar-row"><span class="lab">add_to_cart</span><div class="bar-track"><div class="bar-fill airbyte" data-pct="20.1"></div></div><span class="val">6,014</span></div>
-              <div class="bar-row"><span class="lab">checkout</span><div class="bar-track"><div class="bar-fill evidence" data-pct="13.1"></div></div><span class="val">3,928</span></div>
-              <div class="bar-row"><span class="lab">purchase</span><div class="bar-track"><div class="bar-fill crabbox" data-pct="8.4"></div></div><span class="val">2,502</span></div>
+              <div class="bar-row"><span class="lab">page_view</span><div class="bar-track"><div class="bar-fill lead" data-pct="100"></div></div><span class="val">29,958</span></div>
+              <div class="bar-row"><span class="lab">search</span><div class="bar-track"><div class="bar-fill" data-pct="25.4"></div></div><span class="val">7,598</span></div>
+              <div class="bar-row"><span class="lab">add_to_cart</span><div class="bar-track"><div class="bar-fill" data-pct="20.1"></div></div><span class="val">6,014</span></div>
+              <div class="bar-row"><span class="lab">checkout</span><div class="bar-track"><div class="bar-fill" data-pct="13.1"></div></div><span class="val">3,928</span></div>
+              <div class="bar-row"><span class="lab">purchase</span><div class="bar-track"><div class="bar-fill" data-pct="8.4"></div></div><span class="val">2,502</span></div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SCHEMA MAP -->
-    <section id="schema">
+    <!-- ============ SCHEMA MAP ============ -->
+    <section id="schema" class="section">
       <div class="wrap">
-        <div class="sec-head reveal">
-          <div class="sec-kicker">discover step &middot; typed, not stringly</div>
-          <h2>The schema crossed the type boundary intact</h2>
-          <p class="sec-sub">The worker reads the source catalog and maps each ClickHouse type to a DuckDB type before loading &mdash; decimals stay decimals, datetimes stay timestamps.</p>
+        <div class="section-head reveal">
+          <div class="kicker">discover step · typed, not stringly</div>
+          <h2>The schema crossed the type boundary intact.</h2>
+          <p class="lede">The worker reads the source catalog and maps each ClickHouse type to a DuckDB type before loading &mdash; decimals stay decimals, datetimes stay timestamps.</p>
         </div>
-        <div class="card reveal compact-card">
-          <table class="schema">
-            <thead><tr><th>column</th><th>ClickHouse (source)</th><th>DuckDB (destination)</th></tr></thead>
+        <div class="reveal">
+          <span class="exhibit">exhibit d · schema map</span>
+          <table class="ledger">
+            <thead><tr><th>column</th><th>ClickHouse · source</th><th>DuckDB · destination</th></tr></thead>
             <tbody>
-              <tr><td>event_id</td><td class="src-t">UInt64</td><td class="dst-t">BIGINT</td></tr>
-              <tr><td>user_id</td><td class="src-t">UInt32</td><td class="dst-t">BIGINT</td></tr>
-              <tr><td>session_id</td><td class="src-t">UInt32</td><td class="dst-t">BIGINT</td></tr>
-              <tr><td>event_type</td><td class="src-t">LowCardinality(String)</td><td class="dst-t">VARCHAR</td></tr>
-              <tr><td>channel</td><td class="src-t">LowCardinality(String)</td><td class="dst-t">VARCHAR</td></tr>
-              <tr><td>device</td><td class="src-t">LowCardinality(String)</td><td class="dst-t">VARCHAR</td></tr>
-              <tr><td>country</td><td class="src-t">LowCardinality(String)</td><td class="dst-t">VARCHAR</td></tr>
-              <tr><td>url</td><td class="src-t">String</td><td class="dst-t">VARCHAR</td></tr>
-              <tr><td>revenue</td><td class="src-t">Decimal(12, 2)</td><td class="dst-t">DECIMAL(18,2)</td></tr>
-              <tr><td>ts</td><td class="src-t">DateTime</td><td class="dst-t">TIMESTAMP</td></tr>
+              <tr><td>event_id</td><td class="t-src">UInt64</td><td class="t-dst">BIGINT</td></tr>
+              <tr><td>user_id</td><td class="t-src">UInt32</td><td class="t-dst">BIGINT</td></tr>
+              <tr><td>session_id</td><td class="t-src">UInt32</td><td class="t-dst">BIGINT</td></tr>
+              <tr><td>event_type</td><td class="t-src">LowCardinality(String)</td><td class="t-dst">VARCHAR</td></tr>
+              <tr><td>channel</td><td class="t-src">LowCardinality(String)</td><td class="t-dst">VARCHAR</td></tr>
+              <tr><td>device</td><td class="t-src">LowCardinality(String)</td><td class="t-dst">VARCHAR</td></tr>
+              <tr><td>country</td><td class="t-src">LowCardinality(String)</td><td class="t-dst">VARCHAR</td></tr>
+              <tr><td>url</td><td class="t-src">String</td><td class="t-dst">VARCHAR</td></tr>
+              <tr><td>revenue</td><td class="t-src">Decimal(12, 2)</td><td class="t-dst">DECIMAL(18,2)</td></tr>
+              <tr><td>ts</td><td class="t-src">DateTime</td><td class="t-dst">TIMESTAMP</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- SANDBOX PROVENANCE -->
-    <section id="sandbox">
+    <!-- ============ §05 SANDBOX PROVENANCE ============ -->
+    <section id="sandbox" class="section">
       <div class="wrap">
-        <div class="sec-head reveal">
-          <div class="sec-kicker"><span class="chap">05</span>the worker &middot; a real islo sandbox</div>
-          <h2>Where it ran &mdash; full provenance</h2>
-          <p class="sec-sub">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="sec-no">§05</span> the worker · a real islo sandbox</div>
+          <h2>Where it ran &mdash; full provenance.</h2>
+          <p class="lede">
             This wasn't your laptop. The job ran in a fresh, repo-defined islo microVM in the
-            <span class="region-name">Canada</span> compute region, then was torn down. Every field below is captured from the live box.
+            <strong>Canada</strong> compute region, then was torn down. Every field below is captured from the live box.
           </p>
         </div>
-        <div class="grid two">
-          <div class="card reveal compact-card">
-            <table class="prov">
-              <tr><td>sandbox id</td><td class="hl">019ea238-1f81-7950-80a9-1b80a5e0b556</td></tr>
-              <tr><td>sandbox name</td><td>airbyte-etl</td></tr>
-              <tr><td>image</td><td>docker.io/library/python:3.12</td></tr>
-              <tr><td>kernel</td><td>Linux 6.16.9+ &middot; x86_64</td></tr>
-              <tr><td>vCPU / memory</td><td>4 vCPU &middot; 3930 MB</td></tr>
-              <tr><td>compute region</td><td class="hl">ca.compute.islo.dev (Canada)</td></tr>
-              <tr><td>public owner</td><td>redacted</td></tr>
+
+        <div class="reveal"><span class="exhibit">exhibit e · provenance</span></div>
+        <div class="prov-grid">
+          <div class="reveal">
+            <table class="ledger">
+              <tbody>
+                <tr><td>sandbox id</td><td class="hl">019ea238-1f81-7950-80a9-1b80a5e0b556</td></tr>
+                <tr><td>sandbox name</td><td>airbyte-etl</td></tr>
+                <tr><td>image</td><td>docker.io/library/python:3.12</td></tr>
+                <tr><td>kernel</td><td>Linux 6.16.9+ · x86_64</td></tr>
+                <tr><td>vCPU / memory</td><td>4 vCPU · 3930 MB</td></tr>
+                <tr><td>compute region</td><td class="hl">ca.compute.islo.dev (Canada)</td></tr>
+                <tr><td>public owner</td><td>redacted</td></tr>
+              </tbody>
             </table>
           </div>
-          <div class="card reveal compact-card">
-            <table class="prov">
-              <tr><td>source engine</td><td>ClickHouse <span class="hl">26.6.1.472</span></td></tr>
-              <tr><td>destination engine</td><td>DuckDB <span class="hl">1.5.3</span></td></tr>
-              <tr><td>runtime</td><td>Python 3.12.13</td></tr>
-              <tr><td>sync mode</td><td>full_refresh_overwrite</td></tr>
-              <tr><td>bytes read</td><td>9,450,617 (~9.0 MB)</td></tr>
-              <tr><td>batches</td><td>10 &times; 5,000 records</td></tr>
-              <tr><td>read / write split</td><td>0.186s read &middot; 0.145s write</td></tr>
+          <div class="reveal d1">
+            <table class="ledger">
+              <tbody>
+                <tr><td>source engine</td><td>ClickHouse <span class="hl">26.6.1.472</span></td></tr>
+                <tr><td>destination engine</td><td>DuckDB <span class="hl">1.5.3</span></td></tr>
+                <tr><td>runtime</td><td>Python 3.12.13</td></tr>
+                <tr><td>sync mode</td><td>full_refresh_overwrite</td></tr>
+                <tr><td>bytes read</td><td>9,450,617 (~9.0 MB)</td></tr>
+                <tr><td>batches</td><td>10 &times; 5,000 records</td></tr>
+                <tr><td>read / write split</td><td>0.186s read · 0.145s write</td></tr>
+              </tbody>
             </table>
           </div>
         </div>
 
-        <div class="sec-head reveal follow-head">
-          <h2 class="phase-title">The whole run, phase by phase</h2>
-          <p class="sec-sub">Nine <code>::CRABBOX_PHASE::</code> markers split the job into named steps the orchestrator can time, attach evidence to, and reason over. This is the end-to-end, start to finish.</p>
+        <div class="section-head reveal" style="margin-top: 56px; margin-bottom: 8px;">
+          <h3 style="margin: 0 0 8px; font-family: var(--serif); font-size: 26px; font-weight: 600; letter-spacing: -0.01em;">The whole run, phase by phase.</h3>
+          <p class="lede" style="font-size: 16.5px;">Nine <code>::CRABBOX_PHASE::</code> markers split the job into named steps the orchestrator can time, attach evidence to, and reason over. This is the end-to-end, start to finish.</p>
         </div>
 
-        <div class="reveal">
-          <div class="tl-stage-label">Setup &middot; make the box ready</div>
+        <div class="tl reveal">
+          <span class="exhibit">exhibit f · the run, phase by phase</span>
+          <div class="tl-stage-label">Setup · make the box ready</div>
           <div class="tl-step setup">
             <div class="tl-dot">1</div>
             <div class="tl-body">
@@ -632,13 +1204,13 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
             </div>
           </div>
 
-          <div class="tl-stage-label">Prepare &middot; data + schema</div>
+          <div class="tl-stage-label">Prepare · data + schema</div>
           <div class="tl-step prep">
             <div class="tl-dot">3</div>
             <div class="tl-body">
               <h4>seed <code>::CRABBOX_PHASE::seed</code></h4>
               <p>Generate 50,000 deterministic web-analytics events (fixed RNG) and insert them &mdash; this is the system of record we're asked to move.</p>
-              <div class="emit">emits &rarr; <b>analytics.events &middot; 50,000 rows &middot; $611,815.02</b></div>
+              <div class="emit">emits &rarr; <b>analytics.events · 50,000 rows · $611,815.02</b></div>
             </div>
           </div>
           <div class="tl-step prep">
@@ -649,7 +1221,6 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
               <div class="emit">emits &rarr; <b>a 10-column typed catalog</b></div>
             </div>
           </div>
-
           <div class="tl-step prep">
             <div class="tl-dot">5</div>
             <div class="tl-body">
@@ -659,17 +1230,17 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
             </div>
           </div>
 
-          <div class="tl-stage-label">Move &middot; the actual transfer</div>
+          <div class="tl-stage-label">Move · the actual transfer</div>
           <div class="tl-step move">
             <div class="tl-dot">6</div>
             <div class="tl-body">
               <h4>sync <code>::CRABBOX_PHASE::sync</code></h4>
               <p>Stream the rows out as JSONEachRow RECORD batches and bulk-load them into the destination warehouse.</p>
-              <div class="emit">emits &rarr; <b>50,000 rows moved &middot; 0.332s &middot; 0.186s read + 0.145s write</b></div>
+              <div class="emit">emits &rarr; <b>50,000 rows moved · 0.332s · 0.186s read + 0.145s write</b></div>
             </div>
           </div>
 
-          <div class="tl-stage-label">Prove &amp; report &middot; evidence for the harness</div>
+          <div class="tl-stage-label">Prove &amp; report · evidence for the harness</div>
           <div class="tl-step prove">
             <div class="tl-dot">7</div>
             <div class="tl-body">
@@ -691,22 +1262,24 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
             <div class="tl-body">
               <h4>emit <code>::CRABBOX_PHASE::emit</code></h4>
               <p>Write <code>metrics.json</code> plus a final STATE message &mdash; the structured evidence a reflection loop ingests to decide the next move.</p>
-              <div class="emit">emits &rarr; <b>status = SUCCEEDED &middot; exit 0</b></div>
+              <div class="emit">emits &rarr; <b>status = SUCCEEDED · exit 0</b></div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- LIVE LOG -->
-    <section id="log">
+    <!-- ============ LIVE LOG ============ -->
+    <section id="log" class="section">
       <div class="wrap">
-        <div class="sec-head reveal">
-          <div class="sec-kicker">raw evidence &middot; unedited tail</div>
-          <h2>The actual run, from the sandbox</h2>
+        <div class="section-head reveal">
+          <div class="kicker">raw evidence · unedited tail</div>
+          <h2>The actual run, from the sandbox.</h2>
         </div>
-        <div class="term reveal">
-          <div class="bar"><i class="red"></i><i class="yellow"></i><i class="green"></i><span class="t">airbyte-etl &middot; /workspace/agentic-airbyte/poc &middot; islo</span></div>
+        <div class="reveal">
+          <span class="exhibit">exhibit g · raw log</span>
+          <div class="film">
+            <div class="film-bar"><span>airbyte-etl · /workspace/agentic-airbyte/poc · islo</span><span>exit 0</span></div>
 <pre><span class="ph">::CRABBOX_PHASE::bootstrap</span>
 <span class="dim">[e2e]</span> installing clickhouse static binary
 <span class="ph">::CRABBOX_PHASE::boot_clickhouse</span>
@@ -727,29 +1300,31 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
 {"type":"STATE","state":{"records_moved":50000,"status":"<span class="ok">SUCCEEDED</span>"}}
 {"type":"LOG","log":{"level":"INFO","message":"sync <span class="ok">SUCCEEDED</span>: moved 50000 rows in 0.549s (<span class="y">150700.2 rows/s</span>); checks_passed=<span class="ok">True</span>"}}
 <span class="dim">EXIT=0</span></pre>
+          </div>
+          <p class="code-cap">
+            Full artifacts in the repo:
+            <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/evidence/metrics.sandbox.json" target="_blank" rel="noreferrer">metrics.sandbox.json</a> ·
+            <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/evidence/e2e_sandbox.log" target="_blank" rel="noreferrer">e2e_sandbox.log</a>
+          </p>
         </div>
-        <p class="note note-tight">
-          Full artifacts in the repo:
-          <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/evidence/metrics.sandbox.json" target="_blank" rel="noreferrer">metrics.sandbox.json</a> &middot;
-          <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/evidence/e2e_sandbox.log" target="_blank" rel="noreferrer">e2e_sandbox.log</a>
-        </p>
       </div>
     </section>
 
-    <!-- REPRODUCE -->
-    <section id="run">
+    <!-- ============ §06 REPRODUCE ============ -->
+    <section id="run" class="section">
       <div class="wrap">
-        <div class="sec-head reveal">
-          <div class="sec-kicker"><span class="chap">06</span>run it yourself</div>
+        <div class="section-head reveal">
+          <div class="kicker"><span class="sec-no">§06</span> run it yourself</div>
           <h2>One command. Same bytes, every time.</h2>
-          <p class="sec-sub">The seed is deterministic (fixed RNG), so the SHA-256 above is reproducible. Borrow a box, hydrate it from the repo, run the proof, tear it down.</p>
+          <p class="lede">The seed is deterministic (fixed RNG), so the SHA-256 above is reproducible. Borrow a box, hydrate it from the repo, run the proof, tear it down.</p>
         </div>
 
-        <div class="grid two">
-          <div class="card reveal">
+        <div class="run-grid">
+          <div class="run-card reveal">
             <h3>The islo way — persistent box</h3>
-            <div class="term term-offset">
-              <div class="bar"><i class="red"></i><i class="yellow"></i><i class="green"></i><span class="t">your machine</span></div>
+            <p>Lease a box, hydrate from the repo, run the proof.</p>
+            <div class="film">
+              <div class="film-bar"><span>your machine</span></div>
 <pre><span class="dim"># lease a box, hydrate from the repo, run the proof</span>
 <span class="cmd">islo use</span> airbyte-etl \
   --config poc/islo.yaml \
@@ -757,86 +1332,120 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
   -- bash poc/run_e2e.sh</pre>
             </div>
           </div>
-
-          <div class="card reveal">
+          <div class="run-card reveal d1">
             <h3>The crabbox way — ephemeral worker</h3>
-            <div class="term term-offset">
-              <div class="bar"><i class="red"></i><i class="yellow"></i><i class="green"></i><span class="t">your harness</span></div>
+            <p>Dispatch it as a governed run with evidence capture.</p>
+            <div class="film">
+              <div class="film-bar"><span>your harness</span></div>
 <pre><span class="dim"># dispatch as a governed run with evidence capture</span>
 <span class="cmd">crabbox run</span> --pool org/data-movement/main/... \
-  --shell <span class="y">'bash poc/run_e2e.sh'</span> \
-  --artifact-glob <span class="y">'poc/reports/**'</span> \
+  --shell <span class="str">'bash poc/run_e2e.sh'</span> \
+  --artifact-glob <span class="str">'poc/reports/**'</span> \
   --junit poc/reports/</pre>
             </div>
           </div>
         </div>
-        <p class="note note-roomy">
-          Source: <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/run_e2e.sh" target="_blank" rel="noreferrer">run_e2e.sh</a> &middot;
-          <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/worker/etl.py" target="_blank" rel="noreferrer">worker/etl.py</a> &middot;
-          <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/worker/seed.py" target="_blank" rel="noreferrer">worker/seed.py</a> &middot;
+        <p class="src-links reveal d2">
+          source —
+          <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/run_e2e.sh" target="_blank" rel="noreferrer">run_e2e.sh</a> ·
+          <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/worker/etl.py" target="_blank" rel="noreferrer">worker/etl.py</a> ·
+          <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/worker/seed.py" target="_blank" rel="noreferrer">worker/seed.py</a> ·
           <a href="https://github.com/zozo123/agentic-airbyte/blob/main/poc/islo.yaml" target="_blank" rel="noreferrer">islo.yaml</a>
         </p>
       </div>
     </section>
   </main>
 
-  <footer>
-    <div class="wrap footer-inner">
-      <span>Agentic Airbyte &mdash; the vision, now with a working receipt.</span>
-      <div class="footer-links">
-        <a href="index.html">The vision</a>
+  <footer class="colophon">
+    <div class="wrap colophon-inner">
+      <span>Agentic Airbyte · doc AA-02 · proof appendix — the vision, now with a working receipt</span>
+      <span>
+        <a href="index.html">The model · doc AA-01</a>
+        &nbsp;·&nbsp;
         <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" rel="noreferrer">GitHub</a>
+        &nbsp;·&nbsp;
         <a href="#top">Top &uarr;</a>
-      </div>
+      </span>
     </div>
   </footer>
 
   <script>
     "use strict";
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // reveal on scroll
-    const io = new IntersectionObserver((es) => {
-      es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
-    }, { rootMargin: "0px 0px -10% 0px", threshold: 0.05 });
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-
-    // reading-progress bar
-    const bar = document.getElementById("progress");
-    function onScroll() {
-      const h = document.documentElement;
-      const max = h.scrollHeight - h.clientHeight;
-      bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+    // ---------- reveals ----------
+    const revealEls = [...document.querySelectorAll(".reveal")];
+    if ("IntersectionObserver" in window && !reduceMotion) {
+      const ro = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); ro.unobserve(e.target); } });
+      }, { rootMargin: "0px 0px -10% 0px", threshold: 0.1 });
+      revealEls.forEach((el) => ro.observe(el));
+      const revealOnscreen = () => {
+        revealEls.forEach((el) => {
+          if (el.classList.contains("in")) return;
+          const r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight * 0.96 && r.bottom > 0) { el.classList.add("in"); ro.unobserve(el); }
+        });
+      };
+      const revealAll = () => revealEls.forEach((el) => { el.classList.add("in"); ro.unobserve(el); });
+      if (location.hash && document.getElementById(location.hash.slice(1))) revealAll();
+      window.addEventListener("load", revealOnscreen);
+      window.addEventListener("hashchange", revealAll);
+      [120, 420, 900].forEach((t) => setTimeout(revealOnscreen, t));
+      revealOnscreen();
+    } else {
+      revealEls.forEach((el) => el.classList.add("in"));
     }
-    document.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
 
-    // count-up stats
+    // ---------- progress rule ----------
+    const rule = document.getElementById("progress-rule");
+    if (rule) {
+      let ticking = false;
+      const updateRule = () => {
+        const h = document.documentElement.scrollHeight - window.innerHeight;
+        rule.style.setProperty("--p", (h > 0 ? window.scrollY / h : 0).toFixed(4));
+        ticking = false;
+      };
+      window.addEventListener("scroll", () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(updateRule); }
+      }, { passive: true });
+      window.addEventListener("resize", updateRule);
+      updateRule();
+    }
+
+    // ---------- count-up stats ----------
     function countUp(el) {
       const target = +el.dataset.count;
-      if (reduce) { el.textContent = target.toLocaleString(); return; }
+      if (!Number.isFinite(target)) return;
+      if (reduceMotion) { el.textContent = target.toLocaleString("en-US"); return; }
       const dur = 1100, t0 = performance.now();
       (function tick(now) {
         const p = Math.min(1, (now - t0) / dur);
-        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))).toLocaleString();
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))).toLocaleString("en-US");
         if (p < 1) requestAnimationFrame(tick);
       })(t0);
     }
-    const statObs = new IntersectionObserver((es) => {
-      es.forEach((e) => { if (e.isIntersecting) { countUp(e.target); statObs.unobserve(e.target); } });
-    }, { threshold: 0.6 });
-    document.querySelectorAll("[data-count]").forEach((el) => statObs.observe(el));
+    const countEls = [...document.querySelectorAll("[data-count]")];
+    if ("IntersectionObserver" in window) {
+      const statObs = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { countUp(e.target); statObs.unobserve(e.target); } });
+      }, { threshold: 0.6 });
+      countEls.forEach((el) => statObs.observe(el));
+    } else {
+      countEls.forEach((el) => { el.textContent = (+el.dataset.count).toLocaleString("en-US"); });
+    }
 
-    // animate bars
-    const barObs = new IntersectionObserver((es) => {
-      es.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.querySelectorAll(".bar-fill").forEach((b) => { b.style.width = b.dataset.pct + "%"; });
-          barObs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    document.querySelectorAll(".bars").forEach((el) => barObs.observe(el));
+    // ---------- bar fills ----------
+    const fillBars = (root) => root.querySelectorAll(".bar-fill").forEach((b) => { b.style.width = b.dataset.pct + "%"; });
+    const barGroups = [...document.querySelectorAll(".bars")];
+    if ("IntersectionObserver" in window && !reduceMotion) {
+      const barObs = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { fillBars(e.target); barObs.unobserve(e.target); } });
+      }, { threshold: 0.3 });
+      barGroups.forEach((el) => barObs.observe(el));
+    } else {
+      barGroups.forEach(fillBars);
+    }
   </script>
 </body>
 </html>
