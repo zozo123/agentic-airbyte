@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <title>Agentic Airbyte: agent ETL proof of concept · Yossi Eliaz</title>
+  <rect width="1200" height="630" fill="#f3eee1"/>
+  <rect x="28" y="28" width="1144" height="574" fill="none" stroke="#1c1812" stroke-width="2"/>
+
+  <!-- masthead -->
+  <circle cx="92" cy="92" r="20" fill="none" stroke="#1c1812" stroke-width="3"/>
+  <circle cx="92" cy="92" r="6.5" fill="#c33d1c"/>
+  <text x="128" y="88" font-family="'IBM Plex Mono', Menlo, monospace" font-size="20" font-weight="700" letter-spacing="2" fill="#1c1812">AGENTIC AIRBYTE</text>
+  <text x="128" y="112" font-family="'IBM Plex Mono', Menlo, monospace" font-size="15" letter-spacing="2" fill="#6e6750">DOC AA-01 · EXECUTION MODEL</text>
+  <line x1="28" y1="146" x2="1172" y2="146" stroke="#1c1812" stroke-width="2"/>
+
+  <!-- stamp -->
+  <g transform="translate(1010 88) rotate(-7)">
+    <rect x="-112" y="-34" width="224" height="68" fill="none" stroke="#c33d1c" stroke-width="3"/>
+    <text x="0" y="-2" text-anchor="middle" font-family="'IBM Plex Mono', Menlo, monospace" font-size="22" font-weight="700" letter-spacing="4" fill="#c33d1c">VERIFIED RUN</text>
+    <text x="0" y="22" text-anchor="middle" font-family="'IBM Plex Mono', Menlo, monospace" font-size="14" letter-spacing="2" fill="#c33d1c">EXIT 0 · 4/4 CHECKS</text>
+  </g>
+
+  <!-- kicker -->
+  <text x="72" y="208" font-family="'IBM Plex Mono', Menlo, monospace" font-size="18" letter-spacing="3" fill="#5c543f">STATUS — <tspan fill="#c33d1c" font-weight="700">DESIGN + ONE VERIFIED RUN</tspan></text>
+
+  <!-- title -->
+  <text x="70" y="298" font-family="Fraunces, Georgia, serif" font-size="78" fill="#1c1812">Agentic Airbyte:</text>
+  <text x="70" y="384" font-family="Fraunces, Georgia, serif" font-size="66" font-style="italic" fill="#1c1812">agent ETL proof of concept</text>
+  <rect x="72" y="404" width="168" height="4" fill="#c33d1c"/>
+
+  <!-- receipt band -->
+  <rect x="72" y="440" width="1056" height="62" fill="#1c1812"/>
+  <text x="100" y="479" font-family="'IBM Plex Mono', Menlo, monospace" font-size="22" font-weight="600" letter-spacing="1" fill="#ece4d0">50,000 rows <tspan fill="#9b9070">·</tspan> 4/4 checks <tspan fill="#9b9070">·</tspan> islo.dev sandbox <tspan fill="#9b9070">·</tspan> ClickHouse → DuckDB</text>
+
+  <!-- footer -->
+  <text x="72" y="562" font-family="Fraunces, Georgia, serif" font-size="34" fill="#1c1812">Yossi Eliaz</text>
+  <text x="1128" y="560" text-anchor="end" font-family="'IBM Plex Mono', Menlo, monospace" font-size="17" letter-spacing="1" fill="#5c543f">zozo123.github.io/agentic-airbyte</text>
+</svg>

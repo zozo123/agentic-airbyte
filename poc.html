@@ -5,11 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f3eee1">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f3eee1'/%3E%3Ccircle cx='16' cy='16' r='9.5' fill='none' stroke='%231c1812' stroke-width='2.4'/%3E%3Ccircle cx='16' cy='16' r='3.4' fill='%23c8401f'/%3E%3C/svg%3E">
-  <meta name="description" content="A real, executed proof: 50,000 rows moved ClickHouse → DuckDB by an Airbyte-contract worker inside a live islo sandbox, dispatched the crabbox way. Every parity check passed.">
-  <meta property="og:title" content="Agentic Airbyte — Proof Appendix">
-  <meta property="og:description" content="Not a diagram. A real run: ClickHouse → DuckDB inside a live islo sandbox. 50,000 rows, 4/4 parity checks, byte-exact checksum.">
-  <meta property="og:type" content="website">
-  <title>Agentic Airbyte — Proof Appendix · ClickHouse → DuckDB, verified</title>
+  <title>Agentic Airbyte proof appendix · Yossi Eliaz</title>
+  <meta name="description" content="Proof run: a Python worker using Airbyte-style messages moved 50,000 rows ClickHouse to DuckDB in an islo.dev sandbox; 4/4 parity checks and a matching SHA-256.">
+  <meta name="author" content="Yossi Eliaz">
+  <link rel="canonical" href="https://zozo123.github.io/agentic-airbyte/poc.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Yossi Eliaz">
+  <meta property="og:title" content="Agentic Airbyte proof appendix">
+  <meta property="og:description" content="Proof run: a Python worker using Airbyte-style messages moved 50,000 rows ClickHouse to DuckDB in an islo.dev sandbox; 4/4 parity checks and a matching SHA-256.">
+  <meta property="og:url" content="https://zozo123.github.io/agentic-airbyte/poc.html">
+  <meta property="og:image" content="https://zozo123.github.io/agentic-airbyte/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agentic Airbyte: agent ETL proof of concept. 50,000 rows, 4/4 checks, islo.dev sandbox. Yossi Eliaz.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agentic Airbyte proof appendix">
+  <meta name="twitter:description" content="Proof run: 50,000 rows ClickHouse to DuckDB in an islo.dev sandbox; 4/4 parity checks and a matching SHA-256.">
+  <meta name="twitter:image" content="https://zozo123.github.io/agentic-airbyte/og.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Agentic Airbyte proof appendix",
+    "description": "Proof run: a Python worker using Airbyte-style messages moved 50,000 rows ClickHouse to DuckDB in an islo.dev sandbox; 4/4 parity checks and a matching SHA-256.",
+    "url": "https://zozo123.github.io/agentic-airbyte/poc.html",
+    "image": "https://zozo123.github.io/agentic-airbyte/og.png",
+    "datePublished": "2026-06-07",
+    "dateModified": "2026-06-10",
+    "isPartOf": { "@type": "TechArticle", "headline": "Agentic Airbyte: agent ETL proof of concept", "url": "https://zozo123.github.io/agentic-airbyte/" },
+    "author": {
+      "@type": "Person",
+      "name": "Yossi Eliaz",
+      "url": "https://yossieliaz.netlify.app/",
+      "sameAs": ["https://github.com/zozo123", "https://www.linkedin.com/in/yossi-eliaz/"]
+    }
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -296,6 +327,17 @@
       text-wrap: pretty;
     }
     .hero-lede strong { color: var(--ink); font-weight: 620; }
+    .hero-lede code { color: var(--ink); font-size: 0.86em; }
+    .byline {
+      margin: -6px 0 20px;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+    }
+    .byline a { color: var(--ink); text-decoration: none; border-bottom: 1.5px solid var(--verm); }
+    .byline a:hover { color: var(--verm); }
 
     .verdict {
       display: inline-block;
@@ -819,6 +861,10 @@
     .colophon a { color: rgb(236 228 208 / 0.85); text-decoration: none; border-bottom: 1px solid rgb(236 228 208 / 0.3); padding-bottom: 1px; }
     .colophon a:hover { color: #e8b64c; border-bottom-color: #e8b64c; }
 
+    @media (max-width: 480px) {
+      .mast-cta .cta-doc { display: none; }
+    }
+
     /* ============ print ============ */
     @media print {
       .reveal, html.js .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
@@ -882,7 +928,7 @@
         <a href="#sandbox">Sandbox</a>
         <a href="#run">Reproduce</a>
       </div>
-      <a class="mast-cta" href="index.html">&larr; The model · AA-01</a>
+      <a class="mast-cta" href="index.html">&larr; The model<span class="cta-doc">&nbsp;· AA-01</span></a>
     </div>
     <div class="progress-rule" id="progress-rule" aria-hidden="true"></div>
   </nav>
@@ -894,14 +940,15 @@
         <span>Appendix to — <a href="index.html">doc AA-01, the execution model</a></span>
         <span>Status — <b>actually executed</b></span>
       </div>
-      <h1>The loop isn't a diagram. <em>We ran it. The bytes match.</em></h1>
+      <h1>The proof isn't a diagram. <em>We ran it. The bytes match.</em></h1>
+      <p class="byline">By <a href="https://zozo123.github.io/">Yossi Eliaz</a> · <time datetime="2026-06-10">June 2026</time> · design + proof of concept</p>
       <p class="hero-lede">
-        The <a href="index.html">one-pager</a> explains the vision. This page is the <strong>receipt</strong>. We seeded a real
-        <strong>ClickHouse</strong> source with 50,000 web-analytics events, dispatched an
-        <strong>Airbyte-contract worker</strong> into a <strong>live islo sandbox</strong>, moved
-        every row into a <strong>DuckDB</strong> warehouse, and verified the result four independent ways &mdash;
-        down to a <strong>byte-exact SHA-256</strong> of the moved data. Crabbox is the dispatcher boundary;
-        islo is the sandbox provider used for this executed run.
+        The <a href="index.html">design page</a> explains the proposed model. This page is the <strong>receipt</strong>
+        for its one proof run. A real <strong>ClickHouse</strong> source was seeded with 50,000 web-analytics events, a
+        Python worker that emits Airbyte-style messages moved every row into a <strong>DuckDB</strong> warehouse inside
+        an <strong>islo.dev sandbox</strong>, and the result was verified four independent ways &mdash; down to a
+        <strong>byte-exact SHA-256</strong> of the moved data. The run was started with <code>islo use</code>; no LLM
+        agent or Crabbox dispatch took part. Those are the proposed next layer.
       </p>
       <p class="verdict">Sync succeeded · 50,000 / 50,000 rows · 4 / 4 parity checks passed · exit 0</p>
       <div class="hero-actions">
@@ -911,8 +958,8 @@
       </div>
 
       <div class="stats reveal" id="stats">
-        <div class="stat"><div class="n" data-count="50000">0</div><div class="l">rows moved end-to-end</div></div>
-        <div class="stat"><div class="n" data-count="150700">0</div><div class="l">rows/sec in the sandbox</div></div>
+        <div class="stat"><div class="n" data-count="50000">50,000</div><div class="l">rows moved end-to-end</div></div>
+        <div class="stat"><div class="n" data-count="150700">150,700</div><div class="l">rows/sec in the sandbox</div></div>
         <div class="stat s-pass"><div class="n">4 / 4</div><div class="l">parity checks passed</div></div>
         <div class="stat"><div class="n">0.33<span class="tiny-unit">s</span></div><div class="l">sync wall-time</div></div>
       </div>
@@ -963,7 +1010,7 @@
             <div class="meta">raw.events<br>50,000 rows · typed<br>v1.5.3</div>
           </div>
         </div>
-        <p class="pipe-note">all of the above runs as one governed job: Crabbox dispatches the run contract, islo provides the sandbox, the repo worker moves the data, and the harness only reads the evidence below.</p>
+        <p class="pipe-note">all of the above ran inside one islo.dev sandbox, started with <code>islo use</code>: the repo worker moved the data and only the evidence below came back. In the proposed design, Crabbox would dispatch this as a governed run.</p>
       </div>
     </section>
 
@@ -974,8 +1021,8 @@
           <div class="kicker"><span class="sec-no">§02</span> how a row actually crosses</div>
           <h2>The engine, in four moves.</h2>
           <p class="lede">
-            The worker follows the same contract Airbyte uses &mdash; <strong>discover, read, write, verify</strong> &mdash;
-            on the lightweight custom-CDK path so the whole thing runs self-contained in a borrowed box. Here it is, condensed from the real file.
+            The worker follows the shape of Airbyte's protocol &mdash; <strong>discover, read, write, verify</strong> &mdash;
+            in a small Python script (standard library plus duckdb), so the whole thing runs self-contained in a borrowed box. Here it is, condensed from the real file.
           </p>
         </div>
 
@@ -1007,11 +1054,11 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
         <div class="honest reveal">
           <h3>What this proves &mdash; and what it doesn't.</h3>
           <p>
-            This run uses the <strong>Airbyte source&rarr;destination contract</strong> on the custom-CDK path, not a full
-            packaged connector deployment &mdash; that's what lets it run self-contained in a sandbox in under a second.
-            What it <strong>does</strong> prove is the part that matters for agentic data movement: a goal-driven worker can be
-            dispatched into an isolated box, move real typed data end-to-end, and return evidence strong enough
-            (a byte-exact checksum) for a harness to trust the result and decide what to do next.
+            The worker is a small Python script (standard library plus duckdb) that emits Airbyte-protocol-style
+            messages and follows Airbyte's discover, read, write shape. No Airbyte CDK, connector image, or Airbyte
+            platform was used; swapping in real connectors is the next step. What the run <strong>does</strong> show is
+            that a worker can run inside an isolated box, move real typed data end-to-end, and return evidence strong
+            enough (a byte-exact checksum) for a harness to trust the result and decide what to do next.
           </p>
         </div>
       </div>
@@ -1181,7 +1228,7 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
 
         <div class="section-head reveal" style="margin-top: 56px; margin-bottom: 8px;">
           <h3 style="margin: 0 0 8px; font-family: var(--serif); font-size: 26px; font-weight: 600; letter-spacing: -0.01em;">The whole run, phase by phase.</h3>
-          <p class="lede" style="font-size: 16.5px;">Nine <code>::CRABBOX_PHASE::</code> markers split the job into named steps the orchestrator can time, attach evidence to, and reason over. This is the end-to-end, start to finish.</p>
+          <p class="lede" style="font-size: 16.5px;">Nine <code>::CRABBOX_PHASE::</code> markers split the job into named steps, so a future orchestrator such as Crabbox could time each step, attach evidence to it, and reason over it. This is the end-to-end, start to finish.</p>
         </div>
 
         <div class="tl reveal">
@@ -1333,8 +1380,8 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
             </div>
           </div>
           <div class="run-card reveal d1">
-            <h3>The crabbox way — ephemeral worker</h3>
-            <p>Dispatch it as a governed run with evidence capture.</p>
+            <h3>The Crabbox way — proposed</h3>
+            <p>How the design would dispatch it as a governed run. Not used for the verified run.</p>
             <div class="film">
               <div class="film-bar"><span>your harness</span></div>
 <pre><span class="dim"># dispatch as a governed run with evidence capture</span>
@@ -1359,6 +1406,7 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
   <footer class="colophon">
     <div class="wrap colophon-inner">
       <span>Agentic Airbyte · doc AA-02 · proof appendix — the vision, now with a working receipt</span>
+      <span>Independent design and demo by <a href="https://yossieliaz.netlify.app/">Yossi Eliaz</a>. Not affiliated with Airbyte or the Crabbox project. Crabbox: <a href="https://github.com/openclaw/crabbox">openclaw/crabbox</a> · <a href="https://airbyte.com">Airbyte</a> · <a href="https://zozo123.github.io/">more writing</a></span>
       <span>
         <a href="index.html">The model · doc AA-01</a>
         &nbsp;·&nbsp;
@@ -1414,10 +1462,12 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
     }
 
     // ---------- count-up stats ----------
+    // The final values are in the HTML (for crawlers and no-JS readers);
+    // reset to 0 only right before animating a stat that is in view.
     function countUp(el) {
       const target = +el.dataset.count;
-      if (!Number.isFinite(target)) return;
-      if (reduceMotion) { el.textContent = target.toLocaleString("en-US"); return; }
+      if (!Number.isFinite(target) || reduceMotion) return;
+      el.textContent = "0";
       const dur = 1100, t0 = performance.now();
       (function tick(now) {
         const p = Math.min(1, (now - t0) / dur);
@@ -1426,13 +1476,11 @@ ddl  <span class="kw">=</span> <span class="st">", "</span>.<span class="fn">joi
       })(t0);
     }
     const countEls = [...document.querySelectorAll("[data-count]")];
-    if ("IntersectionObserver" in window) {
+    if ("IntersectionObserver" in window && !reduceMotion) {
       const statObs = new IntersectionObserver((entries) => {
         entries.forEach((e) => { if (e.isIntersecting) { countUp(e.target); statObs.unobserve(e.target); } });
       }, { threshold: 0.6 });
       countEls.forEach((el) => statObs.observe(el));
-    } else {
-      countEls.forEach((el) => { el.textContent = (+el.dataset.count).toLocaleString("en-US"); });
     }
 
     // ---------- bar fills ----------

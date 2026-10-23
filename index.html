@@ -5,11 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f3eee1">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f3eee1'/%3E%3Ccircle cx='16' cy='16' r='9.5' fill='none' stroke='%231c1812' stroke-width='2.4'/%3E%3Ccircle cx='16' cy='16' r='3.4' fill='%23c8401f'/%3E%3C/svg%3E">
-  <meta name="description" content="Agentic Airbyte — an audited execution model for agent-driven data movement. The agent plans, Crabbox runs, Airbyte moves, evidence decides. Includes a real verified 50,000-row run.">
-  <meta property="og:title" content="Agentic Airbyte — the audit ledger">
-  <meta property="og:description" content="Agent plans. Crabbox runs. Airbyte moves. Evidence decides. A real run, verified byte-for-byte.">
-  <meta property="og:type" content="website">
-  <title>Agentic Airbyte — Agent plans. Crabbox runs. Airbyte moves. Evidence decides.</title>
+  <title>Agentic Airbyte: agent ETL proof of concept · Yossi Eliaz</title>
+  <meta name="description" content="Design for agent-driven ETL plus one verified run: a Python worker moved 50,000 rows ClickHouse to DuckDB in an islo.dev sandbox with byte-exact checks.">
+  <meta name="author" content="Yossi Eliaz">
+  <link rel="canonical" href="https://zozo123.github.io/agentic-airbyte/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Yossi Eliaz">
+  <meta property="og:title" content="Agentic Airbyte: agent ETL proof of concept">
+  <meta property="og:description" content="Design for agent-driven ETL plus one verified run: a Python worker moved 50,000 rows ClickHouse to DuckDB in an islo.dev sandbox with byte-exact checks.">
+  <meta property="og:url" content="https://zozo123.github.io/agentic-airbyte/">
+  <meta property="og:image" content="https://zozo123.github.io/agentic-airbyte/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agentic Airbyte: agent ETL proof of concept. 50,000 rows, 4/4 checks, islo.dev sandbox. Yossi Eliaz.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agentic Airbyte: agent ETL proof of concept">
+  <meta name="twitter:description" content="Design for agent-driven ETL plus one verified run: 50,000 rows ClickHouse to DuckDB in an islo.dev sandbox, 4/4 parity checks.">
+  <meta name="twitter:image" content="https://zozo123.github.io/agentic-airbyte/og.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Agentic Airbyte: agent ETL proof of concept",
+    "description": "Design for agent-driven ETL plus one verified run: a Python worker moved 50,000 rows ClickHouse to DuckDB in an islo.dev sandbox with byte-exact checks.",
+    "url": "https://zozo123.github.io/agentic-airbyte/",
+    "image": "https://zozo123.github.io/agentic-airbyte/og.png",
+    "datePublished": "2026-06-05",
+    "dateModified": "2026-06-10",
+    "author": {
+      "@type": "Person",
+      "name": "Yossi Eliaz",
+      "url": "https://yossieliaz.netlify.app/",
+      "sameAs": ["https://github.com/zozo123", "https://www.linkedin.com/in/yossi-eliaz/"]
+    }
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -176,6 +206,8 @@
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
+      white-space: nowrap;
+      flex: 0 0 auto;
       transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
     }
     .mast-cta:hover { background: var(--verm); border-color: var(--verm); color: var(--paper-3); transform: translateY(-1px); }
@@ -294,6 +326,17 @@
       text-wrap: pretty;
     }
     .hero-lede strong { color: var(--ink); font-weight: 620; }
+    .hero-lede code { color: var(--ink); font-size: 0.86em; }
+    .byline {
+      margin: -8px 0 22px;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+    }
+    .byline a { color: var(--ink); text-decoration: none; border-bottom: 1.5px solid var(--verm); }
+    .byline a:hover { color: var(--verm); }
     .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
     .btn {
       display: inline-flex;
@@ -1210,7 +1253,7 @@
       <div class="hero-meta reveal in">
         <span>Document <b>AA-01</b></span>
         <span>Subject — agent-driven data movement</span>
-        <span>Status — <b>verified by execution</b></span>
+        <span>Status — <b>design + one verified run</b></span>
       </div>
       <div class="hero-grid">
         <div>
@@ -1220,12 +1263,13 @@
             <span class="clause">Airbyte <em>moves.</em></span>
             <span class="clause decides">Evidence <em>decides.</em></span>
           </h1>
+          <p class="byline">By <a href="https://zozo123.github.io/">Yossi Eliaz</a> · <time datetime="2026-06-10">June 2026</time> · design + proof of concept</p>
           <p class="hero-lede">
-            An execution model for agents that own data movement — with no rows and no secrets
-            ever entering the prompt. As proof: the agent wrote a job spec, <strong>Crabbox</strong> (the run
-            dispatcher) leased an isolated <strong>islo</strong> sandbox, and an Airbyte-contract worker moved
-            <strong>50,000 rows</strong> from ClickHouse to DuckDB — four parity checks, one byte-exact checksum.
-            The architecture below is what generalizes it.
+            Agentic Airbyte is a design by Yossi Eliaz for letting AI agents run data-movement jobs without rows or
+            secrets entering the prompt. One proof run is included: a Python worker that emits Airbyte-style messages
+            moved <strong>50,000 rows</strong> from ClickHouse to DuckDB inside an <strong>islo.dev</strong> sandbox,
+            and four checks (row count, revenue sum, per-type tally, SHA-256) matched. That run was started with
+            <code>islo use</code>; the agent and Crabbox steps below are the proposed design, not part of the run.
           </p>
           <div class="hero-actions">
             <a class="btn" href="#loop">Read the loop &darr;</a>
@@ -1565,7 +1609,7 @@
             <div class="phase"><i>8</i><b>analytics</b><span>queries on the destination prove it's usable</span></div>
             <div class="phase"><i>9</i><b>emit</b><span>metrics.json + STATE — evidence for the loop</span></div>
           </div>
-          <p class="phase-strip-caption">Nine <code>::CRABBOX_PHASE::</code> markers split the job into steps the orchestrator can time, attach evidence to, and reason over.</p>
+          <p class="phase-strip-caption">Nine <code>::CRABBOX_PHASE::</code> markers split the job into steps, so a future orchestrator such as Crabbox could time each step, attach evidence to it, and reason over it.</p>
         </div>
 
         <div class="evidence-cols">
@@ -1601,10 +1645,11 @@
         <div class="honest reveal">
           <h3>What this proves — and what it doesn't.</h3>
           <p>
-            This run uses the <strong>Airbyte source&rarr;destination contract</strong> on a custom-connector (Airbyte CDK) path, not a full packaged
-            connector deployment — that's what lets it run self-contained in a sandbox in under a second. What it <strong>does</strong> prove
-            is the part that matters for agentic data movement: a goal-driven worker can be dispatched into an isolated box, move real
-            typed data end-to-end, and return evidence strong enough — a byte-exact checksum — for a harness to trust the result and decide what to do next.
+            The worker is a small Python script (standard library plus duckdb) that emits Airbyte-protocol-style
+            messages and follows Airbyte's discover, read, write shape. No Airbyte CDK, connector image, or Airbyte
+            platform was used; swapping in real connectors is the next step. What the run <strong>does</strong> show is
+            that a worker can run inside an isolated box, move real typed data end-to-end, and return evidence strong
+            enough (a byte-exact checksum) for a harness to trust the result and decide what to do next.
             The <a href="poc.html">full proof appendix</a> walks every phase.
           </p>
         </div>
@@ -1760,8 +1805,8 @@ JSON
             </div>
           </div>
           <div class="run-card reveal d1">
-            <h3>The crabbox way — ephemeral worker</h3>
-            <p>Dispatch it as a governed run with evidence capture.</p>
+            <h3>The Crabbox way — proposed</h3>
+            <p>How the design would dispatch it as a governed run. Not used for the verified run.</p>
             <div class="film">
               <div class="film-bar"><span>your harness</span></div>
 <pre><span class="cmd">crabbox run</span> --pool org/data-movement/main/... \
@@ -1803,6 +1848,7 @@ JSON
   <footer class="colophon">
     <div class="wrap colophon-inner">
       <span>Agentic Airbyte · doc AA-01 · a visual execution model for bounded ETL runs</span>
+      <span>Independent design and demo by <a href="https://yossieliaz.netlify.app/">Yossi Eliaz</a>. Not affiliated with Airbyte or the Crabbox project. Crabbox: <a href="https://github.com/openclaw/crabbox">openclaw/crabbox</a> · <a href="https://airbyte.com">Airbyte</a> · <a href="https://zozo123.github.io/">more writing</a></span>
       <span>
         <a href="https://github.com/zozo123/agentic-airbyte" target="_blank" rel="noreferrer">GitHub</a>
         &nbsp;·&nbsp;

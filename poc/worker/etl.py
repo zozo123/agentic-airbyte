@@ -12,9 +12,10 @@ It mirrors Airbyte's source -> destination contract end to end:
   ANALYTICS run a query *on the destination* so we know the moved data is live
   STATE     emit a final state + metrics.json the harness can reason over
 
-Standard pipe = ClickHouse (source) -> DuckDB (destination). Same protocol
-Airbyte uses; here it's the lightweight custom-CDK path so the whole thing
-runs self-contained in seconds inside a borrowed box.
+Standard pipe = ClickHouse (source) -> DuckDB (destination). The worker is a
+small Python script (standard library plus duckdb) that emits
+Airbyte-protocol-style messages. No Airbyte CDK, connector image, or Airbyte
+platform is used; swapping in real connectors is the next step.
 """
 import hashlib
 import json
@@ -30,7 +31,7 @@ T0 = time.time()
 
 
 def phase(name):
-    # Crabbox reads these markers to attach timings/evidence to each step.
+    # Phase markers, so a future orchestrator such as Crabbox could time each step.
     print(f"::CRABBOX_PHASE::{name}", flush=True)
 
 

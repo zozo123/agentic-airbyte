@@ -1,8 +1,8 @@
 # Agentic Airbyte
 
-**The agent plans. Crabbox runs. Airbyte moves. Evidence decides.**
+**Proposed model:** the agent plans, Crabbox runs, Airbyte moves, evidence decides.
 
-An execution model for agents that own bidirectional data movement — governed, auditable, with no rows and no secrets ever entering the prompt. Not a diagram: we ran it, and the bytes match.
+Agentic Airbyte is a design by Yossi Eliaz for letting AI agents run data-movement jobs without rows or secrets entering the prompt. One proof run is included: a Python worker that emits Airbyte-style messages moved 50,000 rows from ClickHouse to DuckDB inside an islo.dev sandbox, and four checks (row count, revenue sum, per-type tally, SHA-256) matched. That run was started with `islo use`; the agent and Crabbox steps below are the proposed design, not part of the run.
 
 ## The Receipt
 
@@ -18,7 +18,7 @@ A real verified run — 50,000 rows, ClickHouse → DuckDB, inside a borrowed is
 | rows through the model | **0** |
 | exit code | **0** — the worker exits non-zero unless all four checks pass |
 
-The run emitted nine `::CRABBOX_PHASE::` markers — `bootstrap → boot_clickhouse → seed → discover → write_setup → sync → verify → analytics → emit` — so the orchestrator can time each step, attach evidence to it, and reason over it. The seed is deterministic: same bytes, every run.
+The run emitted nine `::CRABBOX_PHASE::` markers — `bootstrap → boot_clickhouse → seed → discover → write_setup → sync → verify → analytics → emit` — so a future orchestrator such as Crabbox could time each step, attach evidence to it, and reason over it. The seed is deterministic: same bytes, every run.
 
 ## The Pages
 
@@ -36,11 +36,11 @@ The run emitted nine `::CRABBOX_PHASE::` markers — `bootstrap → boot_clickho
 - **Airbyte (inside workers)**: The mover. Reads the source, writes the target — inside the box, outside the model context. Rows never pass through a prompt.
 - **The Evidence**: The judge. Logs, JUnit, counts, checksums — the only thing the agent is allowed to reason from.
 
-Every data-moving action is a governed `crabbox run --pool ...` with full provenance. Failures are boundary breaks, not mysteries: six classes (F1 plan → F6 validation), each with an owner, a signal to read, and the one bounded input the next run is allowed to change.
+In this model, every data-moving action is a governed `crabbox run --pool ...` with full provenance. Failures are boundary breaks, not mysteries: six classes (F1 plan → F6 validation), each with an owner, a signal to read, and the one bounded input the next run is allowed to change.
 
-## Harness in Action (Real Commands)
+## Illustrative harness commands (not part of the verified run)
 
-The harness is ordinary code that calls Crabbox. Typical sequence it runs:
+In the proposed design, the harness is ordinary code that calls Crabbox. A typical sequence would look like this (pool ids are examples):
 
 ```bash
 # Ensure capacity for the right worker type
@@ -76,11 +76,11 @@ The proof reproduces with one command — lease a sandbox, hydrate from the repo
 islo use airbyte-etl --config poc/islo.yaml --source github://zozo123/agentic-airbyte -- bash poc/run_e2e.sh
 ```
 
-Or dispatch it as a governed Crabbox run with `--shell 'bash poc/run_e2e.sh' --artifact-glob 'poc/reports/**' --junit poc/reports/`.
+In the proposed design, the same script would be dispatched as a Crabbox run with `--shell 'bash poc/run_e2e.sh' --artifact-glob 'poc/reports/**' --junit poc/reports/` (not tested in this proof).
 
 ## Honest Scope
 
-The proof uses the **Airbyte source→destination contract on a custom-connector (Airbyte CDK) path**, not a packaged connector deployment — that's what lets it run self-contained in a sandbox in under a second. What it does prove is the part that matters for agentic data movement: a goal-driven worker can be dispatched into an isolated box, move real typed data end-to-end, and return evidence strong enough — a byte-exact checksum — for a harness to trust the result and decide what to do next.
+The worker is a small Python script (standard library plus duckdb) that emits Airbyte-protocol-style messages and follows Airbyte's discover, read, write shape. No Airbyte CDK, connector image, or Airbyte platform was used; swapping in real connectors is the next step. What the run does show is the part that matters for agentic data movement: a worker can run inside an isolated box, move real typed data end-to-end, and return evidence strong enough — a byte-exact checksum — for a harness to trust the result and decide what to do next.
 
 ## Explore
 
@@ -88,6 +88,8 @@ The proof uses the **Airbyte source→destination contract on a custom-connector
 - Proof appendix: https://zozo123.github.io/agentic-airbyte/poc.html
 - Crabbox: https://github.com/openclaw/crabbox (and crabbox.sh)
 - Airbyte: https://airbyte.com
+
+Independent design and demo by [Yossi Eliaz](https://yossieliaz.netlify.app/) ([more writing](https://zozo123.github.io/)). Not affiliated with Airbyte or the Crabbox project.
 
 ---
 
